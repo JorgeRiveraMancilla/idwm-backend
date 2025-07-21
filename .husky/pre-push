@@ -2,7 +2,7 @@
 . "$(dirname "$0")/_/husky.sh"
 
 # Navegamos al directorio raíz del proyecto
-cd "$(dirname "$0")/Tienda-UCN-api"
+cd "$(dirname "$0")/.."
 
 
 dotnet build Tienda-UCN-api.csproj --no-restore --verbosity quiet
