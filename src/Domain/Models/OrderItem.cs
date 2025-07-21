@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace Tienda_UCN_api.src.Domain.Models
 {
     public class OrderItem
