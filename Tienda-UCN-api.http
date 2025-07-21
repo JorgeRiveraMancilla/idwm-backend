@@ -1,0 +1,6 @@
+@Tienda_UCN_api_HostAddress = http://localhost:5023
+
+GET {{Tienda_UCN_api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
