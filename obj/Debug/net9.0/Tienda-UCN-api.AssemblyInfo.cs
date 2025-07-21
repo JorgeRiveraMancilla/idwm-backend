@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Tienda-UCN-api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+54c68f89abed8557eec8a7835ed7a2ea54c6f828")]
 [assembly: System.Reflection.AssemblyProductAttribute("Tienda-UCN-api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Tienda-UCN-api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
