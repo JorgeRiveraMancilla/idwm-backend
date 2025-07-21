@@ -4,7 +4,7 @@
 # Navegamos al directorio raíz del proyecto
 cd "$(dirname "$0")/.."
 
-
+echo "Runeando la aplicacion"
 dotnet build Tienda-UCN-api.csproj --no-restore --verbosity quiet
 
-echo "Runeando el pre push"
+echo "Chequeo del pre-push completado"
