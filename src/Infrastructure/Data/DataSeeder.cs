@@ -109,7 +109,7 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
                         PhoneNumber = configuration["AdminUser:PhoneNumber"] ?? throw new InvalidOperationException("El número de teléfono del usuario administrador no está configurado.")
                     };
                     await userManager.CreateAsync(adminUser);
-                    adminUser.PasswordHash = userManager.PasswordHasher.HashPassword(adminUser, "Admin123!");
+                    adminUser.PasswordHash = userManager.PasswordHasher.HashPassword(adminUser, configuration["AdminUser:Password"] ?? throw new InvalidOperationException("La contraseña del usuario administrador no está configurada."));
                     Log.Information("Usuario administrador creado con éxito.");
                     var userFaker = new Faker<User>()
                         .RuleFor(u => u.FirstName, f => f.Name.FirstName())
@@ -120,7 +120,7 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
                         .RuleFor(u => u.Gender, f => f.PickRandom(genders))
                         .RuleFor(u => u.Rut, f => RandomRut())
                         .RuleFor(u => u.BirthDate, f => f.Date.Past(30, DateTime.Now.AddYears(-18)))
-                        .RuleFor(u => u.PasswordHash, (f, u) => userManager.PasswordHasher.HashPassword(u, "Admin123!"))
+                        .RuleFor(u => u.PasswordHash, (f, u) => userManager.PasswordHasher.HashPassword(u, configuration["randomUserPassowrd"] ?? throw new InvalidOperationException("La contraseña de los usuarios aleatorios no está configurada.")))
                         .RuleFor(u => u.PhoneNumber, f => f.Phone.PhoneNumber())
                         .RuleFor(u => u.RoleId, f => customerId);
                     var users = userFaker.Generate(99);
