@@ -6,6 +6,9 @@
 # dotenv files
 .env
 
+# appsettings files
+appsettings.json
+
 # bin and obj folders
 [Bb]in/
 [Oo]bj/
