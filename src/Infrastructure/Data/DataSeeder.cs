@@ -19,24 +19,26 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
         /// <returns>Tarea asíncrona que representa la operación de inicialización.</returns>
         public static async Task Initialize(IServiceProvider serviceProvider)
         {
-            using (var scope = serviceProvider.CreateScope())
+            try
             {
+
+                using var scope = serviceProvider.CreateScope();
                 var context = scope.ServiceProvider.GetRequiredService<DataContext>();
                 var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
                 await context.Database.EnsureCreatedAsync();
                 await context.Database.MigrateAsync();
 
-                var genders = configuration.GetSection("Genders").Get<string[]>() ?? ["Masculino", "Femenino", "Otro"];
+                var genders = configuration.GetSection("Genders").Get<string[]>() ?? throw new InvalidOperationException("La configuración de géneros no está presente.");
 
                 // Creación de roles
                 if (!context.Roles.Any())
                 {
                     var roles = new List<Role>
-                    {
-                        new Role { Name = "Admin", NormalizedName = "ADMIN" },
-                        new Role { Name = "Customer", NormalizedName = "CUTOMER" }
-                    };
+                        {
+                            new Role { Name = "Admin", NormalizedName = "ADMIN" },
+                            new Role { Name = "Customer", NormalizedName = "CUSTOMER" }
+                        };
                     await context.Roles.AddRangeAsync(roles);
                     await context.SaveChangesAsync();
                     Log.Information("Roles creados con éxito.");
@@ -46,13 +48,13 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
                 if (!context.Categories.Any())
                 {
                     var categories = new List<Category>
-                        {
-                            new Category { Name = "Electronics" },
-                            new Category { Name = "Clothing" },
-                            new Category { Name = "Home Appliances" },
-                            new Category { Name = "Books" },
-                            new Category { Name = "Sports" }
-                        };
+                            {
+                                new Category { Name = "Electronics" },
+                                new Category { Name = "Clothing" },
+                                new Category { Name = "Home Appliances" },
+                                new Category { Name = "Books" },
+                                new Category { Name = "Sports" }
+                            };
                     await context.Categories.AddRangeAsync(categories);
                     await context.SaveChangesAsync();
                     Log.Information("Categorías creadas con éxito.");
@@ -62,11 +64,11 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
                 if (!await context.Brands.AnyAsync())
                 {
                     var brands = new List<Brand>
-                    {
-                        new Brand { Name = "Sony" },
-                        new Brand { Name = "Apple" },
-                        new Brand { Name = "HP" }
-                    };
+                        {
+                            new Brand { Name = "Sony" },
+                            new Brand { Name = "Apple" },
+                            new Brand { Name = "HP" }
+                        };
                     await context.Brands.AddRangeAsync(brands);
                     await context.SaveChangesAsync();
                     Log.Information("Marcas creadas con éxito.");
@@ -93,25 +95,23 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
 
                     User adminUser = new User
                     {
-                        UserName = "Admin",
-                        NormalizedUserName = "ADMIN",
-                        FirstName = "Admin",
-                        LastName = "Sistema",
-                        Email = "admin@tiendaucn.cl",
-                        NormalizedEmail = "ADMIN@TIENDAUCN.CL",
+                        UserName = configuration["AdminUser:Email"],
+                        NormalizedUserName = configuration["AdminUser:Email"]?.ToUpper(),
+                        FirstName = configuration["AdminUser:FirstName"] ?? throw new InvalidOperationException("El nombre del usuario administrador no está configurado."),
+                        LastName = configuration["AdminUser:LastName"] ?? throw new InvalidOperationException("El apellido del usuario administrador no está configurado."),
+                        Email = configuration["AdminUser:Email"] ?? throw new InvalidOperationException("El email del usuario administrador no está configurado."),
+                        NormalizedEmail = configuration["AdminUser:Email"]?.ToUpper(),
                         EmailConfirmed = true,
                         RoleId = adminId,
-                        Gender = "Otro",
-                        Rut = "12345678-9",
-                        BirthDate = new DateTime(1990, 1, 1),
-                        PhoneNumber = "123456789"
+                        Gender = configuration["AdminUser:Gender"] ?? throw new InvalidOperationException("El género del usuario administrador no está configurado."),
+                        Rut = configuration["AdminUser:Rut"] ?? throw new InvalidOperationException("El RUT del usuario administrador no está configurado."),
+                        BirthDate = DateTime.Parse(configuration["AdminUser:BirthDate"] ?? throw new InvalidOperationException("La fecha de nacimiento del usuario administrador no está configurada.")),
+                        PhoneNumber = configuration["AdminUser:PhoneNumber"] ?? throw new InvalidOperationException("El número de teléfono del usuario administrador no está configurado.")
                     };
                     await userManager.CreateAsync(adminUser);
                     adminUser.PasswordHash = userManager.PasswordHasher.HashPassword(adminUser, "Admin123!");
                     Log.Information("Usuario administrador creado con éxito.");
                     var userFaker = new Faker<User>()
-                        .RuleFor(u => u.UserName, f => Guid.NewGuid().ToString())
-                        .RuleFor(u => u.NormalizedUserName, (f, u) => u.UserName)
                         .RuleFor(u => u.FirstName, f => f.Name.FirstName())
                         .RuleFor(u => u.LastName, f => f.Name.LastName())
                         .RuleFor(u => u.Email, f => f.Internet.Email())
@@ -154,6 +154,11 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
                         Log.Information("Productos creados con éxito.");
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error al inicializar la base de datos: {Message}", ex.Message);
+                throw;
             }
         }
 
