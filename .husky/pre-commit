@@ -1,0 +1,10 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Navegamos al directorio raíz del proyecto
+cd "$(dirname "$0")/.."
+
+dotnet restore --verbosity quiet
+dotnet format Tienda-UCN-api.csproj --verify-no-changes --verbosity quiet
+
+echo "Runeando el pre commit"
