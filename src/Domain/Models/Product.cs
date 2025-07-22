@@ -20,7 +20,7 @@ namespace Tienda_UCN_api.src.Domain.Models
         /// <summary>
         /// Precio del producto.
         /// </summary>
-        public required string Price { get; set; }
+        public required int Price { get; set; }
 
         /// <summary>
         /// Descuento del producto.

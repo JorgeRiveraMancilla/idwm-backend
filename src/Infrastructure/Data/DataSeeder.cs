@@ -113,7 +113,7 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
                     Log.Information("Usuario administrador creado con éxito.");
 
                     // Creación de usuarios aleatorios
-                    var randomPassword = configuration["User:randomUserPassword"] ?? throw new InvalidOperationException("La contraseña de los usuarios aleatorios no está configurada.");
+                    var randomPassword = configuration["User:RandomUserPassword"] ?? throw new InvalidOperationException("La contraseña de los usuarios aleatorios no está configurada.");
                     var userFaker = new Faker<User>()
                         .RuleFor(u => u.FirstName, f => f.Name.FirstName())
                         .RuleFor(u => u.LastName, f => f.Name.LastName())
@@ -144,7 +144,7 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
                         var productFaker = new Faker<Product>()
                             .RuleFor(p => p.Title, f => f.Commerce.ProductName())
                             .RuleFor(p => p.Description, f => f.Commerce.ProductDescription())
-                            .RuleFor(p => p.Price, f => f.Finance.Amount(10, 1000).ToString())
+                            .RuleFor(p => p.Price, f => f.Random.Int(1000, 100000))
                             .RuleFor(p => p.Stock, f => f.Random.Int(1, 100))
                             .RuleFor(p => p.CategoryId, f => f.PickRandom(categoryIds))
                             .RuleFor(p => p.BrandId, f => f.PickRandom(brandIds))

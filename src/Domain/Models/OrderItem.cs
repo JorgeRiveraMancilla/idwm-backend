@@ -15,7 +15,7 @@ namespace Tienda_UCN_api.src.Domain.Models
         /// <summary>
         /// Precio del artículo en el momento del pedido.
         /// </summary>
-        public required string PriceAtMoment { get; set; }
+        public required int PriceAtMoment { get; set; }
 
         /// <summary>
         /// Descuento aplicado al artículo.

@@ -15,12 +15,12 @@ namespace Tienda_UCN_api.src.Domain.Models
         /// <summary>
         /// Total del pedido con descuentos.
         /// </summary>
-        public required string Total { get; set; }
+        public required int Total { get; set; }
 
         /// <summary>
         /// Total del pedido sin descuentos.
         /// </summary>
-        public required string SubTotal { get; set; }
+        public required int SubTotal { get; set; }
 
         /// <summary>
         /// Lista de artículos del pedido.

@@ -8,11 +8,11 @@ using Tienda_UCN_api.src.Infrastructure.Data;
 
 #nullable disable
 
-namespace Tienda_UCN_api.src.Infrastructure.Data.Migrations
+namespace Tienda_UCN_api.src.Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250721210255_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250722022020_InitialMigrate")]
+    partial class InitialMigrate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -149,13 +149,11 @@ namespace Tienda_UCN_api.src.Infrastructure.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("SubTotal")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("SubTotal")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<string>("Total")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Total")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("TEXT");
@@ -249,13 +247,11 @@ namespace Tienda_UCN_api.src.Infrastructure.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("SubTotal")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("SubTotal")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<string>("Total")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Total")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("TEXT");
@@ -277,9 +273,8 @@ namespace Tienda_UCN_api.src.Infrastructure.Data.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("PriceAtMoment")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("PriceAtMoment")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("INTEGER");
@@ -321,9 +316,8 @@ namespace Tienda_UCN_api.src.Infrastructure.Data.Migrations
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Price")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Price")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Status")
                         .IsRequired()

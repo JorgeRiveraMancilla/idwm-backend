@@ -10,12 +10,12 @@ namespace Tienda_UCN_api.src.Domain.Models
         /// <summary>
         /// Total del carrito de compras incluyendo descuentos.
         /// </summary>
-        public string Total { get; set; } = string.Empty;
+        public int Total { get; set; }
 
         /// <summary>
         /// Subtotal del carrito de compras sin descuentos.
         /// </summary>
-        public string SubTotal { get; set; } = string.Empty;
+        public int SubTotal { get; set; }
 
         /// <summary>
         /// Usuario que realizó la compra.

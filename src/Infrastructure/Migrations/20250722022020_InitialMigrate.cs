@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Tienda_UCN_api.src.Infrastructure.Data.Migrations
+namespace Tienda_UCN_api.src.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialMigrate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -61,8 +61,8 @@ namespace Tienda_UCN_api.src.Infrastructure.Data.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Code = table.Column<string>(type: "TEXT", nullable: false),
-                    Total = table.Column<string>(type: "TEXT", nullable: false),
-                    SubTotal = table.Column<string>(type: "TEXT", nullable: false),
+                    Total = table.Column<int>(type: "INTEGER", nullable: false),
+                    SubTotal = table.Column<int>(type: "INTEGER", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
@@ -140,7 +140,7 @@ namespace Tienda_UCN_api.src.Infrastructure.Data.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Title = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
-                    Price = table.Column<string>(type: "TEXT", nullable: false),
+                    Price = table.Column<int>(type: "INTEGER", nullable: false),
                     Discount = table.Column<int>(type: "INTEGER", nullable: false),
                     Stock = table.Column<int>(type: "INTEGER", nullable: false),
                     Status = table.Column<string>(type: "TEXT", nullable: false),
@@ -258,8 +258,8 @@ namespace Tienda_UCN_api.src.Infrastructure.Data.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Total = table.Column<string>(type: "TEXT", nullable: false),
-                    SubTotal = table.Column<string>(type: "TEXT", nullable: false),
+                    Total = table.Column<int>(type: "INTEGER", nullable: false),
+                    SubTotal = table.Column<int>(type: "INTEGER", nullable: false),
                     BuyerId = table.Column<int>(type: "INTEGER", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
@@ -303,7 +303,7 @@ namespace Tienda_UCN_api.src.Infrastructure.Data.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Quantity = table.Column<int>(type: "INTEGER", nullable: false),
-                    PriceAtMoment = table.Column<string>(type: "TEXT", nullable: false),
+                    PriceAtMoment = table.Column<int>(type: "INTEGER", nullable: false),
                     Discount = table.Column<int>(type: "INTEGER", nullable: false),
                     ProductId = table.Column<int>(type: "INTEGER", nullable: false),
                     OrderId = table.Column<int>(type: "INTEGER", nullable: false)
