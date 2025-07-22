@@ -29,7 +29,7 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
                 await context.Database.EnsureCreatedAsync();
                 await context.Database.MigrateAsync();
 
-                var genders = configuration.GetSection("Genders").Get<string[]>() ?? throw new InvalidOperationException("La configuración de géneros no está presente.");
+                var genders = configuration.GetSection("User:Genders").Get<string[]>() ?? throw new InvalidOperationException("La configuración de géneros no está presente.");
 
                 // Creación de roles
                 if (!context.Roles.Any())
@@ -92,25 +92,28 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
                 {
                     int customerId = await context.Roles.Where(r => r.Name == "Customer").Select(r => r.Id).FirstOrDefaultAsync();
                     int adminId = await context.Roles.Where(r => r.Name == "Admin").Select(r => r.Id).FirstOrDefaultAsync();
-
+                    // Creación de usuario administrador
                     User adminUser = new User
                     {
-                        UserName = configuration["AdminUser:Email"],
-                        NormalizedUserName = configuration["AdminUser:Email"]?.ToUpper(),
-                        FirstName = configuration["AdminUser:FirstName"] ?? throw new InvalidOperationException("El nombre del usuario administrador no está configurado."),
-                        LastName = configuration["AdminUser:LastName"] ?? throw new InvalidOperationException("El apellido del usuario administrador no está configurado."),
-                        Email = configuration["AdminUser:Email"] ?? throw new InvalidOperationException("El email del usuario administrador no está configurado."),
-                        NormalizedEmail = configuration["AdminUser:Email"]?.ToUpper(),
+                        UserName = configuration["User:AdminUser:Email"],
+                        NormalizedUserName = configuration["User:AdminUser:Email"]?.ToUpper(),
+                        FirstName = configuration["User:AdminUser:FirstName"] ?? throw new InvalidOperationException("El nombre del usuario administrador no está configurado."),
+                        LastName = configuration["User:AdminUser:LastName"] ?? throw new InvalidOperationException("El apellido del usuario administrador no está configurado."),
+                        Email = configuration["User:AdminUser:Email"] ?? throw new InvalidOperationException("El email del usuario administrador no está configurado."),
+                        NormalizedEmail = configuration["User:AdminUser:Email"]?.ToUpper(),
                         EmailConfirmed = true,
                         RoleId = adminId,
-                        Gender = configuration["AdminUser:Gender"] ?? throw new InvalidOperationException("El género del usuario administrador no está configurado."),
-                        Rut = configuration["AdminUser:Rut"] ?? throw new InvalidOperationException("El RUT del usuario administrador no está configurado."),
-                        BirthDate = DateTime.Parse(configuration["AdminUser:BirthDate"] ?? throw new InvalidOperationException("La fecha de nacimiento del usuario administrador no está configurada.")),
-                        PhoneNumber = configuration["AdminUser:PhoneNumber"] ?? throw new InvalidOperationException("El número de teléfono del usuario administrador no está configurado.")
+                        Gender = configuration["User:AdminUser:Gender"] ?? throw new InvalidOperationException("El género del usuario administrador no está configurado."),
+                        Rut = configuration["User:AdminUser:Rut"] ?? throw new InvalidOperationException("El RUT del usuario administrador no está configurado."),
+                        BirthDate = DateTime.Parse(configuration["User:AdminUser:BirthDate"] ?? throw new InvalidOperationException("La fecha de nacimiento del usuario administrador no está configurada.")),
+                        PhoneNumber = configuration["User:AdminUser:PhoneNumber"] ?? throw new InvalidOperationException("El número de teléfono del usuario administrador no está configurado.")
                     };
-                    await userManager.CreateAsync(adminUser);
-                    adminUser.PasswordHash = userManager.PasswordHasher.HashPassword(adminUser, configuration["AdminUser:Password"] ?? throw new InvalidOperationException("La contraseña del usuario administrador no está configurada."));
+                    var adminPassword = configuration["User:AdminUser:Password"] ?? throw new InvalidOperationException("La contraseña del usuario administrador no está configurada.");
+                    await userManager.CreateAsync(adminUser, adminPassword);
                     Log.Information("Usuario administrador creado con éxito.");
+
+                    // Creación de usuarios aleatorios
+                    var randomPassword = configuration["User:randomUserPassword"] ?? throw new InvalidOperationException("La contraseña de los usuarios aleatorios no está configurada.");
                     var userFaker = new Faker<User>()
                         .RuleFor(u => u.FirstName, f => f.Name.FirstName())
                         .RuleFor(u => u.LastName, f => f.Name.LastName())
@@ -120,7 +123,7 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
                         .RuleFor(u => u.Gender, f => f.PickRandom(genders))
                         .RuleFor(u => u.Rut, f => RandomRut())
                         .RuleFor(u => u.BirthDate, f => f.Date.Past(30, DateTime.Now.AddYears(-18)))
-                        .RuleFor(u => u.PasswordHash, (f, u) => userManager.PasswordHasher.HashPassword(u, configuration["randomUserPassowrd"] ?? throw new InvalidOperationException("La contraseña de los usuarios aleatorios no está configurada.")))
+                        .RuleFor(u => u.PasswordHash, (f, u) => userManager.PasswordHasher.HashPassword(u, randomPassword))
                         .RuleFor(u => u.PhoneNumber, f => f.Phone.PhoneNumber())
                         .RuleFor(u => u.RoleId, f => customerId);
                     var users = userFaker.Generate(99);
@@ -158,7 +161,6 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
             catch (Exception ex)
             {
                 Log.Error(ex, "Error al inicializar la base de datos: {Message}", ex.Message);
-                throw;
             }
         }
 

@@ -51,7 +51,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = true;
 
     //Configuración de UserName
-    options.User.AllowedUserNameCharacters = "abcdefghijklmnñpqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._";
+    options.User.AllowedUserNameCharacters = "abcdefghijklmnñpqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@";
 
     //Configuración de retrys
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
