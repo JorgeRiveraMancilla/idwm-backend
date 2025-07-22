@@ -8,7 +8,8 @@
 
 # Sqlite database files
 *.db
-*.sqlite
+app.db-shm
+app.db-wal
 
 # appsettings files
 appsettings.json
