@@ -6,6 +6,11 @@
 # dotenv files
 .env
 
+# Sqlite database files
+*.db
+app.db-shm
+app.db-wal
+
 # appsettings files
 appsettings.json
 

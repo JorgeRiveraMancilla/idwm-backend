@@ -1,0 +1,22 @@
+{
+	"info": {
+		"_postman_id": "01e729cb-6551-41b9-b141-58b92a8d357e",
+		"name": "Tienda UCN",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33657530"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": []
+		},
+		{
+			"name": "Cart",
+			"item": []
+		},
+		{
+			"name": "Product",
+			"item": []
+		}
+	]
+}
