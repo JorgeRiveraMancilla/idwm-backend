@@ -23,7 +23,7 @@ builder.Services.AddAuthentication(options =>
     }
     ).AddJwtBearer(options =>
     {
-        string jwtSecret = builder.Configuration.GetSection("JWT:Secret").Value ?? throw new InvalidOperationException("La clave secreta JWT no está configurada.");
+        string jwtSecret = builder.Configuration.GetSection("JWTSecret").Value ?? throw new InvalidOperationException("La clave secreta JWT no está configurada.");
         options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
         {
             ValidateIssuerSigningKey = true,
@@ -68,16 +68,24 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
 
 #region CORS Configuration
 Log.Information("Configurando CORS");
-var allowedOrigins = builder.Configuration.GetSection("CORS:AllowedOrigins").Get<string[]>() ?? ["*"];
-var allowedMethods = builder.Configuration.GetSection("CORS:AllowedMethods").Get<string[]>() ?? ["*"];
-var allowedHeaders = builder.Configuration.GetSection("CORS:AllowedHeaders").Get<string[]>() ?? ["*"];
-builder.Services.AddCors(options =>
+try
 {
-    options.AddPolicy("AllowAllOrigins",
-        policy => policy.WithOrigins(allowedOrigins)
-        .WithMethods(allowedMethods)
-        .WithHeaders(allowedHeaders));
-});
+    var allowedOrigins = builder.Configuration.GetSection("CORS:AllowedOrigins").Get<string[]>() ?? throw new InvalidOperationException("Los orígenes permitidos CORS no están configurados.");
+    var allowedMethods = builder.Configuration.GetSection("CORS:AllowedMethods").Get<string[]>() ?? throw new InvalidOperationException("Los métodos permitidos CORS no están configurados.");
+    var allowedHeaders = builder.Configuration.GetSection("CORS:AllowedHeaders").Get<string[]>() ?? throw new InvalidOperationException("Los encabezados permitidos CORS no están configurados.");
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowAllOrigins",
+            policy => policy.WithOrigins(allowedOrigins)
+            .WithMethods(allowedMethods)
+            .WithHeaders(allowedHeaders));
+    });
+}
+catch (Exception ex)
+{
+    Log.Error(ex, "Error al configurar CORS");
+    throw;
+}
 #endregion
 
 #region Database Configuration
