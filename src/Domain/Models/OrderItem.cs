@@ -18,19 +18,24 @@ namespace Tienda_UCN_api.src.Domain.Models
         public required int PriceAtMoment { get; set; }
 
         /// <summary>
-        /// Descuento aplicado al artículo.
+        /// Título del artículo en el momento del pedido.
         /// </summary>
-        public int Discount { get; set; }
+        public required string TitleAtMoment { get; set; }
 
         /// <summary>
-        /// Identificador del producto asociado al artículo del pedido.
+        /// Descripción del artículo en el momento del pedido.
         /// </summary>
-        public int ProductId { get; set; }
+        public required string DescriptionAtMoment { get; set; }
 
         /// <summary>
-        /// Producto asociado al artículo del pedido.
+        /// Imagen del artículo en el momento del pedido (URL).
         /// </summary>
-        public Product Product { get; set; } = null!;
+        public required string ImageAtMoment { get; set; }
+
+        /// <summary>
+        /// Descuento aplicado al artículo al momento del pedido.
+        /// </summary>
+        public int DiscountAtMoment { get; set; }
 
         /// <summary>
         /// Identificador del pedido al que pertenece el artículo.
