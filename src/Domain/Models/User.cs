@@ -31,16 +31,6 @@ namespace Tienda_UCN_api.src.Domain.Models
         public required DateTime BirthDate { get; set; }
 
         /// <summary>
-        /// Identificador del rol del usuario.
-        /// </summary>
-        public int RoleId { get; set; }
-
-        /// <summary>
-        /// Rol del usuario.
-        /// </summary>
-        public Role Role { get; set; } = null!;
-
-        /// <summary>
         /// Fecha de registro del usuario.
         /// </summary>
         public DateTime RegisteredAt { get; set; } = DateTime.UtcNow;

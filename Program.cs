@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Sqlite.Infrastructure.Internal;
 using Serilog;
+using Tienda_UCN_api.src.Application.Services.Implements;
+using Tienda_UCN_api.src.Application.Services.Interfaces;
 using Tienda_UCN_api.src.Domain.Models;
 using Tienda_UCN_api.src.Infrastructure.Data;
+using Tienda_UCN_api.src.Infrastructure.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,9 +14,10 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
-
-#region  Authentication Configuration
+#region Authentication Configuration
 Log.Information("Configurando autenticación JWT");
 builder.Services.AddAuthentication(options =>
     {
@@ -33,14 +36,12 @@ builder.Services.AddAuthentication(options =>
             ValidateAudience = false,
             ClockSkew = TimeSpan.Zero //Sin tolerencia a tokens expirados
         };
-
     });
 #endregion
 
 #region Identity Configuration
 Log.Information("Configurando Identity");
-builder.Services.AddIdentity<User, Role>().AddEntityFrameworkStores<DataContext>().AddDefaultTokenProviders();
-builder.Services.Configure<IdentityOptions>(options =>
+builder.Services.AddIdentity<User, Role>(options =>
 {
     //Configuración de contraseña
     options.Password.RequireDigit = true;
@@ -51,13 +52,10 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = true;
 
     //Configuración de UserName
-    options.User.AllowedUserNameCharacters = "abcdefghijklmnñpqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@";
-
-    //Configuración de retrys
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-    options.Lockout.MaxFailedAccessAttempts = 5;
-    options.Lockout.AllowedForNewUsers = true;
-});
+    options.User.AllowedUserNameCharacters = builder.Configuration["IdentityConfiguration:AllowedUserNameCharacters"] ?? throw new InvalidOperationException("Los caracteres permitidos para UserName no están configurados.");
+})
+.AddEntityFrameworkStores<DataContext>()
+.AddDefaultTokenProviders();
 #endregion
 
 # region Logging Configuration
@@ -112,8 +110,8 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tienda UCN API V1");
     c.RoutePrefix = string.Empty;
 });
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.MapOpenApi();
-app.UseHttpsRedirection();
 app.UseCors("AllowAllOrigins");
 app.UseAuthentication();
 app.UseAuthorization();
