@@ -45,7 +45,7 @@ Once the above is installed, clone the repository with the command:
 - Replace admin `Rut` with the following format XXXXXXXX-X
 - Replace admin `BirthDate` with the following format YYYY-MM-DD
 - Replace admin `PhoneNumber` with the following format +569 XXXXXXXX
-- Replace admin `Password` and de `RandomUserPassword` with an alphanumeric password with at leat one capital letter and at least one special character.
+- Replace admin `Password` and de `RandomUserPassword` with an alphanumeric password with at least one capital letter and at least one special character.
 - Dont't replace the genders if you don´t need it but, make sure to replace the admin `Gender` with one of these genders.
 - Keep the `AllowedUserNameCharacters` and the `ImageMaxSizeInBytes` configuration of the appsettings.example.json file
 

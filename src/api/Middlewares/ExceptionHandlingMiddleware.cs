@@ -56,16 +56,10 @@ namespace Tienda_UCN_api.src.Infrastructure.Middlewares
         {
             return ex switch
             {
-                UnauthorizedAccessException _ => (
-                    StatusCodes.Status401Unauthorized,
-                    "No autorizado"
-                ),
+                UnauthorizedAccessException _ => (StatusCodes.Status401Unauthorized, "No autorizado"),
                 ArgumentNullException _ => (StatusCodes.Status400BadRequest, "Solicitud inválida"),
                 KeyNotFoundException _ => (StatusCodes.Status404NotFound, "Recurso no encontrado"),
-                InvalidOperationException _ => (
-                    StatusCodes.Status409Conflict,
-                    "Conflicto de operación"
-                ),
+                InvalidOperationException _ => (StatusCodes.Status409Conflict, "Conflicto de operación"),
                 FormatException _ => (StatusCodes.Status400BadRequest, "Formato inválido"),
                 SecurityException _ => (StatusCodes.Status403Forbidden, "Acceso prohibido"),
                 ArgumentException _ => (StatusCodes.Status400BadRequest, "Argumento inválido"),
