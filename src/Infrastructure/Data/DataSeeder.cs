@@ -42,7 +42,12 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
                         };
                     foreach (var role in roles)
                     {
-                        roleManager.CreateAsync(role).GetAwaiter().GetResult();
+                        var result = roleManager.CreateAsync(role).GetAwaiter().GetResult();
+                        if (!result.Succeeded)
+                        {
+                            Log.Error("Error creando rol {RoleName}: {Errors}", role.Name, string.Join(", ", result.Errors.Select(e => e.Description)));
+                            throw new InvalidOperationException($"No se pudo crear el rol {role.Name}.");
+                        }
                     }
                     Log.Information("Roles creados con éxito.");
                 }
@@ -113,10 +118,19 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
                     var adminResult = await userManager.CreateAsync(adminUser, adminPassword);
                     if (adminResult.Succeeded)
                     {
-                        await userManager.AddToRoleAsync(adminUser, adminRole.Name!);
+                        var roleResult = await userManager.AddToRoleAsync(adminUser, adminRole.Name!);
+                        if (!roleResult.Succeeded)
+                        {
+                            Log.Error("Error asignando rol de administrador: {Errors}", string.Join(", ", roleResult.Errors.Select(e => e.Description)));
+                            throw new InvalidOperationException("No se pudo asignar el rol de administrador al usuario.");
+                        }
                         Log.Information("Usuario administrador creado con éxito.");
                     }
-
+                    else
+                    {
+                        Log.Error("Error creando usuario administrador: {Errors}", string.Join(", ", adminResult.Errors.Select(e => e.Description)));
+                        throw new InvalidOperationException("No se pudo crear el usuario administrador.");
+                    }
                     // Creación de usuarios aleatorios
                     var randomPassword = configuration["User:RandomUserPassword"] ?? throw new InvalidOperationException("La contraseña de los usuarios aleatorios no está configurada.");
 
@@ -137,11 +151,16 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
 
                         if (result.Succeeded)
                         {
-                            await userManager.AddToRoleAsync(user, customerRole.Name!);
+                            var roleResult = await userManager.AddToRoleAsync(user, customerRole.Name!);
+                            if (!roleResult.Succeeded)
+                            {
+                                Log.Error("Error asignando rol a {Email}: {Errors}", user.Email, string.Join(", ", roleResult.Errors.Select(e => e.Description)));
+                                throw new InvalidOperationException($"No se pudo asignar el rol de cliente al usuario {user.Email}.");
+                            }
                         }
                         else
                         {
-                            Log.Error("Error asignando rol a {Email}: {Errors}", user.Email, string.Join(", ", result.Errors.Select(e => e.Description)));
+                            Log.Error("Error creando usuario {Email}: {Errors}", user.Email, string.Join(", ", result.Errors.Select(e => e.Description)));
                         }
                     }
                     Log.Information("Usuarios creados con éxito.");
