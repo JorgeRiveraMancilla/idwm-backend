@@ -44,7 +44,7 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
                 // Creamos la clave de seguridad
                 var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_jwtSecret));
 
-                // Creamos las credenciales de firma, ojo la clave debe ser lo suficientemente larga y segura (256 bits mínimo para HMACSHA256)
+                // Creamos las credenciales de firma, ojo la clave debe ser lo suficientemente larga y segura (256 bits mínimo para HMACSHA256) que son 32 caracteres
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
                 // Creamos el token
