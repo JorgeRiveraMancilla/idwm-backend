@@ -35,7 +35,7 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Email, user.Email ?? throw new ArgumentNullException(nameof(user.Email), "El email del usuario no puede ser nulo")),
+                    new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
                     new Claim(ClaimTypes.Role, roleName)
                 };
 
