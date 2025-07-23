@@ -1,20 +1,17 @@
 using System.Security;
 using System.Text.Json;
-using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using Tienda_UCN_api.src.Application.DTO;
+using Tienda_UCN_api.src.Application.DTO.BaseResponse;
 
 namespace Tienda_UCN_api.src.Infrastructure.Middlewares
 {
     /// <summary>
     /// Middleware para el manejo de excepciones en la aplicación.
     /// </summary>
-    public class ExceptionHandlingMiddleware
+    public class ExceptionHandlingMiddleware(RequestDelegate next)
     {
-        private readonly RequestDelegate _next;
-        public ExceptionHandlingMiddleware(RequestDelegate next)
-        {
-            _next = next;
-        }
+        private readonly RequestDelegate _next = next;
 
         /// <summary>
         /// Método que se invoca en cada solicitud HTTP.
@@ -34,39 +31,42 @@ namespace Tienda_UCN_api.src.Infrastructure.Middlewares
 
                 var (statusCode, title) = MapExceptionToStatus(ex);
 
-                var problem = new ProblemDetails
-                {
-                    Status = statusCode,
-                    Title = title,
-                    Detail = ex.Message,
-                    Instance = context.Request.Path,
-                };
+                var error = new ErrorDetail(title, ex.Message);
+                var response = new GenericResponse<object>(title, default, error);
 
                 Log.Error(ex, "Excepción no controlada. Trace ID: {TraceId}", traceId);
-                context.Response.ContentType = "application/problem+json";
+                context.Response.ContentType = "application/json";
                 context.Response.StatusCode = statusCode;
 
                 // Serializamos el objeto ProblemDetails a JSON y lo escribimos en la respuesta
-                var json = JsonSerializer.Serialize(problem);
+                var json = JsonSerializer.Serialize(
+                    response,
+                    new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }
+                );
                 // Acá se escribe la respuesta al cliente
                 await context.Response.WriteAsync(json);
             }
         }
 
-
-        private (int, string) MapExceptionToStatus(Exception ex)
+        private static (int, string) MapExceptionToStatus(Exception ex)
         {
             return ex switch
             {
-                UnauthorizedAccessException _ => (StatusCodes.Status401Unauthorized, "Unauthorized"),
-                ArgumentNullException _ => (StatusCodes.Status400BadRequest, "Bad Request"),
-                KeyNotFoundException _ => (StatusCodes.Status404NotFound, "Not Found"),
-                InvalidOperationException _ => (StatusCodes.Status409Conflict, "Conflict"),
-                FormatException _ => (StatusCodes.Status400BadRequest, "Bad Request"),
-                SecurityException _ => (StatusCodes.Status403Forbidden, "Forbidden"),
-                ArgumentException _ => (StatusCodes.Status400BadRequest, "Bad Request"),
-                JsonException _ => (StatusCodes.Status400BadRequest, "Bad Request"),
-                _ => (StatusCodes.Status500InternalServerError, "Internal Server Error")
+                UnauthorizedAccessException _ => (
+                    StatusCodes.Status401Unauthorized,
+                    "No autorizado"
+                ),
+                ArgumentNullException _ => (StatusCodes.Status400BadRequest, "Solicitud inválida"),
+                KeyNotFoundException _ => (StatusCodes.Status404NotFound, "Recurso no encontrado"),
+                InvalidOperationException _ => (
+                    StatusCodes.Status409Conflict,
+                    "Conflicto de operación"
+                ),
+                FormatException _ => (StatusCodes.Status400BadRequest, "Formato inválido"),
+                SecurityException _ => (StatusCodes.Status403Forbidden, "Acceso prohibido"),
+                ArgumentException _ => (StatusCodes.Status400BadRequest, "Argumento inválido"),
+                JsonException _ => (StatusCodes.Status400BadRequest, "JSON inválido"),
+                _ => (StatusCodes.Status500InternalServerError, "Error interno del servidor"),
             };
         }
     }
