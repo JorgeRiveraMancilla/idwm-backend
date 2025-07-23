@@ -33,7 +33,7 @@ namespace Tienda_UCN_api.src.api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
         {
-            var token = await _userService.Login(loginDTO);
+            var token = await _userService.Login(loginDTO, HttpContext);
             return Success(new { Token = token }, "Inicio de sesión exitoso");
         }
     }

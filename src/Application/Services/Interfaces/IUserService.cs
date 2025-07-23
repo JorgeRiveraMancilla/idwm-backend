@@ -10,8 +10,9 @@ namespace Tienda_UCN_api.src.Application.Services.Interfaces
         /// <summary>
         /// Inicia sesión con el usuario proporcionado.
         /// </summary>
-        /// <param name="loginDTO">DTO que contiene las credenciales del usuario.</param
+        /// <param name="loginDTO">DTO que contiene las credenciales del usuario.</param>
+        /// <param name="httpContext">El contexto HTTP actual.</param>
         /// <returns>Un string que representa el token JWT generado.</returns>
-        Task<string> Login(LoginDTO loginDTO);
+        Task<string> Login(LoginDTO loginDTO, HttpContext httpContext);
     }
 }
