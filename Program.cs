@@ -41,8 +41,7 @@ builder.Services.AddAuthentication(options =>
 
 #region Identity Configuration
 Log.Information("Configurando Identity");
-builder.Services.AddIdentity<User, Role>().AddEntityFrameworkStores<DataContext>().AddDefaultTokenProviders();
-builder.Services.Configure<IdentityOptions>(options =>
+builder.Services.AddIdentity<User, Role>(options =>
 {
     //Configuración de contraseña
     options.Password.RequireDigit = true;
@@ -53,13 +52,10 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = true;
 
     //Configuración de UserName
-    options.User.AllowedUserNameCharacters = "abcdefghijklmnñpqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@";
-
-    //Configuración de retrys
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-    options.Lockout.MaxFailedAccessAttempts = 5;
-    options.Lockout.AllowedForNewUsers = true;
-});
+    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@-._+";
+})
+.AddEntityFrameworkStores<DataContext>()
+.AddDefaultTokenProviders();
 #endregion
 
 # region Logging Configuration

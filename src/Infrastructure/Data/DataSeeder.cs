@@ -26,6 +26,7 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
                 var context = scope.ServiceProvider.GetRequiredService<DataContext>();
                 var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
                 await context.Database.EnsureCreatedAsync();
                 await context.Database.MigrateAsync();
 
@@ -39,8 +40,10 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
                             new Role { Name = "Admin", NormalizedName = "ADMIN" },
                             new Role { Name = "Customer", NormalizedName = "CUSTOMER" }
                         };
-                    await context.Roles.AddRangeAsync(roles);
-                    await context.SaveChangesAsync();
+                    foreach (var role in roles)
+                    {
+                        roleManager.CreateAsync(role).GetAwaiter().GetResult();
+                    }
                     Log.Information("Roles creados con éxito.");
                 }
 
@@ -126,22 +129,22 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
                         .RuleFor(u => u.Rut, f => RandomRut())
                         .RuleFor(u => u.BirthDate, f => f.Date.Past(30, DateTime.Now.AddYears(-18)))
                         .RuleFor(u => u.PhoneNumber, f => f.Phone.PhoneNumber())
-                        .FinishWith((f, u) =>
-                        {
-                            u.UserName = u.Email;
-                        });
+                        .RuleFor(u => u.UserName, (f, u) => u.Email);
                     var users = userFaker.Generate(99);
                     foreach (var user in users)
                     {
-                        await userManager.CreateAsync(user, randomPassword);
                         var result = await userManager.CreateAsync(user, randomPassword);
 
                         if (result.Succeeded)
                         {
-                            var roleResult = await userManager.AddToRoleAsync(user, customerRole.Name!);
+                            await userManager.AddToRoleAsync(user, customerRole.Name!);
                         }
-                        Log.Information("Usuarios creados con éxito.");
+                        else
+                        {
+                            Log.Error("Error asignando rol a {Email}: {Errors}", user.Email, string.Join(", ", result.Errors.Select(e => e.Description)));
+                        }
                     }
+                    Log.Information("Usuarios creados con éxito.");
                 }
 
                 // Creación de productos
