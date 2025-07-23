@@ -31,18 +31,22 @@ namespace Tienda_UCN_api.src.Infrastructure.Middlewares
 
                 var (statusCode, title) = MapExceptionToStatus(ex);
 
-                var error = new ErrorDetail(title, ex.Message);
-                var response = new GenericResponse<object>(title, default, error);
+                // Creamos un objeto ProblemDetails para la respuesta
+                ErrorDetail error = new ErrorDetail(title, ex.Message);
 
                 Log.Error(ex, "Excepción no controlada. Trace ID: {TraceId}", traceId);
+
+                // Configuramos la respuesta HTTP como JSON
                 context.Response.ContentType = "application/json";
+                // Establecemos el código de estado HTTP adecuado
                 context.Response.StatusCode = statusCode;
 
                 // Serializamos el objeto ProblemDetails a JSON y lo escribimos en la respuesta
                 var json = JsonSerializer.Serialize(
-                    response,
+                    error,
                     new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }
                 );
+
                 // Acá se escribe la respuesta al cliente
                 await context.Response.WriteAsync(json);
             }
