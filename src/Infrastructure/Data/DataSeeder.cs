@@ -142,7 +142,7 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
                         .RuleFor(u => u.Gender, f => f.PickRandom(genders))
                         .RuleFor(u => u.Rut, f => RandomRut())
                         .RuleFor(u => u.BirthDate, f => f.Date.Past(30, DateTime.Now.AddYears(-18)))
-                        .RuleFor(u => u.PhoneNumber, f => f.Phone.PhoneNumber())
+                        .RuleFor(u => u.PhoneNumber, f => RandomPhoneNumber())
                         .RuleFor(u => u.UserName, (f, u) => u.Email);
                     var users = userFaker.Generate(99);
                     foreach (var user in users)
@@ -208,6 +208,18 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
             var rut = faker.Random.Int(1000000, 99999999).ToString();
             var dv = faker.Random.Int(0, 9).ToString();
             return $"{rut}-{dv}";
+        }
+
+        /// <summary>
+        /// Método para generar un número de teléfono chileno aleatorio.
+        /// </summary>
+        /// <returns>Un número de teléfono en formato "+569 XXXXXXXX".</returns>
+        private static string RandomPhoneNumber()
+        {
+            var faker = new Faker();
+            string firstPartNumber = faker.Random.Int(1000, 9999).ToString();
+            string secondPartNumber = faker.Random.Int(1000, 9999).ToString();
+            return $"+569 {firstPartNumber}{secondPartNumber}";
         }
     }
 }
