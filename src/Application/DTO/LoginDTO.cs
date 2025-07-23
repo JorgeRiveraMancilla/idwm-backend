@@ -11,7 +11,7 @@ namespace Tienda_UCN_api.src.Application.DTO
         /// Email del usuario.
         /// </summary>
         [Required(ErrorMessage = "El email es requerido.")]
-        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "El Correo electrónico no es válido.")]
+        [EmailAddress(ErrorMessage = "El Correo electrónico no es válido.")]
         public required string Email { get; set; }
 
         /// <summary>
