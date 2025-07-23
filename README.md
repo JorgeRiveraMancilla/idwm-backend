@@ -1,10 +1,10 @@
-# Ecommerce Platform 
+# Ecommerce Platform
 
-The objective of this project is to implement a REST API using ASP.NET Core 9 and SQLite to create a ecommerce platform called Tienda UCN. It includes user authentication with JWT, profile, products and cart management. 
+The objective of this project is to implement a REST API using ASP.NET Core 9 and SQLite to create a ecommerce platform called Tienda UCN. It includes user authentication with JWT, profile, products and cart management.
 
-The Repository Pattern is implemented to ensure a clean architecture, separation used for of concerns, and easier maintainability. 
+The Repository Pattern is implemented to ensure a clean architecture, separation used for of concerns, and easier maintainability.
 
-Cloudinary is external media storage, allowing efficient handling of images and other assets. 
+Cloudinary is external media storage, allowing efficient handling of images and other assets.
 
 The system is designed for scalability, security, and high performance.
 
@@ -37,7 +37,17 @@ Once the above is installed, clone the repository with the command:
 ```bash
     cp appsettings.example.json appsettings.json
 ```
-  Then replace the variables with your credentials
+  Then replace the variables with your credentials:
+
+**Required configuration:**
+- Replace `JWTSecret` with a strong secret key with at least 32 characters long.
+- Replace Cloudinary credentials with your actual values
+- Replace admin `Rut` with the following format XXXXXXXX-X
+- Replace admin `BirthDate` with the following format YYYY-MM-DD
+- Replace admin `PhoneNumber` with the following format +569 XXXXXXXX
+- Replace admin `Password` and de `RandomUserPassword` with an alphanumeric password with at leat one capital letter and at least one special character.
+- Dont't replace the genders if you don´t need it but, make sure to replace the admin `Gender` with one of these genders.
+- Keep the `AllowedUserNameCharacters` and the `ImageMaxSizeInBytes` configuration of the appsettings.example.json file
 
 5. Restore the project dependencies in the terminal:
 ```bash
@@ -47,7 +57,7 @@ Once the above is installed, clone the repository with the command:
 ```bash
     dotnet run
 ```
- 
+
 # Usage
 You can test the API using the Postman collection file included in this repository: Tienda UCN.postman_collection.json.
 
