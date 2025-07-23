@@ -14,10 +14,12 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
     {
         //Cargamos la configuración desde appsettings.json
         private readonly IConfiguration _configuration;
+        private readonly string _jwtSecret;
 
         public TokenService(IConfiguration configuration)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration), "La configuración no puede ser nula");
+            _jwtSecret = _configuration["JWTSecret"] ?? throw new InvalidOperationException("La clave secreta JWT no está configurada.");
         }
 
         /// <summary>
@@ -39,11 +41,8 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
                     new Claim(ClaimTypes.Role, roleName)
                 };
 
-                // Extraemos la clave desde la configuración de appsettings
-                string jwtSecret = _configuration["JWTSecret"] ?? throw new InvalidOperationException("La clave secreta JWT no está configurada.");
-
                 // Creamos la clave de seguridad
-                var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtSecret));
+                var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_jwtSecret));
 
                 // Creamos las credenciales de firma, ojo la clave debe ser lo suficientemente larga y segura (256 bits mínimo para HMACSHA256)
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
