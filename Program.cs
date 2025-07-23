@@ -6,6 +6,7 @@ using Tienda_UCN_api.src.Application.Services.Implements;
 using Tienda_UCN_api.src.Application.Services.Interfaces;
 using Tienda_UCN_api.src.Domain.Models;
 using Tienda_UCN_api.src.Infrastructure.Data;
+using Tienda_UCN_api.src.Infrastructure.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,8 +15,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
-#region  Authentication Configuration
+#region Authentication Configuration
 Log.Information("Configurando autenticación JWT");
 builder.Services.AddAuthentication(options =>
     {
@@ -34,7 +36,6 @@ builder.Services.AddAuthentication(options =>
             ValidateAudience = false,
             ClockSkew = TimeSpan.Zero //Sin tolerencia a tokens expirados
         };
-
     });
 #endregion
 
@@ -113,8 +114,8 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tienda UCN API V1");
     c.RoutePrefix = string.Empty;
 });
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.MapOpenApi();
-app.UseHttpsRedirection();
 app.UseCors("AllowAllOrigins");
 app.UseAuthentication();
 app.UseAuthorization();

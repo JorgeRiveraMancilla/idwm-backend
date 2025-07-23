@@ -12,7 +12,7 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
     /// </summary>
     public class TokenService : ITokenService
     {
-
+        //Cargamos la configuración desde appsettings.json
         private readonly IConfiguration _configuration;
 
         public TokenService(IConfiguration configuration)
@@ -24,10 +24,11 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
         /// Genera un token JWT para el usuario proporcionado.
         /// </summary>
         /// <param name="user">El usuario para el cual se generará el token.</param>
+        /// <param name="rememberMe">Indica si se debe recordar al usuario.</param>
+        /// <param name="roleName">El nombre del rol del usuario.</param>
         /// <returns>Un string que representa el token JWT generado.</returns>
-        public string GenerateToken(User user)
+        public string GenerateToken(User user, string roleName, bool rememberMe = false)
         {
-
             try
             {
                 // Listamos los claims que queremos incluir en el token (solo las necesarias, no todas las propiedades del usuario)
@@ -35,7 +36,7 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Email, user.Email ?? throw new ArgumentNullException(nameof(user.Email), "El email del usuario no puede ser nulo")),
-                    new Claim(ClaimTypes.Role, user.Role?.Name ?? throw new ArgumentNullException(nameof(user.Role), "El rol del usuario no puede ser nulo"))
+                    new Claim(ClaimTypes.Role, roleName)
                 };
 
                 // Extraemos la clave desde la configuración de appsettings
@@ -50,7 +51,7 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
                 // Creamos el token
                 var token = new JwtSecurityToken(
                     claims: claims,
-                    expires: DateTime.Now.AddHours(24),
+                    expires: DateTime.Now.AddHours(rememberMe ? 24 : 1), // Si RememberMe es true, el token expira en 24 horas, sino en 1 hora
                     signingCredentials: creds
                 );
 
