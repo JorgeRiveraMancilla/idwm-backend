@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Sqlite.Infrastructure.Internal;
 using Serilog;
+using Tienda_UCN_api.src.Application.Services.Implements;
+using Tienda_UCN_api.src.Application.Services.Interfaces;
 using Tienda_UCN_api.src.Domain.Models;
 using Tienda_UCN_api.src.Infrastructure.Data;
 
@@ -12,7 +13,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 #region  Authentication Configuration
 Log.Information("Configurando autenticación JWT");
