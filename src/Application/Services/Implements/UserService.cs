@@ -29,7 +29,7 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
         /// <param name="loginDTO">DTO que contiene las credenciales del usuario.</param>
         /// <param name="httpContext">El contexto HTTP actual.</param>
         /// <returns>Un string que representa el token JWT generado.</returns>
-        public async Task<string> Login(LoginDTO loginDTO, HttpContext httpContext)
+        public async Task<string> LoginAsync(LoginDTO loginDTO, HttpContext httpContext)
         {
             var ipAddress = httpContext.Connection.RemoteIpAddress?.ToString() ?? "IP desconocida";
             var user = await _userManager.FindByEmailAsync(loginDTO.Email);
