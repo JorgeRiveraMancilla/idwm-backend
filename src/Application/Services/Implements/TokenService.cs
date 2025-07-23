@@ -37,7 +37,7 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
+                    new Claim(ClaimTypes.Email, user.Email!),
                     new Claim(ClaimTypes.Role, roleName)
                 };
 

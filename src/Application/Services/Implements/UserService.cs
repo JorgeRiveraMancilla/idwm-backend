@@ -14,13 +14,10 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
         private readonly ITokenService _tokenService;
         private readonly UserManager<User> _userManager;
 
-        private readonly RoleManager<Role> _roleManager;
-
-        public UserService(ITokenService tokenService, UserManager<User> userManager, RoleManager<Role> roleManager)
+        public UserService(ITokenService tokenService, UserManager<User> userManager)
         {
             _tokenService = tokenService;
             _userManager = userManager;
-            _roleManager = roleManager;
         }
 
         /// <summary>
@@ -39,7 +36,7 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
                 Log.Warning($"Intento de inicio de sesión fallido para el usuario: {loginDTO.Email} desde la IP: {ipAddress}");
                 throw new UnauthorizedAccessException("Credenciales inválidas.");
             }
-            string roleName = (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? throw new UnauthorizedAccessException("El usuario no tiene un rol asignado.");
+            string roleName = (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? throw new InvalidOperationException("El usuario no tiene un rol asignado.");
 
             var result = await _userManager.CheckPasswordAsync(user, loginDTO.Password);
             if (!result)
