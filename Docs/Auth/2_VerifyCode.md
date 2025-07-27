@@ -16,12 +16,12 @@ sequenceDiagram
 
     alt User not found
         Note over API: if (user == null)
-        API-->>C: 400 Bad Request<br/>{"message": "Usuario no encontrado", "data": null}
+        API-->>C: 404 Not Found<br/>{"message": "Usuario no encontrado", "data": null}
     end
 
     alt Email already verified
         Note over API: if (user.EmailConfirmed == true)
-        API-->>C: 400 Bad Request<br/>{"message": "El email ya está verificado", "data": null}
+        API-->>C: 409 Conflict<br/>{"message": "El email ya está verificado", "data": null}
     end
 
     Note over API: var codeType = CodeType.VerifyEmailCode
@@ -62,7 +62,7 @@ sequenceDiagram
     VCR-->>-API: bool success
 
     API->>+RS: POST https://api.resend.com/emails
-    Note over API,RS: Welcome Email<br/>Authorization: Bearer re_api_key<br/>{<br/>"from": "Tienda UCN <noreply@tiendaucn.cl>",<br/>"to": ["user@example.com"],<br/>"subject": "¡Bienvenido a Tienda UCN!",<br/>"html": "Welcome template"<br/>}
+    Note over API,RS: Welcome Email<br/>Authorization: Bearer re_api_key<br/>{<br/>"from": "<onboarding@resend.dev>",<br/>"to": ["user@example.com"],<br/>"subject": "¡Bienvenido a Tienda UCN!",<br/>"html": "Welcome template"<br/>}
 
     RS-->>-API: 200 OK
 

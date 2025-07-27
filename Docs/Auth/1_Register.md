@@ -16,7 +16,7 @@ sequenceDiagram
 
     alt Email already exists
         Note over API: if (emailExists == true)
-        API-->>C: 400 Bad Request<br/>{"message": "El email ya está registrado", "data": null}
+        API-->>C: 409 Conflict<br/>{"message": "El email ya está registrado", "data": null}
     end
 
     API->>+UR: _userRepository.ExistsByRutAsync(body.Rut)
@@ -25,7 +25,7 @@ sequenceDiagram
 
     alt RUT already exists
         Note over API: if (rutExists == true)
-        API-->>C: 400 Bad Request<br/>{"message": "El RUT ya está registrado", "data": null}
+        API-->>C: 409 Conflict<br/>{"message": "El RUT ya está registrado", "data": null}
     end
 
     API->>+UR: _userRepository.CreateAsync(body)
@@ -37,9 +37,9 @@ sequenceDiagram
     VCR-->>-API: VerificationCode createdCode
 
     API->>+RS: POST https://api.resend.com/emails
-    Note over API,RS: Authorization: Bearer re_api_key<br/>{<br/>"from": "Tienda UCN <noreply@tiendaucn.cl>",<br/>"to": ["user@example.com"],<br/>"subject": "Verifica tu cuenta - Tienda UCN",<br/>"html": "Template con código: {code}"<br/>}
+    Note over API,RS: Authorization: Bearer re_api_key<br/>{<br/>"from": "<onboarding@resend.dev>",<br/>"to": [body.Email],<br/>"subject": "Verifica tu cuenta - Tienda UCN",<br/>"html": "Template con código: {code}"<br/>}
 
-    RS-->>-API: 200 OK<br/>{"id": "email_id_123"}
+    RS-->>-API: 200 OK<br/>{"id": "email_id"}
 
     API-->>-C: 200 OK<br/>{"message": "Usuario registrado. Revisa tu email.", "data": null}
 ```

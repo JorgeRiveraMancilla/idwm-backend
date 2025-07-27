@@ -45,7 +45,7 @@ sequenceDiagram
     VCR-->>-API: VerificationCode verificationCode
 
     API->>+RS: POST https://api.resend.com/emails
-    Note over API,RS: New Verification Email<br/>Authorization: Bearer re_api_key<br/>{<br/>"from": "Tienda UCN <noreply@tiendaucn.cl>",<br/>"to": ["user@example.com"],<br/>"subject": "Nuevo código de verificación - Tienda UCN",<br/>"html": "Template con nuevo código: {newCode}"<br/>}
+    Note over API,RS: New Verification Email<br/>Authorization: Bearer re_api_key<br/>{<br/>"from": "<onboarding@resend.dev>",<br/>"to": ["user@example.com"],<br/>"subject": "Nuevo código de verificación - Tienda UCN",<br/>"html": "Template con nuevo código: {newCode}"<br/>}
 
     RS-->>-API: 200 OK<br/>{"id": "email_id_456"}
 
