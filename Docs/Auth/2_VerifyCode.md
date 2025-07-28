@@ -39,7 +39,6 @@ sequenceDiagram
         API->>+VCR: _verificationCodeRepository.IncrementAttemptAsync(verificationCode.Id)
         VCR-->>-API: int attemptCount
 
-
         alt Maximum 5 attempts reached
             Note over API: if (attemptCount >= 5)
 
@@ -52,7 +51,13 @@ sequenceDiagram
             API-->>C: 400 Bad Request<br/>{"message": "Demasiados intentos fallidos. Cuenta eliminada.", "data": null}
         end
 
-        API-->>C: 400 Bad Request<br/>{"message": "Código inválido o expirado", "data": null}
+        alt Code expired
+            Note over API: if (DateTime.UtcNow >= verificationCode.ExpiryDate)
+            API-->>C: 400 Bad Request<br/>{"message": "Código expirado", "data": null}
+        else Code invalid
+            Note over API: else
+            API-->>C: 400 Bad Request<br/>{"message": "Código inválido", "data": null}
+        end
     end
 
     API->>+UR: _userRepository.ConfirmEmailAsync(user.Id)
