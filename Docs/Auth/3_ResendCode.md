@@ -30,13 +30,13 @@ sequenceDiagram
     VCR-->>-API: VerificationCode lastCode
 
     alt Rate limited
-        Note over API: if (lastCode.CreatedAt.AddMinutes(1) > DateTime.UtcNow)
-        Note over API: var remainingSeconds = 60 - (DateTime.UtcNow - lastCode.CreatedAt).TotalSeconds
+        Note over API: if (lastCode.CreatedAt.AddSeconds(SECONDS_TO_EXPIRY) > DateTime.UtcNow)
+        Note over API: var remainingSeconds = SECONDS_TO_EXPIRY - (DateTime.UtcNow - lastCode.CreatedAt).TotalSeconds
 
         API-->>C: 429 Too Many Requests<br/>Retry-After: {remainingSeconds}<br/>{"message": "Debes esperar antes de solicitar otro código", "data": null}
     end
 
-    Note over API: var newCode = Random.Next(100000, 999999)<br/>var newExpiryDate = DateTime.UtcNow.AddMinutes(1)
+    Note over API: var newCode = Random.Next(100000, 999999)<br/>var newExpiryDate = DateTime.UtcNow.AddSeconds(SECONDS_TO_EXPIRY)
 
     API->>+VCR: _verificationCodeRepository.UpdateAsync(lastCode.Id, newCode, newExpiryDate)
     VCR-->>-API: VerificationCode updatedCode
