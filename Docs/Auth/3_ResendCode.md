@@ -36,13 +36,10 @@ sequenceDiagram
         API-->>C: 429 Too Many Requests<br/>Retry-After: {remainingSeconds}<br/>{"message": "Debes esperar antes de solicitar otro código", "data": null}
     end
 
-    API->>+VCR: _verificationCodeRepository.DeleteByUserAndTypeAsync(user.Id, codeType)
-    VCR-->>-API: bool success
+    Note over API: var newCode = Random.Next(100000, 999999)<br/>var newExpiryDate = DateTime.UtcNow.AddMinutes(1)
 
-    Note over API: var newCode = Random.Next(100000, 999999)
-
-    API->>+VCR: _verificationCodeRepository.CreateAsync(user.Id, newCode, codeType)
-    VCR-->>-API: VerificationCode verificationCode
+    API->>+VCR: _verificationCodeRepository.UpdateAsync(lastCode.Id, newCode, newExpiryDate)
+    VCR-->>-API: VerificationCode updatedCode
 
     API->>+RS: POST https://api.resend.com/emails
     Note over API,RS: New Verification Email<br/>Authorization: Bearer re_api_key<br/>{<br/>"from": "<onboarding@resend.dev>",<br/>"to": ["user@example.com"],<br/>"subject": "Nuevo código de verificación - Tienda UCN",<br/>"html": "Template con nuevo código: {newCode}"<br/>}
