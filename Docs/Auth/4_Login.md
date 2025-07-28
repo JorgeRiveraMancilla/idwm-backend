@@ -20,7 +20,7 @@ sequenceDiagram
 
     alt Email not confirmed
         Note over API: if (user.EmailConfirmed == false)
-        API-->>C: 401 Unauthorized<br/>{"message": "Debes verificar tu email antes de iniciar sesión", "data": null}
+        API-->>C: 403 Forbidden<br/>{"message": "Debes verificar tu email antes de iniciar sesión", "data": null}
     end
 
     API->>+UR: _userRepository.VerifyPasswordAsync(user, body.Password)
