@@ -7,6 +7,8 @@ using Tienda_UCN_api.src.Application.Services.Interfaces;
 using Tienda_UCN_api.src.Domain.Models;
 using Tienda_UCN_api.src.Infrastructure.Data;
 using Tienda_UCN_api.src.Infrastructure.Middlewares;
+using Tienda_UCN_api.src.Infrastructure.Repositories.Implements;
+using Tienda_UCN_api.src.Infrastructure.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +18,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 #region Authentication Configuration
 Log.Information("Configurando autenticación JWT");
