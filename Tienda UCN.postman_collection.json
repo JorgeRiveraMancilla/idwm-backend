@@ -67,7 +67,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"user@example.com\",\r\n  \"password\": \"QYAw2hKBb5YBB1cD6j10\",\r\n  \"confirmPassword\": \"string\",\r\n  \"rut\": \"58884422-k\",\r\n  \"firstName\": \"NmNEIK--cVErAIJRFfva\",\r\n  \"lastName\": \"odxhkRkTeXOSoaODxUce\",\r\n  \"birthDate\": \"2025-07-29T16:42:28.961Z\",\r\n  \"phoneNumber\": \"683414600\",\r\n  \"gender\": \"Femenino\"\r\n}",
+							"raw": "{\r\n  \"email\": \"ignacio.alfonso2002@gmail.com\",\r\n  \"password\": \"Hola1234!\",\r\n  \"confirmPassword\": \"Hola1234!\",\r\n  \"rut\": \"21179837-8\",\r\n  \"firstName\": \"NmNEIK--cVErAIJRFfva\",\r\n  \"lastName\": \"odxhkRkTeXOSoaODxUce\",\r\n  \"birthDate\": \"2002-07-29T16:42:28.961Z\",\r\n  \"phoneNumber\": \"683414600\",\r\n  \"gender\": \"Femenino\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -86,12 +86,35 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Verify Email",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"ignacio.alfonso2002@gmail.com\",\r\n  \"verificationCode\": \"4429602\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/verify-email",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"verify-email"
+							]
+						}
+					},
+					"response": []
 				}
 			]
-		},
-		{
-			"name": "Verification Code",
-			"item": []
 		},
 		{
 			"name": "Cart",
