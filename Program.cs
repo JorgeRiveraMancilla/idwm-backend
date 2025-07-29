@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Resend;
 using Serilog;
 using Tienda_UCN_api.src.Application.Services.Implements;
 using Tienda_UCN_api.src.Application.Services.Interfaces;
@@ -9,6 +10,8 @@ using Tienda_UCN_api.src.Infrastructure.Data;
 using Tienda_UCN_api.src.Infrastructure.Middlewares;
 using Tienda_UCN_api.src.Infrastructure.Repositories.Implements;
 using Tienda_UCN_api.src.Infrastructure.Repositories.Interfaces;
+using Tienda_UCN_api.Src.Infrastructure.Repositories.Implements;
+using Tienda_UCN_api.Src.Infrastructure.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +22,18 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IVerificationCodeRepository, VerificationCodeRepository>();
+
+#region Email Service Configuration
+Log.Information("Configurando servicio de Email");
+builder.Services.AddOptions();
+builder.Services.AddHttpClient<ResendClient>();
+builder.Services.Configure<ResendClientOptions>(o =>
+{
+    o.ApiToken = builder.Configuration["ResendAPIKey"] ?? throw new InvalidOperationException("El token de API de Resend no está configurado.");
+});
+builder.Services.AddTransient<IResend, ResendClient>();
+#endregion
 
 #region Authentication Configuration
 Log.Information("Configurando autenticación JWT");
