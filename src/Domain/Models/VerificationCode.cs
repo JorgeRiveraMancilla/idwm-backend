@@ -29,9 +29,9 @@ namespace Tienda_UCN_api.Src.Domain.Models
         public int AttemptCount { get; set; } = 0;
 
         /// <summary>
-        /// Fecha y hora de expiración del código de verificación.
+        /// Fecha y hora de expiración del código de verificación (3 minutos por defecto).
         /// </summary>
-        public required DateTime ExpiryDate { get; set; }
+        public DateTime ExpiryDate { get; set; } = DateTime.UtcNow.AddSeconds(180);
 
         /// <summary>
         /// Identificador único del usuario asociado al código de verificación.
@@ -41,6 +41,6 @@ namespace Tienda_UCN_api.Src.Domain.Models
         /// <summary>
         /// Fecha y hora en que se creó el código de verificación.
         /// </summary>
-        public required DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

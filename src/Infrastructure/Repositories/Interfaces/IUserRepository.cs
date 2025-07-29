@@ -2,6 +2,9 @@ using Tienda_UCN_api.src.Domain.Models;
 
 namespace Tienda_UCN_api.src.Infrastructure.Repositories.Interfaces
 {
+    /// <summary>
+    /// Interfaz para el repositorio de usuarios.
+    /// </summary>
     public interface IUserRepository
     {
         /// <summary>
@@ -17,6 +20,20 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Interfaces
         /// <param name="email">Correo electrónico del usuario</param>
         /// <returns>Usuario encontrado o nulo</returns>
         Task<User?> GetByEmailAsync(string email);
+
+        /// <summary>
+        /// Verifica si un usuario existe por su correo electrónico.
+        /// </summary>
+        /// <param name="email">Correo electrónico del usuario</param>
+        /// <returns>True si el usuario existe, false en caso contrario</returns>
+        Task<bool> ExistsByEmailAsync(string email);
+
+        /// <summary>
+        /// Verifica si un usuario existe por su RUT.
+        /// </summary>
+        /// <param name="rut">RUT del usuario</param>
+        /// <returns>True si el usuario existe, false en caso contrario</returns>
+        Task<bool> ExistsByRutAsync(string rut);
 
         /// <summary>
         /// Obtiene un usuario por su RUT.

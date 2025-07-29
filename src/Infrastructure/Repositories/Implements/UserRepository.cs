@@ -6,6 +6,9 @@ using Tienda_UCN_api.src.Infrastructure.Repositories.Interfaces;
 
 namespace Tienda_UCN_api.src.Infrastructure.Repositories.Implements
 {
+    /// <summary>
+    /// Implementación del repositorio de usuarios.
+    /// </summary>
     public class UserRepository : IUserRepository
     {
         private readonly DataContext _context;
@@ -49,6 +52,26 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Implements
         {
             var result = await _userManager.CreateAsync(user);
             return result.Succeeded;
+        }
+
+        /// <summary>
+        /// Verifica si un usuario existe por su correo electrónico.
+        /// </summary>
+        /// <param name="email">Correo electrónico del usuario</param>
+        /// <returns>True si el usuario existe, false en caso contrario</returns>
+        public async Task<bool> ExistsByEmailAsync(string email)
+        {
+            return await _context.Users.AnyAsync(u => u.Email == email);
+        }
+
+        /// <summary>
+        /// Verifica si un usuario existe por su RUT.
+        /// </summary>
+        /// <param name="rut">RUT del usuario</param>
+        /// <returns>True si el usuario existe, false en caso contrario</returns>
+        public async Task<bool> ExistsByRutAsync(string rut)
+        {
+            return await _context.Users.AnyAsync(u => u.Rut == rut);
         }
 
         /// <summary>
