@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Tienda_UCN_api.src.Infrastructure.Data;
 using Tienda_UCN_api.Src.Domain.Models;
 using Tienda_UCN_api.Src.Infrastructure.Repositories.Interfaces;
@@ -67,6 +66,20 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
             return newCount;
         }
 
-
+        /// <summary>
+        /// Actualiza un código de verificación existente.
+        /// </summary>
+        /// <param name="verificationCode">El código de verificación a actualizar.</param>
+        /// <returns>El código de verificación actualizado.</returns>
+        public async Task<VerificationCode?> UpdateVerificationCodeAsync(VerificationCode verificationCode)
+        {
+            await _context.VerificationCodes
+                .Where(vc => vc.Id == verificationCode.Id)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(vc => vc.Code, verificationCode.Code)
+                    .SetProperty(vc => vc.AttemptCount, verificationCode.AttemptCount)
+                    .SetProperty(vc => vc.ExpiryDate, verificationCode.ExpiryDate));
+            return await _context.VerificationCodes.AsNoTracking().FirstOrDefaultAsync(vc => vc.Id == verificationCode.Id);
+        }
     }
 }

@@ -1,9 +1,7 @@
-using Microsoft.AspNetCore.Identity;
 using Serilog;
 using Tienda_UCN_api.src.Application.DTO;
 using Tienda_UCN_api.src.Application.Services.Interfaces;
 using Tienda_UCN_api.src.Domain.Models;
-using Tienda_UCN_api.src.Infrastructure.Repositories.Implements;
 using Tienda_UCN_api.src.Infrastructure.Repositories.Interfaces;
 using Tienda_UCN_api.Src.Application.DTO.AuthDTO;
 using Tienda_UCN_api.Src.Application.Services.Interfaces;
@@ -121,6 +119,41 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
             await _emailService.SendVerificationCodeEmailAsync(registerDTO.Email, createdVerificationCode.Code);
             Log.Information($"Se ha enviado un código de verificación al correo electrónico: {registerDTO.Email}");
             return "Se ha enviado un código de verificación a su correo electrónico.";
+        }
+
+        /// <summary>
+        /// Reenvía el código de verificación al correo electrónico del usuario.
+        /// </summary>
+        /// <param name="resendEmailVerificationCodeDTO">DTO que contiene el correo electrónico del usuario.</param>
+        /// <returns>Un string que representa el mensaje de éxito del reenvío.</returns>
+        public async Task<string> ResendEmailVerificationCodeAsync(ResendEmailVerificationCodeDTO resendEmailVerificationCodeDTO)
+        {
+            User? user = await _userRepository.GetByEmailAsync(resendEmailVerificationCodeDTO.Email);
+            if (user == null)
+            {
+                Log.Warning($"El usuario con el correo {resendEmailVerificationCodeDTO.Email} no existe.");
+                throw new KeyNotFoundException("El usuario no existe.");
+            }
+            if (user.EmailConfirmed)
+            {
+                Log.Warning($"El usuario con el correo {resendEmailVerificationCodeDTO.Email} ya ha verificado su correo electrónico.");
+                throw new InvalidOperationException("El correo electrónico ya ha sido verificado.");
+            }
+            VerificationCode? verificationCode = await _verificationCodeRepository.GetLatestVerificationCodeByUserIdAsync(user.Id, CodeType.EmailVerification);
+            if (verificationCode!.CreatedAt.AddSeconds(180) > DateTime.UtcNow)
+            {
+                int remainingSeconds = (int)(verificationCode.CreatedAt.AddSeconds(180) - DateTime.UtcNow).TotalSeconds;
+                Log.Warning($"El usuario {resendEmailVerificationCodeDTO.Email} ha solicitado un reenvío del código de verificación antes de los 3 minutos.");
+                throw new TimeoutException($"Debe esperar {remainingSeconds} segundos para solicitar un nuevo código de verificación.");
+            }
+            string newCode = new Random().Next(100000, 999999).ToString();
+            verificationCode.Code = newCode;
+            verificationCode.ExpiryDate = DateTime.UtcNow.AddMinutes(3);
+            await _verificationCodeRepository.UpdateVerificationCodeAsync(verificationCode);
+            Log.Information($"Nuevo código de verificación generado para el usuario: {resendEmailVerificationCodeDTO.Email} - Código: {newCode}");
+            await _emailService.SendVerificationCodeEmailAsync(user.Email!, newCode);
+            Log.Information($"Se ha reenviado un nuevo código de verificación al correo electrónico: {resendEmailVerificationCodeDTO.Email}");
+            return "Se ha reenviado un nuevo código de verificación a su correo electrónico.";
         }
 
         /// <summary>

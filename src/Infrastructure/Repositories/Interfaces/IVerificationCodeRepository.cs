@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Tienda_UCN_api.Src.Domain.Models;
 
 namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Interfaces
@@ -41,5 +37,12 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Interfaces
         /// <param name="codeType">El tipo de código de verificación.</param>
         /// <returns>True si se eliminó correctamente, false si no existía.</returns
         Task<bool> DeleteVerificationCodeByUserIdAsync(int id, CodeType codeType);
+
+        /// <summary>
+        /// Actualiza un código de verificación existente.
+        /// </summary>
+        /// <param name="verificationCode">El código de verificación a actualizar.</param>
+        /// <returns>El código de verificación actualizado o null.</returns>
+        Task<VerificationCode?> UpdateVerificationCodeAsync(VerificationCode verificationCode);
     }
 }
