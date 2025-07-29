@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Identity;
 using Tienda_UCN_api.src.Domain.Models;
 
 namespace Tienda_UCN_api.src.Infrastructure.Repositories.Interfaces

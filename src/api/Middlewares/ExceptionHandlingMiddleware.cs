@@ -1,7 +1,6 @@
 using System.Security;
 using System.Text.Json;
 using Serilog;
-using Tienda_UCN_api.src.Application.DTO;
 using Tienda_UCN_api.src.Application.DTO.BaseResponse;
 
 namespace Tienda_UCN_api.src.Infrastructure.Middlewares
