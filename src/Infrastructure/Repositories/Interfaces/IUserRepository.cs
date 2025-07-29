@@ -74,5 +74,19 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Interfaces
         /// <param name="user">Usuario del cual se desea obtener el rol</param>
         /// <returns>Nombre del rol del usuario</returns>
         Task<string> GetUserRoleAsync(User user);
+
+        /// <summary>
+        /// Elimina un usuario por su ID.
+        /// </summary>
+        /// <param name="userId">ID del usuario a eliminar</param>
+        /// <returns>True si la eliminación fue exitosa, false en caso contrario</returns>
+        Task<bool> DeleteUserAsync(int userId);
+
+        /// <summary>
+        /// Confirma el correo electrónico del usuario.
+        /// </summary>
+        /// <param name="email">Correo electrónico del usuario</param>
+        /// <returns>True si la confirmación fue exitosa, false en caso contrario</returns>
+        Task<bool> ConfirmEmailAsync(string email);
     }
 }

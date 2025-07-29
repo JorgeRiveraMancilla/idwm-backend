@@ -44,6 +44,17 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Implements
         }
 
         /// <summary>
+        /// Confirma el correo electrónico del usuario.
+        /// </summary>
+        /// <param name="email">Correo electrónico del usuario</param>
+        /// <returns>True si la confirmación fue exitosa, false en caso contrario</returns>
+        public async Task<bool> ConfirmEmailAsync(string email)
+        {
+            await _context.Users.Where(u => u.Email == email).ExecuteUpdateAsync(u => u.SetProperty(x => x.EmailConfirmed, true));
+            return true;
+        }
+
+        /// <summary>
         /// Crea un nuevo usuario en la base de datos.
         /// </summary>
         /// <param name="user">Usuario a crear</param>
@@ -51,7 +62,20 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Implements
         /// <returns>True si es exitoso, false en caso contrario</returns>
         public async Task<bool> CreateAsync(User user, string password)
         {
-            var result = await _userManager.CreateAsync(user, password);
+            await _userManager.CreateAsync(user, password);
+            var result = await _userManager.AddToRoleAsync(user, "Customer");
+            return result.Succeeded;
+        }
+
+        /// <summary>
+        /// Elimina un usuario por su ID.
+        /// </summary>
+        /// <param name="userId">ID del usuario a eliminar</param>
+        /// <returns>True si la eliminación fue exitosa, false en caso contrario</returns>
+        public async Task<bool> DeleteUserAsync(int userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            var result = await _userManager.DeleteAsync(user!);
             return result.Succeeded;
         }
 
@@ -110,6 +134,7 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Implements
 
             return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Rut == rut);
         }
+
         /// <summary>
         /// Obtiene el rol del usuario.
         /// </summary>

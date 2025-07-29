@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Tienda_UCN_api.src.Infrastructure.Data;
 using Tienda_UCN_api.Src.Domain.Models;
 using Tienda_UCN_api.Src.Infrastructure.Repositories.Interfaces;
@@ -24,17 +25,48 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
         /// <returns>El código de verificación creado.</returns>
         public async Task<VerificationCode> CreateVerificationCodeAsync(VerificationCode verificationCode)
         {
-            var existingCode = await _context.VerificationCodes.AsNoTracking().FirstOrDefaultAsync(vc => vc.CodeType == verificationCode.CodeType && vc.UserId == verificationCode.UserId);
-            if (existingCode != null)
-            {
-                return existingCode;
-            }
-            else
-            {
-                await _context.VerificationCodes.AddAsync(verificationCode);
-                await _context.SaveChangesAsync();
-                return verificationCode;
-            }
+            await _context.VerificationCodes.AddAsync(verificationCode);
+            await _context.SaveChangesAsync();
+            return verificationCode;
         }
+
+        /// <summary>
+        /// Elimina un código de verificación por ID de usuario y tipo de código.
+        /// </summary>
+        /// <param name="id">El ID del usuario.</param>
+        /// <param name="codeType">El tipo de código de verificación.</param>
+        /// <returns>True si se eliminó correctamente, false si no existía.</returns
+        public async Task<bool> DeleteVerificationCodeByUserIdAsync(int id, CodeType codeType)
+        {
+            await _context.VerificationCodes.Where(vc => vc.UserId == id && vc.CodeType == codeType).ExecuteDeleteAsync();
+            var exists = await _context.VerificationCodes.AnyAsync(vc => vc.UserId == id && vc.CodeType == codeType);
+            return !exists;
+        }
+
+        /// <summary>
+        /// Obtiene el último código de verificación por ID de usuario y tipo de código.
+        /// </summary>
+        /// <param name="userId">El ID del usuario.</param>
+        /// <param name="codeType">El tipo de código de verificación.</param>
+        /// <returns>El último código de verificación encontrado, o null si no existe.</returns>
+        public async Task<VerificationCode?> GetLatestVerificationCodeByUserIdAsync(int userId, CodeType codeType)
+        {
+            return await _context.VerificationCodes.Where(vc => vc.UserId == userId && vc.CodeType == codeType).OrderByDescending(vc => vc.CreatedAt).FirstOrDefaultAsync();
+        }
+
+        /// <summary>
+        /// Aumenta el contador de intentos de un código de verificación.
+        /// </summary>
+        /// <param name="userId">El ID del usuario.</param>
+        /// <param name="codeType">El tipo de código de verificación.</param>
+        /// <returns>El número de intentos incrementados.</returns>
+        public async Task<int> IncreaseVerificationCodeAttemptsAsync(int userId, CodeType codeType)
+        {
+            await _context.VerificationCodes.Where(vc => vc.UserId == userId && vc.CodeType == codeType).ExecuteUpdateAsync(setters => setters.SetProperty(vc => vc.AttemptCount, vc => vc.AttemptCount + 1));
+            var newCount = await _context.VerificationCodes.AsNoTracking().Where(vc => vc.UserId == userId && vc.CodeType == codeType).Select(vc => vc.AttemptCount).FirstOrDefaultAsync();
+            return newCount;
+        }
+
+
     }
 }

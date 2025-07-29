@@ -23,5 +23,12 @@ namespace Tienda_UCN_api.src.Application.Services.Interfaces
         /// <param name="httpContext">El contexto HTTP actual.</param>
         /// <returns>Un string que representa el mensaje de éxito del registro.</returns>
         Task<string> RegisterAsync(RegisterDTO registerDTO, HttpContext httpContext);
+
+        /// <summary>
+        /// Verifica el correo electrónico del usuario.
+        /// </summary>
+        /// <param name="verifyEmailDTO">DTO que contiene el correo electrónico y el código de verificación.</param>
+        /// <returns>Un string que representa el mensaje de éxito de la verificación.</returns>
+        Task<string> VerifyEmailAsync(VerifyEmailDTO verifyEmailDTO);
     }
 }
