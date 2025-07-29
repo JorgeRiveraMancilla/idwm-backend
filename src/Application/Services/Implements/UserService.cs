@@ -16,7 +16,7 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
         private readonly ITokenService _tokenService;
         private readonly IUserRepository _userRepository;
 
-        public UserService(ITokenService tokenService, UserRepository userRepository)
+        public UserService(ITokenService tokenService, IUserRepository userRepository)
         {
             _tokenService = tokenService;
             _userRepository = userRepository;
