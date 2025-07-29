@@ -24,10 +24,10 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
         /// <returns>El código de verificación creado.</returns>
         public async Task<VerificationCode> CreateVerificationCodeAsync(VerificationCode verificationCode)
         {
-            var existingCode = await _context.VerificationCodes.AnyAsync(vc => vc.Code == verificationCode.Code && vc.UserId == verificationCode.UserId);
-            if (existingCode)
+            var existingCode = await _context.VerificationCodes.AsNoTracking().FirstOrDefaultAsync(vc => vc.CodeType == verificationCode.CodeType && vc.UserId == verificationCode.UserId);
+            if (existingCode != null)
             {
-                throw new InvalidOperationException("Ya existe un código de verificación con el mismo código y usuario.");
+                return existingCode;
             }
             else
             {

@@ -47,8 +47,9 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Interfaces
         /// Crea un nuevo usuario en la base de datos.
         /// </summary>
         /// <param name="user">Usuario a crear</param>
+        /// <param name="password">Contraseña del usuario</param>
         /// <returns>True si es exitoso, false en caso contrario</returns>
-        Task<bool> CreateAsync(User user);
+        Task<bool> CreateAsync(User user, string password);
 
         /// <summary>
         /// Cambia la contraseña de un usuario.

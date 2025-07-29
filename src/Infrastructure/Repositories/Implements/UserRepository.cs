@@ -47,10 +47,11 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Implements
         /// Crea un nuevo usuario en la base de datos.
         /// </summary>
         /// <param name="user">Usuario a crear</param>
+        /// <param name="password">Contraseña del usuario</param>
         /// <returns>True si es exitoso, false en caso contrario</returns>
-        public async Task<bool> CreateAsync(User user)
+        public async Task<bool> CreateAsync(User user, string password)
         {
-            var result = await _userManager.CreateAsync(user);
+            var result = await _userManager.CreateAsync(user, password);
             return result.Succeeded;
         }
 

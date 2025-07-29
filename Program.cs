@@ -10,6 +10,8 @@ using Tienda_UCN_api.src.Infrastructure.Data;
 using Tienda_UCN_api.src.Infrastructure.Middlewares;
 using Tienda_UCN_api.src.Infrastructure.Repositories.Implements;
 using Tienda_UCN_api.src.Infrastructure.Repositories.Interfaces;
+using Tienda_UCN_api.Src.Application.Services.Implements;
+using Tienda_UCN_api.Src.Application.Services.Interfaces;
 using Tienda_UCN_api.Src.Infrastructure.Repositories.Implements;
 using Tienda_UCN_api.Src.Infrastructure.Repositories.Interfaces;
 
@@ -21,6 +23,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IVerificationCodeRepository, VerificationCodeRepository>();
 

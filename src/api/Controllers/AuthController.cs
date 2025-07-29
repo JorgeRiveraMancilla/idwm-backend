@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Tienda_UCN_api.src.Application.DTO;
 using Tienda_UCN_api.src.Application.Services.Interfaces;
+using Tienda_UCN_api.Src.Application.DTO.AuthDTO;
 
 namespace Tienda_UCN_api.src.api.Controllers
 {
@@ -24,6 +25,18 @@ namespace Tienda_UCN_api.src.api.Controllers
         {
             var token = await _userService.LoginAsync(loginDTO, HttpContext);
             return Ok(new GenericResponse<string>("Inicio de sesión exitoso", token));
+        }
+
+        /// <summary>
+        /// Registra un nuevo usuario.
+        /// </summary>
+        /// <param name="registerDTO">DTO que contiene la información del nuevo usuario.</param
+        /// <returns>Un IActionResult que representa el resultado de la operación.</returns>
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterDTO registerDTO)
+        {
+            var message = await _userService.RegisterAsync(registerDTO, HttpContext);
+            return Ok(new GenericResponse<string>("Registro exitoso", message));
         }
     }
 }

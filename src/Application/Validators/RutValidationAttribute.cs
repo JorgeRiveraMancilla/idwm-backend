@@ -15,10 +15,7 @@ namespace Tienda_UCN_api.Src.Application.Validators
             {
                 string rut = (string)value;
 
-                if (rut == "")
-                {
-                    return new ValidationResult("El RUT no puede estar vacío.");
-                }
+                rut = rut.Replace(".", "").Replace(" ", "");
 
                 int rutNumber = int.Parse(rut.Split('-')[0]);
                 char digitoVerificador = rut.Split('-')[1].ToLowerInvariant()[0];

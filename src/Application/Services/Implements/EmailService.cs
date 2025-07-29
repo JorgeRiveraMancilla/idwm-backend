@@ -213,7 +213,7 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
             {
                 To = email,
                 Subject = "Código de Verificación - Tienda UCN",
-                From = "Acme <onboarding@resend.dev>",
+                From = "Tienda - UCN <onboarding@resend.dev>",
                 HtmlBody = htmlBody
             };
             await _resend.EmailSendAsync(message);

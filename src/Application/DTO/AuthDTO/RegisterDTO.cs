@@ -10,7 +10,7 @@ namespace Tienda_UCN_api.Src.Application.DTO.AuthDTO
         public required string Email { get; set; }
 
         [Required(ErrorMessage = "La contraseña es requerida.")]
-        [RegularExpression(@"^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ])[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ0-9]+$", ErrorMessage = "La contraseña debe ser alfanumérica y contener al menos una mayúscula.")]
+        [RegularExpression(@"^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ])(?=.*[!@#$%^&*()_+\[\]{};':""\\|,.<>/?]).*$", ErrorMessage = "La contraseña debe ser alfanumérica y contener al menos una mayúscula y al menos un caracter especial.")]
         [MinLength(8, ErrorMessage = "La contraseña debe tener al menos 8 caracteres")]
         [MaxLength(20, ErrorMessage = "La contraseña debe tener como máximo 20 caracteres")]
         public required string Password { get; set; }
@@ -20,7 +20,7 @@ namespace Tienda_UCN_api.Src.Application.DTO.AuthDTO
         public required string ConfirmPassword { get; set; }
 
         [Required(ErrorMessage = "El Rut es obligatorio.")]
-        [RegularExpression(@"^\d{7,8}-[0-9kK]", ErrorMessage = "El Rut no tiene un formato válido.")]
+        [RegularExpression(@"^\d{7,8}-[0-9kK]$", ErrorMessage = "El Rut debe tener formato XXXXXXXX-X")]
         [RutValidation(ErrorMessage = "El Rut no es válido.")]
         public required string Rut { get; set; }
 
