@@ -22,10 +22,11 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Implements
         /// <param name="user">Usuario al que se le cambiará la contraseña</param
         /// <param name="currentPassword">Contraseña actual del usuario</param>
         /// <param name="newPassword">Nueva contraseña para el usuario</param>
-        /// <returns>Resultado de la operación de cambio de contraseña</returns>
-        public async Task<IdentityResult> ChangePasswordAsync(User user, string currentPassword, string newPassword)
+        /// <returns>True si es exitoso, false en caso contrario</returns>
+        public async Task<bool> ChangePasswordAsync(User user, string currentPassword, string newPassword)
         {
-            return await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            return result.Succeeded;
         }
 
         /// <summary>
@@ -43,10 +44,11 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Implements
         /// Crea un nuevo usuario en la base de datos.
         /// </summary>
         /// <param name="user">Usuario a crear</param>
-        /// <returns>Resultado de la creación del usuario</returns>
-        public async Task<IdentityResult> CreateAsync(User user)
+        /// <returns>True si es exitoso, false en caso contrario</returns>
+        public async Task<bool> CreateAsync(User user)
         {
-            return await _userManager.CreateAsync(user);
+            var result = await _userManager.CreateAsync(user);
+            return result.Succeeded;
         }
 
         /// <summary>

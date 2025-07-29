@@ -30,8 +30,8 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Interfaces
         /// Crea un nuevo usuario en la base de datos.
         /// </summary>
         /// <param name="user">Usuario a crear</param>
-        /// <returns>Resultado de la creación del usuario</returns>
-        Task<IdentityResult> CreateAsync(User user);
+        /// <returns>True si es exitoso, false en caso contrario</returns>
+        Task<bool> CreateAsync(User user);
 
         /// <summary>
         /// Cambia la contraseña de un usuario.
@@ -39,8 +39,8 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Interfaces
         /// <param name="user">Usuario al que se le cambiará la contraseña</param
         /// <param name="currentPassword">Contraseña actual del usuario</param>
         /// <param name="newPassword">Nueva contraseña para el usuario</param>
-        /// <returns>Resultado de la operación de cambio de contraseña</returns>
-        Task<IdentityResult> ChangePasswordAsync(User user, string currentPassword, string newPassword);
+        /// <returns>True si es exitoso, false en caso contrario</returns>
+        Task<bool> ChangePasswordAsync(User user, string currentPassword, string newPassword);
 
         /// <summary>
         /// Verifica si la contraseña proporcionada es correcta para el usuario.
