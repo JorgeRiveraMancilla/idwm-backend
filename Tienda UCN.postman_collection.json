@@ -40,7 +40,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"admin@tiendaucn.cl\",\r\n    \"password\": \"Admin1234!\",\r\n    \"rememberMe\": false\r\n}",
+							"raw": "{\r\n  \"email\": \"user@example.com\",\r\n  \"password\": \"string\",\r\n  \"rememberMe\": true\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -59,8 +59,39 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"user@example.com\",\r\n  \"password\": \"QYAw2hKBb5YBB1cD6j10\",\r\n  \"confirmPassword\": \"string\",\r\n  \"rut\": \"58884422-k\",\r\n  \"firstName\": \"NmNEIK--cVErAIJRFfva\",\r\n  \"lastName\": \"odxhkRkTeXOSoaODxUce\",\r\n  \"birthDate\": \"2025-07-29T16:42:28.961Z\",\r\n  \"phoneNumber\": \"683414600\",\r\n  \"gender\": \"Femenino\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/register",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
 				}
 			]
+		},
+		{
+			"name": "Verification Code",
+			"item": []
 		},
 		{
 			"name": "Cart",
