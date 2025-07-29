@@ -30,8 +30,6 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
                 await context.Database.EnsureCreatedAsync();
                 await context.Database.MigrateAsync();
 
-                var genders = configuration.GetSection("User:Genders").Get<string[]>() ?? throw new InvalidOperationException("La configuración de géneros no está presente.");
-
                 // Creación de roles
                 if (!context.Roles.Any())
                 {
@@ -108,7 +106,7 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
                         LastName = configuration["User:AdminUser:LastName"] ?? throw new InvalidOperationException("El apellido del usuario administrador no está configurado."),
                         Email = configuration["User:AdminUser:Email"] ?? throw new InvalidOperationException("El email del usuario administrador no está configurado."),
                         EmailConfirmed = true,
-                        Gender = configuration["User:AdminUser:Gender"] ?? throw new InvalidOperationException("El género del usuario administrador no está configurado."),
+                        Gender = Gender.Masculino,
                         Rut = configuration["User:AdminUser:Rut"] ?? throw new InvalidOperationException("El RUT del usuario administrador no está configurado."),
                         BirthDate = DateTime.Parse(configuration["User:AdminUser:BirthDate"] ?? throw new InvalidOperationException("La fecha de nacimiento del usuario administrador no está configurada.")),
                         PhoneNumber = configuration["User:AdminUser:PhoneNumber"] ?? throw new InvalidOperationException("El número de teléfono del usuario administrador no está configurado.")
@@ -139,7 +137,7 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
                         .RuleFor(u => u.LastName, f => f.Name.LastName())
                         .RuleFor(u => u.Email, f => f.Internet.Email())
                         .RuleFor(u => u.EmailConfirmed, f => true)
-                        .RuleFor(u => u.Gender, f => f.PickRandom(genders))
+                        .RuleFor(u => u.Gender, f => f.PickRandom<Gender>())
                         .RuleFor(u => u.Rut, f => RandomRut())
                         .RuleFor(u => u.BirthDate, f => f.Date.Past(30, DateTime.Now.AddYears(-18)))
                         .RuleFor(u => u.PhoneNumber, f => RandomPhoneNumber())
