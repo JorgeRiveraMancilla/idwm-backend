@@ -75,12 +75,17 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Implements
         /// Obtiene un usuario por su RUT.
         /// </summary>
         /// <param name="rut">RUT del usuario</param>
+        /// <param name="trackChanges">Indica si se debe rastrear los cambios en la entidad</param>
         /// <returns>Usuario encontrado o nulo</returns>
-        public async Task<User?> GetByRutAsyncWithoutTracking(string rut)
+        public async Task<User?> GetByRutAsync(string rut, bool trackChanges = false)
         {
+            if (trackChanges)
+            {
+                return await _context.Users.FirstOrDefaultAsync(u => u.Rut == rut);
+            }
+
             return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Rut == rut);
         }
-
         /// <summary>
         /// Obtiene el rol del usuario.
         /// </summary>

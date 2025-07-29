@@ -22,8 +22,9 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Interfaces
         /// Obtiene un usuario por su RUT.
         /// </summary>
         /// <param name="rut">RUT del usuario</param>
+        /// <param name="trackChanges">Indica si se debe rastrear los cambios en la entidad</param>
         /// <returns>Usuario encontrado o nulo</returns>
-        Task<User?> GetByRutAsyncWithoutTracking(string rut);
+        Task<User?> GetByRutAsync(string rut, bool trackChanges = false);
 
         /// <summary>
         /// Crea un nuevo usuario en la base de datos.
