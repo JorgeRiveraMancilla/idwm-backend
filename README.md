@@ -41,6 +41,7 @@ Once the above is installed, clone the repository with the command:
 
 **Required configuration:**
 - Replace `JWTSecret` with a strong secret key with at least 32 characters long.
+- Replace `ResendAPIKey` with your resend API Key, you can get your API key in the following link: [Resend - Getting Started](https://resend.com/docs/send-with-dotnet)
 - Replace Cloudinary credentials with your actual values
 - Replace admin `Rut` with the following format XXXXXXXX-X
 - Replace admin `BirthDate` with the following format YYYY-MM-DD
