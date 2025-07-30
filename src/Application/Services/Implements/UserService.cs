@@ -1,3 +1,4 @@
+using Mapster;
 using Serilog;
 using Tienda_UCN_api.src.Application.DTO;
 using Tienda_UCN_api.src.Application.Services.Interfaces;
@@ -92,17 +93,7 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
                 Log.Warning($"El usuario con el RUT {registerDTO.Rut} ya está registrado.");
                 throw new InvalidOperationException("El RUT ya está registrado.");
             }
-            var user = new User
-            {
-                Email = registerDTO.Email,
-                UserName = registerDTO.Email,
-                Rut = registerDTO.Rut,
-                FirstName = registerDTO.FirstName,
-                LastName = registerDTO.LastName,
-                BirthDate = registerDTO.BirthDate,
-                PhoneNumber = registerDTO.PhoneNumber,
-                Gender = (Gender)Enum.Parse(typeof(Gender), registerDTO.Gender)
-            };
+            var user = registerDTO.Adapt<User>();
             var result = await _userRepository.CreateAsync(user, registerDTO.Password);
             if (!result)
             {

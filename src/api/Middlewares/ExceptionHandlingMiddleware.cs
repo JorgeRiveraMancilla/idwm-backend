@@ -33,7 +33,7 @@ namespace Tienda_UCN_api.src.Infrastructure.Middlewares
                 // Creamos un objeto ProblemDetails para la respuesta
                 ErrorDetail error = new ErrorDetail(title, ex.Message);
 
-                Log.Error("Excepción no controlada. Trace ID: {TraceId}", traceId);
+                Log.Error(ex, "Excepción no controlada. Trace ID: {TraceId}", traceId);
 
                 // Configuramos la respuesta HTTP como JSON
                 context.Response.ContentType = "application/json";
