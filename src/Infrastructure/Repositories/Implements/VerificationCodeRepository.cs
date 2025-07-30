@@ -22,7 +22,7 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
         /// </summary>
         /// <param name="verificationCode">El código de verificación a crear.</param>
         /// <returns>El código de verificación creado.</returns>
-        public async Task<VerificationCode> CreateVerificationCodeAsync(VerificationCode verificationCode)
+        public async Task<VerificationCode> CreateAsync(VerificationCode verificationCode)
         {
             await _context.VerificationCodes.AddAsync(verificationCode);
             await _context.SaveChangesAsync();

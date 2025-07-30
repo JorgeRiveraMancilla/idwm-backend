@@ -12,7 +12,7 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Interfaces
         /// </summary>
         /// <param name="verificationCode">El código de verificación a crear.</param>
         /// <returns>El código de verificación creado.</returns>
-        Task<VerificationCode> CreateVerificationCodeAsync(VerificationCode verificationCode);
+        Task<VerificationCode> CreateAsync(VerificationCode verificationCode);
 
         /// <summary>
         /// Obtiene el último código de verificación por ID de usuario y tipo de código.
