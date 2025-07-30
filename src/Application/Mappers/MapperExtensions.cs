@@ -13,7 +13,7 @@ namespace Tienda_UCN_api.Src.Application.Mappers
         /// </summary>
         public static void ConfigureMapster()
         {
-            UserMapper.ConfigureAuthMappings();
+            UserMapper.ConfigureAllMappings();
 
             // Configuración global de Mapster para ignorar valores nulos
             TypeAdapterConfig.GlobalSettings.Default.IgnoreNullValues(true);

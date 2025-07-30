@@ -16,6 +16,14 @@ namespace Tienda_UCN_api.Src.Application.Mappers
         /// <summary>
         /// Configura el mapeo de RegisterDTO a User.
         /// </summary>
+        public static void ConfigureAllMappings()
+        {
+            ConfigureAuthMappings();
+        }
+
+        /// <summary>
+        /// Configura el mapeo de RegisterDTO a User.
+        /// </summary>
         public static void ConfigureAuthMappings()
         {
             TypeAdapterConfig<RegisterDTO, User>.NewConfig()
