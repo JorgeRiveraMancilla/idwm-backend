@@ -80,7 +80,7 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Interfaces
         /// </summary>
         /// <param name="userId">ID del usuario a eliminar</param>
         /// <returns>True si la eliminación fue exitosa, false en caso contrario</returns>
-        Task<bool> DeleteUserAsync(int userId);
+        Task<bool> DeleteAsync(int userId);
 
         /// <summary>
         /// Confirma el correo electrónico del usuario.

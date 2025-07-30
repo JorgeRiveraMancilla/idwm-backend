@@ -72,7 +72,7 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Implements
         /// </summary>
         /// <param name="userId">ID del usuario a eliminar</param>
         /// <returns>True si la eliminación fue exitosa, false en caso contrario</returns>
-        public async Task<bool> DeleteUserAsync(int userId)
+        public async Task<bool> DeleteAsync(int userId)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
             var result = await _userManager.DeleteAsync(user!);

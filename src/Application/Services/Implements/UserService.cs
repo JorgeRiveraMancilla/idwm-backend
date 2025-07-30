@@ -18,14 +18,18 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
         private readonly ITokenService _tokenService;
         private readonly IUserRepository _userRepository;
         private readonly IEmailService _emailService;
+        private readonly IConfiguration _configuration;
         private readonly IVerificationCodeRepository _verificationCodeRepository;
+        private readonly int _verificationCodeExpirationTimeInMinutes;
 
-        public UserService(ITokenService tokenService, IUserRepository userRepository, IEmailService emailService, IVerificationCodeRepository verificationCodeRepository)
+        public UserService(ITokenService tokenService, IUserRepository userRepository, IEmailService emailService, IVerificationCodeRepository verificationCodeRepository, IConfiguration configuration)
         {
             _tokenService = tokenService;
             _userRepository = userRepository;
             _emailService = emailService;
             _verificationCodeRepository = verificationCodeRepository;
+            _configuration = configuration;
+            _verificationCodeExpirationTimeInMinutes = _configuration.GetValue<int>("VerificationCode:ExpirationTimeInMinutes");
         }
 
         /// <summary>
@@ -113,7 +117,7 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
                 Code = code,
                 CodeType = CodeType.EmailVerification,
             };
-            var createdVerificationCode = await _verificationCodeRepository.CreateVerificationCodeAsync(verificationCode);
+            var createdVerificationCode = await _verificationCodeRepository.CreateAsync(verificationCode);
             Log.Information($"Código de verificación generado para el usuario: {registerDTO.Email} - Código: {createdVerificationCode.Code}");
 
             await _emailService.SendVerificationCodeEmailAsync(registerDTO.Email, createdVerificationCode.Code);
@@ -128,6 +132,7 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
         /// <returns>Un string que representa el mensaje de éxito del reenvío.</returns>
         public async Task<string> ResendEmailVerificationCodeAsync(ResendEmailVerificationCodeDTO resendEmailVerificationCodeDTO)
         {
+            var currentTime = DateTime.UtcNow;
             User? user = await _userRepository.GetByEmailAsync(resendEmailVerificationCodeDTO.Email);
             if (user == null)
             {
@@ -140,15 +145,16 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
                 throw new InvalidOperationException("El correo electrónico ya ha sido verificado.");
             }
             VerificationCode? verificationCode = await _verificationCodeRepository.GetLatestVerificationCodeByUserIdAsync(user.Id, CodeType.EmailVerification);
-            if (verificationCode!.CreatedAt.AddSeconds(180) > DateTime.UtcNow)
+            var expirationTime = verificationCode!.CreatedAt.AddMinutes(_verificationCodeExpirationTimeInMinutes);
+            if (expirationTime > currentTime)
             {
-                int remainingSeconds = (int)(verificationCode.CreatedAt.AddSeconds(180) - DateTime.UtcNow).TotalSeconds;
-                Log.Warning($"El usuario {resendEmailVerificationCodeDTO.Email} ha solicitado un reenvío del código de verificación antes de los 3 minutos.");
+                int remainingSeconds = (int)(expirationTime - currentTime).TotalSeconds;
+                Log.Warning($"El usuario {resendEmailVerificationCodeDTO.Email} ha solicitado un reenvío del código de verificación antes de los {_verificationCodeExpirationTimeInMinutes} minutos.");
                 throw new TimeoutException($"Debe esperar {remainingSeconds} segundos para solicitar un nuevo código de verificación.");
             }
             string newCode = new Random().Next(100000, 999999).ToString();
             verificationCode.Code = newCode;
-            verificationCode.ExpiryDate = DateTime.UtcNow.AddMinutes(3);
+            verificationCode.ExpiryDate = DateTime.UtcNow.AddMinutes(_verificationCodeExpirationTimeInMinutes);
             await _verificationCodeRepository.UpdateVerificationCodeAsync(verificationCode);
             Log.Information($"Nuevo código de verificación generado para el usuario: {resendEmailVerificationCodeDTO.Email} - Código: {newCode}");
             await _emailService.SendVerificationCodeEmailAsync(user.Email!, newCode);
@@ -193,7 +199,7 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
                     if (codeDeleteResult)
                     {
                         Log.Warning($"Se ha eliminado el código de verificación para el usuario: {verifyEmailDTO.Email}");
-                        bool userDeleteResult = await _userRepository.DeleteUserAsync(user.Id);
+                        bool userDeleteResult = await _userRepository.DeleteAsync(user.Id);
                         if (userDeleteResult)
                         {
                             Log.Warning($"Se ha eliminado el usuario: {verifyEmailDTO.Email}");
