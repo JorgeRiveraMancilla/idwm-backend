@@ -52,15 +52,6 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Interfaces
         Task<bool> CreateAsync(User user, string password);
 
         /// <summary>
-        /// Cambia la contraseña de un usuario.
-        /// </summary>
-        /// <param name="user">Usuario al que se le cambiará la contraseña</param
-        /// <param name="currentPassword">Contraseña actual del usuario</param>
-        /// <param name="newPassword">Nueva contraseña para el usuario</param>
-        /// <returns>True si es exitoso, false en caso contrario</returns>
-        Task<bool> ChangePasswordAsync(User user, string currentPassword, string newPassword);
-
-        /// <summary>
         /// Verifica si la contraseña proporcionada es correcta para el usuario.
         /// </summary>
         /// <param name="user">Usuario al que se le verificará la contraseña</param>

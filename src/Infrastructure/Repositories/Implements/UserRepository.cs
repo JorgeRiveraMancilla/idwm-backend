@@ -20,19 +20,6 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Implements
         }
 
         /// <summary>
-        /// Cambia la contraseña de un usuario.
-        /// </summary>
-        /// <param name="user">Usuario al que se le cambiará la contraseña</param
-        /// <param name="currentPassword">Contraseña actual del usuario</param>
-        /// <param name="newPassword">Nueva contraseña para el usuario</param>
-        /// <returns>True si es exitoso, false en caso contrario</returns>
-        public async Task<bool> ChangePasswordAsync(User user, string currentPassword, string newPassword)
-        {
-            var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
-            return result.Succeeded;
-        }
-
-        /// <summary>
         /// Verifica si la contraseña proporcionada es correcta para el usuario.
         /// </summary>
         /// <param name="user">Usuario al que se le verificará la contraseña</param>
@@ -50,8 +37,8 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Implements
         /// <returns>True si la confirmación fue exitosa, false en caso contrario</returns>
         public async Task<bool> ConfirmEmailAsync(string email)
         {
-            await _context.Users.Where(u => u.Email == email).ExecuteUpdateAsync(u => u.SetProperty(x => x.EmailConfirmed, true));
-            return true;
+            var result = await _context.Users.Where(u => u.Email == email).ExecuteUpdateAsync(u => u.SetProperty(x => x.EmailConfirmed, true));
+            return result > 0;
         }
 
         /// <summary>
@@ -62,9 +49,13 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Implements
         /// <returns>True si es exitoso, false en caso contrario</returns>
         public async Task<bool> CreateAsync(User user, string password)
         {
-            await _userManager.CreateAsync(user, password);
-            var result = await _userManager.AddToRoleAsync(user, "Customer");
-            return result.Succeeded;
+            var userResult = await _userManager.CreateAsync(user, password);
+            if (userResult.Succeeded)
+            {
+                var roleResult = await _userManager.AddToRoleAsync(user, "Customer");
+                return roleResult.Succeeded;
+            }
+            return false;
         }
 
         /// <summary>
