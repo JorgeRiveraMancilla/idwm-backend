@@ -6,8 +6,10 @@ namespace Tienda_UCN_api.Src.Domain.Models
         PasswordReset,
         PasswordChange
     }
+
     public class VerificationCode
     {
+
         /// <summary>
         /// Identificador único del código de verificación.
         /// </summary>
@@ -31,7 +33,7 @@ namespace Tienda_UCN_api.Src.Domain.Models
         /// <summary>
         /// Fecha y hora de expiración del código de verificación (3 minutos por defecto).
         /// </summary>
-        public DateTime ExpiryDate { get; set; } = DateTime.UtcNow.AddSeconds(180);
+        public required DateTime ExpiryDate { get; set; }
 
         /// <summary>
         /// Identificador único del usuario asociado al código de verificación.

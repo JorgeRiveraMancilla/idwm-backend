@@ -107,6 +107,7 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
                 UserId = user.Id,
                 Code = code,
                 CodeType = CodeType.EmailVerification,
+                ExpiryDate = DateTime.UtcNow.AddMinutes(_verificationCodeExpirationTimeInMinutes)
             };
             var createdVerificationCode = await _verificationCodeRepository.CreateAsync(verificationCode);
             Log.Information($"Código de verificación generado para el usuario: {registerDTO.Email} - Código: {createdVerificationCode.Code}");
