@@ -135,7 +135,7 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
                 Log.Warning($"El usuario con el correo {resendEmailVerificationCodeDTO.Email} ya ha verificado su correo electrónico.");
                 throw new InvalidOperationException("El correo electrónico ya ha sido verificado.");
             }
-            VerificationCode? verificationCode = await _verificationCodeRepository.GetLatestVerificationCodeByUserIdAsync(user.Id, CodeType.EmailVerification);
+            VerificationCode? verificationCode = await _verificationCodeRepository.GetLatestByUserIdAsync(user.Id, CodeType.EmailVerification);
             var expirationTime = verificationCode!.CreatedAt.AddMinutes(_verificationCodeExpirationTimeInMinutes);
             if (expirationTime > currentTime)
             {
@@ -146,7 +146,7 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
             string newCode = new Random().Next(100000, 999999).ToString();
             verificationCode.Code = newCode;
             verificationCode.ExpiryDate = DateTime.UtcNow.AddMinutes(_verificationCodeExpirationTimeInMinutes);
-            await _verificationCodeRepository.UpdateVerificationCodeAsync(verificationCode);
+            await _verificationCodeRepository.UpdateAsync(verificationCode);
             Log.Information($"Nuevo código de verificación generado para el usuario: {resendEmailVerificationCodeDTO.Email} - Código: {newCode}");
             await _emailService.SendVerificationCodeEmailAsync(user.Email!, newCode);
             Log.Information($"Se ha reenviado un nuevo código de verificación al correo electrónico: {resendEmailVerificationCodeDTO.Email}");
@@ -173,7 +173,7 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
             }
             CodeType codeType = CodeType.EmailVerification;
 
-            VerificationCode? verificationCode = await _verificationCodeRepository.GetLatestVerificationCodeByUserIdAsync(user.Id, codeType);
+            VerificationCode? verificationCode = await _verificationCodeRepository.GetLatestByUserIdAsync(user.Id, codeType);
             if (verificationCode == null)
             {
                 Log.Warning($"No se encontró un código de verificación para el usuario: {verifyEmailDTO.Email}");
@@ -181,12 +181,12 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
             }
             if (verificationCode.Code != verifyEmailDTO.VerificationCode || DateTime.UtcNow >= verificationCode.ExpiryDate)
             {
-                int attempsCountUpdated = await _verificationCodeRepository.IncreaseVerificationCodeAttemptsAsync(user.Id, codeType);
+                int attempsCountUpdated = await _verificationCodeRepository.IncreaseAttemptsAsync(user.Id, codeType);
                 Log.Warning($"Código de verificación incorrecto o expirado para el usuario: {verifyEmailDTO.Email}. Intentos actuales: {attempsCountUpdated}");
                 if (attempsCountUpdated >= 5)
                 {
                     Log.Warning($"Se ha alcanzado el límite de intentos para el usuario: {verifyEmailDTO.Email}");
-                    bool codeDeleteResult = await _verificationCodeRepository.DeleteVerificationCodeByUserIdAsync(user.Id, codeType);
+                    bool codeDeleteResult = await _verificationCodeRepository.DeleteByUserIdAsync(user.Id, codeType);
                     if (codeDeleteResult)
                     {
                         Log.Warning($"Se ha eliminado el código de verificación para el usuario: {verifyEmailDTO.Email}");
@@ -212,7 +212,7 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
             bool emailConfirmed = await _userRepository.ConfirmEmailAsync(user.Email!);
             if (emailConfirmed)
             {
-                bool codeDeleteResult = await _verificationCodeRepository.DeleteVerificationCodeByUserIdAsync(user.Id, codeType);
+                bool codeDeleteResult = await _verificationCodeRepository.DeleteByUserIdAsync(user.Id, codeType);
                 if (codeDeleteResult)
                 {
                     Log.Warning($"Se ha eliminado el código de verificación para el usuario: {verifyEmailDTO.Email}");

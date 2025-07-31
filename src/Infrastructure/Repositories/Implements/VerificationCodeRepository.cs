@@ -35,7 +35,7 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
         /// <param name="id">El ID del usuario.</param>
         /// <param name="codeType">El tipo de código de verificación.</param>
         /// <returns>True si se eliminó correctamente, false si no existía.</returns
-        public async Task<bool> DeleteVerificationCodeByUserIdAsync(int id, CodeType codeType)
+        public async Task<bool> DeleteByUserIdAsync(int id, CodeType codeType)
         {
             await _context.VerificationCodes.Where(vc => vc.UserId == id && vc.CodeType == codeType).ExecuteDeleteAsync();
             var exists = await _context.VerificationCodes.AnyAsync(vc => vc.UserId == id && vc.CodeType == codeType);
@@ -48,7 +48,7 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
         /// <param name="userId">El ID del usuario.</param>
         /// <param name="codeType">El tipo de código de verificación.</param>
         /// <returns>El último código de verificación encontrado, o null si no existe.</returns>
-        public async Task<VerificationCode?> GetLatestVerificationCodeByUserIdAsync(int userId, CodeType codeType)
+        public async Task<VerificationCode?> GetLatestByUserIdAsync(int userId, CodeType codeType)
         {
             return await _context.VerificationCodes.Where(vc => vc.UserId == userId && vc.CodeType == codeType).OrderByDescending(vc => vc.CreatedAt).FirstOrDefaultAsync();
         }
@@ -59,7 +59,7 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
         /// <param name="userId">El ID del usuario.</param>
         /// <param name="codeType">El tipo de código de verificación.</param>
         /// <returns>El número de intentos incrementados.</returns>
-        public async Task<int> IncreaseVerificationCodeAttemptsAsync(int userId, CodeType codeType)
+        public async Task<int> IncreaseAttemptsAsync(int userId, CodeType codeType)
         {
             await _context.VerificationCodes.Where(vc => vc.UserId == userId && vc.CodeType == codeType).ExecuteUpdateAsync(setters => setters.SetProperty(vc => vc.AttemptCount, vc => vc.AttemptCount + 1));
             var newCount = await _context.VerificationCodes.AsNoTracking().Where(vc => vc.UserId == userId && vc.CodeType == codeType).Select(vc => vc.AttemptCount).FirstOrDefaultAsync();
@@ -71,7 +71,7 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
         /// </summary>
         /// <param name="verificationCode">El código de verificación a actualizar.</param>
         /// <returns>El código de verificación actualizado.</returns>
-        public async Task<VerificationCode?> UpdateVerificationCodeAsync(VerificationCode verificationCode)
+        public async Task<VerificationCode?> UpdateAsync(VerificationCode verificationCode)
         {
             await _context.VerificationCodes
                 .Where(vc => vc.Id == verificationCode.Id)

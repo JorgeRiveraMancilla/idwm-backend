@@ -20,7 +20,7 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Interfaces
         /// <param name="userId">El ID del usuario.</param>
         /// <param name="codeType">El tipo de código de verificación.</param>
         /// <returns>El último código de verificación encontrado, o null si no existe.</returns>
-        Task<VerificationCode?> GetLatestVerificationCodeByUserIdAsync(int userId, CodeType codeType);
+        Task<VerificationCode?> GetLatestByUserIdAsync(int userId, CodeType codeType);
 
         /// <summary>
         /// Aumenta el contador de intentos de un código de verificación.
@@ -28,7 +28,7 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Interfaces
         /// <param name="userId">El ID del usuario.</param>
         /// <param name="codeType">El tipo de código de verificación.</param>
         /// <returns>El número de intentos incrementados.</returns>
-        Task<int> IncreaseVerificationCodeAttemptsAsync(int userId, CodeType codeType);
+        Task<int> IncreaseAttemptsAsync(int userId, CodeType codeType);
 
         /// <summary>
         /// Elimina un código de verificación por ID de usuario y tipo de código.
@@ -36,13 +36,13 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Interfaces
         /// <param name="id">El ID del usuario.</param>
         /// <param name="codeType">El tipo de código de verificación.</param>
         /// <returns>True si se eliminó correctamente, false si no existía.</returns
-        Task<bool> DeleteVerificationCodeByUserIdAsync(int id, CodeType codeType);
+        Task<bool> DeleteByUserIdAsync(int id, CodeType codeType);
 
         /// <summary>
         /// Actualiza un código de verificación existente.
         /// </summary>
         /// <param name="verificationCode">El código de verificación a actualizar.</param>
         /// <returns>El código de verificación actualizado o null.</returns>
-        Task<VerificationCode?> UpdateVerificationCodeAsync(VerificationCode verificationCode);
+        Task<VerificationCode?> UpdateAsync(VerificationCode verificationCode);
     }
 }
