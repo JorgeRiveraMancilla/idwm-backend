@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Tienda_UCN_api.src.Domain.Models;
+using Tienda_UCN_api.Src.Domain.Models;
 
 namespace Tienda_UCN_api.src.Infrastructure.Data
 {
@@ -23,5 +24,6 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
         public DbSet<OrderItem> OrderItems { get; set; } = null!;
         public DbSet<Cart> Carts { get; set; } = null!;
         public DbSet<CartItem> CartItems { get; set; } = null!;
+        public DbSet<VerificationCode> VerificationCodes { get; set; } = null!;
     }
 }

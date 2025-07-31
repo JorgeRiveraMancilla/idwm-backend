@@ -2,6 +2,12 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Tienda_UCN_api.src.Domain.Models
 {
+    public enum Gender
+    {
+        Masculino,
+        Femenino,
+        Otro
+    }
     public class User : IdentityUser<int>
     {
 
@@ -23,7 +29,7 @@ namespace Tienda_UCN_api.src.Domain.Models
         /// <summary>
         /// Género del usuario.
         /// </summary>
-        public required string Gender { get; set; }
+        public required Gender Gender { get; set; }
 
         /// <summary>
         /// Fecha de nacimiento del usuario.

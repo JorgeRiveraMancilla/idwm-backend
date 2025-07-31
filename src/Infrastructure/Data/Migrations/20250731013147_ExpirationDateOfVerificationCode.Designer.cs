@@ -8,11 +8,11 @@ using Tienda_UCN_api.src.Infrastructure.Data;
 
 #nullable disable
 
-namespace Tienda_UCN_api.src.Infrastructure.Migrations
+namespace Tienda_UCN_api.Src.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250723021832_IdentityRoleManagement")]
-    partial class IdentityRoleManagement
+    [Migration("20250731013147_ExpirationDateOfVerificationCode")]
+    partial class ExpirationDateOfVerificationCode
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -117,6 +117,36 @@ namespace Tienda_UCN_api.src.Infrastructure.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Tienda_UCN_api.Src.Domain.Models.VerificationCode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AttemptCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CodeType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("VerificationCodes");
                 });
 
             modelBuilder.Entity("Tienda_UCN_api.src.Domain.Models.Brand", b =>
@@ -403,9 +433,8 @@ namespace Tienda_UCN_api.src.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Gender")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Gender")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("LastName")
                         .IsRequired()

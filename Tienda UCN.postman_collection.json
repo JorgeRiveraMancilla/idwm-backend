@@ -40,7 +40,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"admin@tiendaucn.cl\",\r\n    \"password\": \"Admin1234!\",\r\n    \"rememberMe\": false\r\n}",
+							"raw": "{\r\n  \"email\": \"user@example.com\",\r\n  \"password\": \"string\",\r\n  \"rememberMe\": true\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -55,6 +55,87 @@
 							"path": [
 								"auth",
 								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"user@example.com\",\r\n  \"password\": \"5fM:?3_Tc`bsMt5XXC<P\",\r\n  \"confirmPassword\": \"string\",\r\n  \"rut\": \"8710365-k\",\r\n  \"firstName\": \"hXgbcBSlVvWehr-Enah-\",\r\n  \"lastName\": \"XfHLORuHMPoBPuJrDjyq\",\r\n  \"birthDate\": \"2025-07-29T19:16:50.085Z\",\r\n  \"phoneNumber\": \"198774119\",\r\n  \"gender\": \"Masculino\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/register",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Email",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"user@example.com\",\r\n  \"verificationCode\": \"815641\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/verify-email",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"verify-email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Resend Email Verification Code",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"user@example.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/resend-email-verification-code",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"resend-email-verification-code"
 							]
 						}
 					},
