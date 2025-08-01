@@ -5,6 +5,7 @@ using Serilog;
 using Tienda_UCN_api.src.Domain.Models;
 using Tienda_UCN_api.src.Infrastructure.Data;
 using Tienda_UCN_api.src.Infrastructure.Repositories.Interfaces;
+using Tienda_UCN_api.Src.Infrastructure.Repositories.Interfaces;
 
 namespace Tienda_UCN_api.src.Infrastructure.Repositories.Implements
 {
@@ -15,12 +16,14 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Implements
     {
         private readonly DataContext _context;
         private readonly UserManager<User> _userManager;
-        private readonly IConfiguration _configuration;
-        public UserRepository(DataContext context, UserManager<User> userManager, IConfiguration configuration)
+        private readonly int _daysOfDeleteUnconfirmedUsers;
+        private readonly IVerificationCodeRepository _verificationCodeRepository;
+        public UserRepository(DataContext context, UserManager<User> userManager, IConfiguration configuration, IVerificationCodeRepository verificationCodeRepository)
         {
             _context = context;
             _userManager = userManager;
-            _configuration = configuration;
+            _verificationCodeRepository = verificationCodeRepository;
+            _daysOfDeleteUnconfirmedUsers = configuration.GetValue<int?>("Jobs:DaysOfDeleteUnconfirmedUsers") ?? throw new InvalidOperationException("La configuración 'Jobs:DaysOfDeleteUnconfirmedUsers' no está definida.");
         }
 
         /// <summary>
@@ -82,7 +85,7 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Implements
         {
             Log.Information("Iniciando eliminación de usuarios no confirmados");
 
-            var cutoffDate = DateTime.UtcNow.AddDays(_configuration.GetValue<int>("Jobs:DaysOfDeleteUnconfirmedUsers"));
+            var cutoffDate = DateTime.UtcNow.AddDays(_daysOfDeleteUnconfirmedUsers);
 
             var unconfirmedUsers = await _context.Users
                 .Where(u => !u.EmailConfirmed && u.RegisteredAt < cutoffDate)
@@ -99,7 +102,7 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Implements
             {
                 if (user.VerificationCodes.Any())
                 {
-                    _context.VerificationCodes.RemoveRange(user.VerificationCodes);
+                    await _verificationCodeRepository.DeleteByUserIdAsync(user.Id);
                 }
             }
 

@@ -11,9 +11,11 @@ namespace Tienda_UCN_api.Src.Application.Jobs
     public class UserJob : IUserJob
     {
         private readonly IUserService _userService;
-        public UserJob(IUserService userService)
+
+        public UserJob(IUserService userService, IConfiguration _configuration)
         {
             _userService = userService;
+
         }
 
         [AutomaticRetry(Attempts = 10, DelaysInSeconds = new int[] { 60, 120, 300, 600, 900 })]
