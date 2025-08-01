@@ -119,7 +119,12 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
             if (result is bool && !result.Value!)
             {
                 Log.Error($"Error al guardar la imagen en la base de datos: {file.FileName}");
-                await DeleteAsync(uploadResult.PublicId); // Eliminamos la imagen de Cloudinary si falla la creación de la imagen en la bdd
+                var deleteResult = await DeleteInCloudinaryAsync(uploadResult.PublicId); // Eliminamos la imagen de Cloudinary si falla la creación de la imagen en la bdd
+                if (!deleteResult)
+                {
+                    Log.Error($"Error al eliminar la imagen de Cloudinary después de fallar la creación en la base de datos: {uploadResult.PublicId}");
+                    throw new Exception("Error al eliminar la imagen de Cloudinary después de fallar la creación en la base de datos");
+                }
                 throw new Exception("Error al guardar la imagen en la base de datos");
             }
             else if (result is null)
@@ -160,6 +165,25 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
                 return false;
             }
             Log.Information($"Imagen con PublicId: {publicId} eliminada exitosamente de la base de datos");
+            return true;
+        }
+
+        /// <summary>
+        /// Elimina una imagen de Cloudinary de forma asíncrona.
+        /// </summary>
+        /// <param name="publicId">El ID público de la imagen a eliminar.</param>
+        /// <returns>True si la eliminación fue exitosa, de lo contrario false.</returns>
+        private async Task<bool> DeleteInCloudinaryAsync(string publicId)
+        {
+            var deletionParams = new DeletionParams(publicId);
+            Log.Information($"Eliminando imagen con PublicId: {publicId} de Cloudinary");
+            var deleteResult = await _cloudinary.DestroyAsync(deletionParams);
+            if (deleteResult.Error != null)
+            {
+                Log.Error($"Error al eliminar la imagen con PublicId: {publicId} de Cloudinary: {deleteResult.Error.Message}");
+                return false;
+            }
+            Log.Information($"Imagen con PublicId: {publicId} eliminada exitosamente de Cloudinary");
             return true;
         }
 
