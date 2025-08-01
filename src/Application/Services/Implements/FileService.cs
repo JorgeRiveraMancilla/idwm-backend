@@ -21,6 +21,10 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
         private readonly string _cloudName;
         private readonly string _cloudApiKey;
         private readonly string _cloudApiSecret;
+        private readonly int _transformationWidth;
+        private readonly string _transformationCrop;
+        private readonly string _transformationQuality;
+        private readonly string _transformationFetchFormat;
         public FileService(IConfiguration configuration, IFileRepository fileRepository)
         {
             _configuration = configuration;
@@ -32,7 +36,11 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
             _cloudinary = new Cloudinary(account);
             _cloudinary.Api.Secure = true; // Aseguramos  que las URLs sean seguras con HTTPS
             _allowedExtensions = _configuration.GetSection("Products:AllowedExtensions").Get<string[]>() ?? throw new InvalidOperationException("La configuración de las extensiones de las imágenes es obligatoria");
+            _transformationQuality = _configuration["Products:TransformationQuality"] ?? throw new InvalidOperationException("La configuración de la calidad de la transformación es obligatoria");
+            _transformationCrop = _configuration["Products:TransformationCrop"] ?? throw new InvalidOperationException("La configuración del recorte de la transformación es obligatoria");
+            _transformationFetchFormat = _configuration["Products:TransformationFetchFormat"] ?? throw new InvalidOperationException("La configuración del formato de la transformación es obligatoria");
             if (!int.TryParse(_configuration["Products:ImageMaxSizeInBytes"], out _maxFileSizeInBytes)) { throw new InvalidOperationException("La configuración del tamaño de la imagen es obligatoria"); }
+            if (!int.TryParse(_configuration["Products:TransformationWidth"], out _transformationWidth)) { throw new InvalidOperationException("La configuración del ancho de la transformación es obligatoria"); }
         }
 
         /// <summary>
@@ -87,9 +95,9 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
 
             Log.Information($"Optimizando imagen: {file.FileName} antes de subir a la nube");
             uploadParams.Transformation = new Transformation()
-                .Width(1000).Crop("scale").Chain()
-                .Quality("auto:best").Chain()
-                .FetchFormat("auto");
+                .Width(_transformationWidth).Crop(_transformationCrop).Chain()
+                .Quality(_transformationQuality).Chain()
+                .FetchFormat(_transformationFetchFormat);
 
             Log.Information($"Subiendo imagen: {file.FileName} a Cloudinary");
             var uploadResult = await _cloudinary.UploadAsync(uploadParams);
@@ -108,12 +116,18 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
             };
 
             var result = await _fileRepository.CreateAsync(image);
-            if (!result)
+            if (result is bool && !result.Value!)
             {
                 Log.Error($"Error al guardar la imagen en la base de datos: {file.FileName}");
                 await DeleteAsync(uploadResult.PublicId); // Eliminamos la imagen de Cloudinary si falla la creación de la imagen en la bdd
                 throw new Exception("Error al guardar la imagen en la base de datos");
             }
+            else if (result is null)
+            {
+                Log.Warning($"La imagen ya existe en la base de datos: {file.FileName}");
+                return false;
+            }
+
             Log.Information($"Imagen subida exitosamente: {uploadResult.SecureUrl}");
             return true;
         }
@@ -134,7 +148,19 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
                 throw new Exception($"Error al eliminar la imagen: {deleteResult.Error.Message}");
             }
             Log.Information($"Imagen con PublicId: {publicId} eliminada exitosamente de Cloudinary");
-            return await _fileRepository.DeleteAsync(publicId);
+            var result = await _fileRepository.DeleteAsync(publicId);
+            if (result is bool && !result.Value!)
+            {
+                Log.Error($"Error al eliminar la imagen de la base de datos con PublicId: {publicId}");
+                throw new Exception("Error al eliminar la imagen de la base de datos");
+            }
+            else if (result is null)
+            {
+                Log.Warning($"La imagen no existe en la base de datos con PublicId: {publicId}");
+                return false;
+            }
+            Log.Information($"Imagen con PublicId: {publicId} eliminada exitosamente de la base de datos");
+            return true;
         }
 
         /// <summary>
