@@ -21,7 +21,7 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
         /// <returns>True si el archivo se creó correctamente, de lo contrario false.</returns>
         public async Task<bool> CreateAsync(Image file)
         {
-            var existsImage = await _context.Images.AnyAsync(i => i.PublicId == file.PublicId && i.ProductId == file.ProductId);
+            var existsImage = await _context.Images.AnyAsync(i => i.PublicId == file.PublicId);
             if (existsImage) { return false; }
             _context.Images.Add(file);
             return await _context.SaveChangesAsync() > 0;
