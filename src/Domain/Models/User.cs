@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Tienda_UCN_api.Src.Domain.Models;
 
 namespace Tienda_UCN_api.src.Domain.Models
 {
@@ -35,6 +36,12 @@ namespace Tienda_UCN_api.src.Domain.Models
         /// Fecha de nacimiento del usuario.
         /// </summary>
         public required DateTime BirthDate { get; set; }
+
+
+        /// <summary>
+        /// Indica si el usuario ha aceptado los términos y condiciones.
+        /// </summary>
+        public ICollection<VerificationCode> VerificationCodes { get; set; } = new List<VerificationCode>();
 
         /// <summary>
         /// Fecha de registro del usuario.

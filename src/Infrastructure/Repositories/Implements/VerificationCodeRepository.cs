@@ -43,6 +43,19 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
         }
 
         /// <summary>
+        /// Elimina todos los códigos de verificación asociados a un usuario.
+        /// </summary>
+        /// <param name="userId">El ID del usuario.</param>
+        /// <returns>El número de códigos de verificación eliminados.</returns>
+        public async Task<int> DeleteByUserIdAsync(int userId)
+        {
+            var codes = await _context.VerificationCodes.Where(vc => vc.UserId == userId).ToListAsync();
+            _context.VerificationCodes.RemoveRange(codes);
+            await _context.SaveChangesAsync();
+            return codes.Count;
+        }
+
+        /// <summary>
         /// Obtiene el último código de verificación por ID de usuario y tipo de código.
         /// </summary>
         /// <param name="userId">El ID del usuario.</param>

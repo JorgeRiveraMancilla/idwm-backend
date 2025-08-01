@@ -34,6 +34,15 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
         }
 
         /// <summary>
+        /// Elimina usuarios no confirmados.
+        /// </summary>
+        /// <returns>Número de usuarios eliminados</returns>
+        public async Task<int> DeleteUnconfirmedAsync()
+        {
+            return await _userRepository.DeleteUnconfirmedAsync();
+        }
+
+        /// <summary>
         /// Inicia sesión con el usuario proporcionado.
         /// </summary>
         /// <param name="loginDTO">DTO que contiene las credenciales del usuario.</param>

@@ -79,5 +79,11 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Interfaces
         /// <param name="email">Correo electrónico del usuario</param>
         /// <returns>True si la confirmación fue exitosa, false en caso contrario</returns>
         Task<bool> ConfirmEmailAsync(string email);
+
+        /// <summary>
+        /// Elimina usuarios no confirmados.
+        /// </summary>
+        /// <returns>Número de usuarios eliminados</returns>
+        Task<int> DeleteUnconfirmedAsync();
     }
 }

@@ -44,5 +44,12 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Interfaces
         /// <param name="verificationCode">El código de verificación a actualizar.</param>
         /// <returns>El código de verificación actualizado o null.</returns>
         Task<VerificationCode?> UpdateAsync(VerificationCode verificationCode);
+
+        /// <summary>
+        /// Elimina todos los códigos de verificación asociados a un usuario.
+        /// </summary>
+        /// <param name="userId">El ID del usuario.</param>
+        /// <returns>El número de códigos de verificación eliminados.</returns>
+        Task<int> DeleteByUserIdAsync(int userId);
     }
 }
