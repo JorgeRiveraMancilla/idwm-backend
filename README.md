@@ -48,7 +48,7 @@ Once the above is installed, clone the repository with the command:
 - Replace admin `PhoneNumber` with the following format +569 XXXXXXXX
 - Replace admin `Password` and de `RandomUserPassword` with an alphanumeric password with at least one capital letter and at least one special character.
 - Replace the `WelcomeSubject`, `From` and `VerificationSubject` with your own email variables, but, i recommend use the `<onboarding@resend.dev>` email domain to use the free plan of resend API.
-- Keep the `AllowedUserNameCharacters`, the `ExpirationTimeInMinutes` and the `ImageMaxSizeInBytes` configuration of the appsettings.example.json file.
+- Keep the `AllowedUserNameCharacters`, the `ExpirationTimeInMinutes`, `TransformationWidth`, `TransformationCrop`, `TransformationQuality`, `TransformationFetchFormat` and the `ImageMaxSizeInBytes` configuration of the appsettings.example.json file.
 
 5. Restore the project dependencies in the terminal:
 ```bash
