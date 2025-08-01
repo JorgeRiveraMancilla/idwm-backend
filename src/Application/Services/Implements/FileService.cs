@@ -40,8 +40,8 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
         /// </summary>
         /// <param name="file">El archivo a subir.</param>
         /// <param name="productId">El ID del producto al que pertenece la imagen.</param>
-        /// <returns>URL del archivo subido.</returns>
-        public async Task<string> UploadAsync(IFormFile file, int productId)
+        /// <returns>True si la carga fue exitosa, de lo contrario False.</returns>
+        public async Task<bool> UploadAsync(IFormFile file, int productId)
         {
             if (productId <= 0)
             {
@@ -115,7 +115,7 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
                 throw new Exception("Error al guardar la imagen en la base de datos");
             }
             Log.Information($"Imagen subida exitosamente: {uploadResult.SecureUrl}");
-            return uploadResult.SecureUrl.ToString();
+            return true;
         }
 
         /// <summary>
@@ -137,6 +137,11 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
             return await _fileRepository.DeleteAsync(publicId);
         }
 
+        /// <summary>
+        /// Valida si el archivo es una imagen válida.
+        /// </summary>
+        /// <param name="file">El archivo a validar.</param>
+        /// <returns>True si el archivo es una imagen válida, de lo contrario false.</returns>
         private bool IsValidImageFile(IFormFile file)
         {
             try

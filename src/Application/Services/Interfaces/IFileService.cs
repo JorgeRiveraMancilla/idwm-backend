@@ -10,8 +10,8 @@ namespace Tienda_UCN_api.Src.Application.Services.Interfaces
         /// </summary>
         /// <param name="file">El archivo a subir.</param>
         /// <param name="productId">El ID del producto al que pertenece la imagen.</param>
-        /// <returns>URL del archivo subido.</returns>
-        Task<string> UploadAsync(IFormFile file, int productId);
+        /// <returns>True si la carga fue exitosa, de lo contrario False.</returns>
+        Task<bool> UploadAsync(IFormFile file, int productId);
 
         /// <summary>
         /// Elimina un archivo de Cloudinary.
