@@ -37,5 +37,11 @@ namespace Tienda_UCN_api.src.Application.Services.Interfaces
         /// <param name="resendEmailVerificationCodeDTO">DTO que contiene el correo electrónico del usuario.</param>
         /// <returns>Un string que representa el mensaje de éxito del reenvío.</returns>
         Task<string> ResendEmailVerificationCodeAsync(ResendEmailVerificationCodeDTO resendEmailVerificationCodeDTO);
+
+        /// <summary>
+        /// Elimina usuarios no confirmados.
+        /// </summary>
+        /// <returns>Número de usuarios eliminados</returns>
+        Task<int> DeleteUnconfirmedAsync();
     }
 }

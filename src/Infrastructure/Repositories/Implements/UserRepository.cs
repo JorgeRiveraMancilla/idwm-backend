@@ -1,5 +1,7 @@
+using System.Xml.Schema;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using Tienda_UCN_api.src.Domain.Models;
 using Tienda_UCN_api.src.Infrastructure.Data;
 using Tienda_UCN_api.src.Infrastructure.Repositories.Interfaces;
@@ -13,10 +15,12 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Implements
     {
         private readonly DataContext _context;
         private readonly UserManager<User> _userManager;
-        public UserRepository(DataContext context, UserManager<User> userManager)
+        private readonly IConfiguration _configuration;
+        public UserRepository(DataContext context, UserManager<User> userManager, IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -68,6 +72,42 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Implements
             var user = await _userManager.FindByIdAsync(userId.ToString());
             var result = await _userManager.DeleteAsync(user!);
             return result.Succeeded;
+        }
+
+        /// <summary>
+        /// Elimina usuarios no confirmados.
+        /// </summary>
+        /// <returns>Número de usuarios eliminados</returns>
+        public async Task<int> DeleteUnconfirmedAsync()
+        {
+            Log.Information("Iniciando eliminación de usuarios no confirmados");
+
+            var cutoffDate = DateTime.UtcNow.AddDays(_configuration.GetValue<int>("Jobs:DaysOfDeleteUnconfirmedUsers"));
+
+            var unconfirmedUsers = await _context.Users
+                .Where(u => !u.EmailConfirmed && u.RegisteredAt < cutoffDate)
+                .Include(u => u.VerificationCodes)
+                .ToListAsync();
+
+            if (!unconfirmedUsers.Any())
+            {
+                Log.Information("No se encontraron usuarios no confirmados para eliminar");
+                return 0;
+            }
+
+            foreach (var user in unconfirmedUsers)
+            {
+                if (user.VerificationCodes.Any())
+                {
+                    _context.VerificationCodes.RemoveRange(user.VerificationCodes);
+                }
+            }
+
+            _context.Users.RemoveRange(unconfirmedUsers);
+            await _context.SaveChangesAsync();
+
+            Log.Information($"Eliminados {unconfirmedUsers.Count} usuarios no confirmados");
+            return unconfirmedUsers.Count;
         }
 
         /// <summary>
