@@ -13,6 +13,8 @@ using Tienda_UCN_api.src.Infrastructure.Data;
 using Tienda_UCN_api.src.Infrastructure.Middlewares;
 using Tienda_UCN_api.src.Infrastructure.Repositories.Implements;
 using Tienda_UCN_api.src.Infrastructure.Repositories.Interfaces;
+using Tienda_UCN_api.Src.Application.Jobs;
+using Tienda_UCN_api.Src.Application.Jobs.Interfaces;
 using Tienda_UCN_api.Src.Application.Mappers;
 using Tienda_UCN_api.Src.Application.Services.Implements;
 using Tienda_UCN_api.Src.Application.Services.Interfaces;
@@ -37,7 +39,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IVerificationCodeRepository, VerificationCodeRepository>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
 builder.Services.AddScoped<IFileService, FileService>();
-
+builder.Services.AddScoped<IUserJob, UserJob>();
 
 #region Email Service Configuration
 Log.Information("Configurando servicio de Email");
@@ -127,6 +129,8 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 #region Hangfire Configuration
 Log.Information("Configurando los trabajos en segundo plano de Hangfire");
+var cronExpression = builder.Configuration["Jobs:CronJobDeleteUnconfirmedUsers"] ?? throw new InvalidOperationException("La expresión cron para eliminar usuarios no confirmados no está configurada.");
+var timeZone = TimeZoneInfo.FindSystemTimeZoneById(builder.Configuration["Jobs:TimeZone"] ?? throw new InvalidOperationException("La zona horaria para los trabajos no está configurada."));
 builder.Services.AddHangfire(configuration =>
 {
     var connectionStringBuilder = new SqliteConnectionStringBuilder(connectionString);
@@ -138,21 +142,40 @@ builder.Services.AddHangfire(configuration =>
     configuration.UseRecommendedSerializerSettings();
 });
 builder.Services.AddHangfireServer();
+
+
 #endregion
 var app = builder.Build();
 
-#region Database Migration
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    StatsPollingInterval = 5000,
+    DashboardTitle = "Tienda UCN - Background Jobs",
+    DisplayStorageConnectionString = false
+});
+
+#region Database Migration and jobs Configuration
 Log.Information("Aplicando migraciones a la base de datos");
 using (var scope = app.Services.CreateScope())
 {
     await DataSeeder.Initialize(scope.ServiceProvider);
+    var jobId = nameof(UserJob.DeleteUnconfirmedAsync);
+    RecurringJob.AddOrUpdate<UserJob>(
+        jobId,
+        job => job.DeleteUnconfirmedAsync(),
+        cronExpression,
+        new RecurringJobOptions
+        {
+            TimeZone = timeZone
+        }
+    );
+    Log.Information($"Job recurrente '{jobId}' configurado con cron: {cronExpression} en zona horaria: {timeZone.Id}");
 }
 #endregion
 
 #region Pipeline Configuration
 Log.Information("Configurando el pipeline de la aplicación");
 app.UseSwagger();
-app.UseHangfireDashboard();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tienda UCN API V1");
