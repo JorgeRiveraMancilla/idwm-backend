@@ -18,6 +18,11 @@ namespace Tienda_UCN_api.src.Domain.Models
         public required string PublicId { get; set; }
 
         /// <summary>
+        /// Identificador del producto asociado a la imagen.
+        /// </summary>
+        public int ProductId { get; set; }
+
+        /// <summary>
         /// Fecha de creación de la imagen.
         /// </summary>
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
