@@ -1,5 +1,8 @@
+using Hangfire;
+using Hangfire.Storage.SQLite;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Resend;
 using Serilog;
@@ -19,6 +22,8 @@ using Tienda_UCN_api.Src.Infrastructure.Repositories.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 //Configuración de Mapster
 MapperExtensions.ConfigureMapster();
+
+var connectionString = builder.Configuration.GetConnectionString("SqliteDatabase") ?? throw new InvalidOperationException("Connection string SqliteDatabase no configurado");
 
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
@@ -117,9 +122,23 @@ catch (Exception ex)
 #region Database Configuration
 Log.Information("Configurando base de datos SQLite");
 builder.Services.AddDbContext<DataContext>(options =>
-    options.UseSqlite(builder.Configuration.GetSection("ConnectionStrings:SqliteDatabase").Value));
+    options.UseSqlite(connectionString));
 #endregion
 
+#region Hangfire Configuration
+Log.Information("Configurando los trabajos en segundo plano de Hangfire");
+builder.Services.AddHangfire(configuration =>
+{
+    var connectionStringBuilder = new SqliteConnectionStringBuilder(connectionString);
+    var databasePath = connectionStringBuilder.DataSource;
+
+    configuration.UseSQLiteStorage(databasePath);
+    configuration.SetDataCompatibilityLevel(CompatibilityLevel.Version_170);
+    configuration.UseSimpleAssemblyNameTypeSerializer();
+    configuration.UseRecommendedSerializerSettings();
+});
+builder.Services.AddHangfireServer();
+#endregion
 var app = builder.Build();
 
 #region Database Migration
@@ -133,6 +152,7 @@ using (var scope = app.Services.CreateScope())
 #region Pipeline Configuration
 Log.Information("Configurando el pipeline de la aplicación");
 app.UseSwagger();
+app.UseHangfireDashboard();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tienda UCN API V1");
