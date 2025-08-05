@@ -61,6 +61,7 @@ namespace Tienda_UCN_api.src.Infrastructure.Middlewares
                 InvalidOperationException _ => (StatusCodes.Status409Conflict, "Conflicto de operación"),
                 FormatException _ => (StatusCodes.Status400BadRequest, "Formato inválido"),
                 SecurityException _ => (StatusCodes.Status403Forbidden, "Acceso prohibido"),
+                ArgumentOutOfRangeException _ => (StatusCodes.Status400BadRequest, "Argumento fuera de rango"),
                 ArgumentException _ => (StatusCodes.Status400BadRequest, "Argumento inválido"),
                 TimeoutException _ => (StatusCodes.Status429TooManyRequests, "Demasiadas solicitudes"),
                 JsonException _ => (StatusCodes.Status400BadRequest, "JSON inválido"),
