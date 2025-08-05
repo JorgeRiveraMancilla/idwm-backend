@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Tienda_UCN_api.src.api.Controllers;
 using Tienda_UCN_api.src.Application.DTO;
 using Tienda_UCN_api.Src.Application.DTO.ProductDTO;
+using Tienda_UCN_api.Src.Application.DTO.ProductDTO.CustomerDTO;
 using Tienda_UCN_api.Src.Application.Services.Interfaces;
 
 namespace Tienda_UCN_api.Src.API.Controllers
@@ -31,11 +32,19 @@ namespace Tienda_UCN_api.Src.API.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllForAdminAsync([FromQuery] SearchParamsDTO searchParams)
         {
-            var result = await _productService.GetAllForAdminAsync(searchParams);
-            if (result == null || !result.Products.Any()) { throw new KeyNotFoundException("No se encontraron productos."); }
+            var result = await _productService.GetFilteredForAdminAsync(searchParams);
+            if (result == null || result.Products.Count == 0) { throw new KeyNotFoundException("No se encontraron productos."); }
             return Ok(new GenericResponse<ListedProductsForAdminDTO>("Productos obtenidos exitosamente", result));
         }
 
+        [HttpGet("customer/products")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllForCustomerAsync([FromQuery] SearchParamsDTO searchParams)
+        {
+            var result = await _productService.GetFilteredForCustomerAsync(searchParams);
+            if (result == null || result.Products.Count == 0) { throw new KeyNotFoundException("No se encontraron productos."); }
+            return Ok(new GenericResponse<ListedProductsForCustomerDTO>("Productos obtenidos exitosamente", result));
+        }
     }
 
 }

@@ -13,6 +13,13 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Interfaces
         /// </summary>
         /// <param name="searchParams">Parámetros de búsqueda para filtrar los productos.</param>
         /// <returns>Una tarea que representa la operación asíncrona, con una lista de productos para el administrador y el conteo total de productos.</returns>
-        Task<(IEnumerable<Product> products, int totalCount)> GetAllForAdminAsync(SearchParamsDTO searchParams);
+        Task<(IEnumerable<Product> products, int totalCount)> GetFilteredForAdminAsync(SearchParamsDTO searchParams);
+
+        /// <summary>
+        /// Retorna una lista de productos para el cliente con los parámetros de búsqueda especificados.
+        /// </summary>
+        /// <param name="searchParams">Parámetros de búsqueda para filtrar los productos.</param>
+        /// <returns>Una tarea que representa la operación asíncrona, con una lista de productos para el cliente y el conteo total de productos.</returns>
+        Task<(IEnumerable<Product> products, int totalCount)> GetFilteredForCustomerAsync(SearchParamsDTO searchParams);
     }
 }
