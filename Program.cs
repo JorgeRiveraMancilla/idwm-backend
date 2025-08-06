@@ -22,8 +22,6 @@ using Tienda_UCN_api.Src.Infrastructure.Repositories.Implements;
 using Tienda_UCN_api.Src.Infrastructure.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
-//Configuración de Mapster
-MapperExtensions.ConfigureMapster();
 
 var connectionString = builder.Configuration.GetConnectionString("SqliteDatabase") ?? throw new InvalidOperationException("Connection string SqliteDatabase no configurado");
 
@@ -31,7 +29,9 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+//Mappers
+builder.Services.AddScoped<ProductMapper>();
+builder.Services.AddScoped<UserMapper>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
@@ -173,6 +173,7 @@ using (var scope = app.Services.CreateScope())
         }
     );
     Log.Information($"Job recurrente '{jobId}' configurado con cron: {cronExpression} en zona horaria: {timeZone.Id}");
+    MapperExtensions.ConfigureMapster(scope.ServiceProvider);
 }
 #endregion
 

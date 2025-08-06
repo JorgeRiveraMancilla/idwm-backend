@@ -45,6 +45,20 @@ namespace Tienda_UCN_api.Src.API.Controllers
             if (result == null || result.Products.Count == 0) { throw new KeyNotFoundException("No se encontraron productos."); }
             return Ok(new GenericResponse<ListedProductsForCustomerDTO>("Productos obtenidos exitosamente", result));
         }
+
+        /// <summary>
+        /// Obtiene un producto específico para el cliente.
+        /// </summary>
+        /// <param name="id">ID del producto a obtener.</param>
+        /// <returns>El producto solicitado.</returns>
+        [HttpGet("{id}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetByIdForCustomerAsync(int id)
+        {
+            var result = await _productService.GetByIdAsync(id);
+            if (result == null) { throw new KeyNotFoundException("Producto no encontrado."); }
+            return Ok(new GenericResponse<ProductDetailDTO>("Producto obtenido exitosamente", result));
+        }
     }
 
 }

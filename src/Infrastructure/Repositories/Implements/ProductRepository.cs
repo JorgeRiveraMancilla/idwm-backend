@@ -24,6 +24,22 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
             _defaultPageSize = _configuration.GetValue<int?>("Products:DefaultPageSize") ?? throw new ArgumentNullException("El tamaño de página por defecto no puede ser nulo.");
         }
 
+        /// <summary>
+        /// Retorna un producto específico por su ID.
+        /// </summary>
+        /// <param name="id">El ID del producto a buscar.</param>
+        /// <returns>Una tarea que representa la operación asíncrona, con el producto encontrado o null si no se encuentra.</returns>
+        public async Task<Product?> GetByIdAsync(int id)
+        {
+            return await _context.Products.
+                                        AsNoTracking().
+                                        Where(p => p.Id == id && p.IsAvailable).
+                                        Include(p => p.Category).
+                                        Include(p => p.Brand).
+                                        Include(p => p.Images)
+                                        .FirstOrDefaultAsync();
+        }
+
         // <summary>
         /// Retorna una lista de productos para el administrador con los parámetros de búsqueda especificados.
         /// </summary>
@@ -74,7 +90,7 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
                 .Where(p => p.IsAvailable)
                 .Include(p => p.Category)
                 .Include(p => p.Brand)
-                .Include(p => p.Images)
+                .Include(p => p.Images.OrderBy(i => i.CreatedAt).Take(1))
                 .AsNoTracking();
 
             int totalCount = await query.CountAsync();

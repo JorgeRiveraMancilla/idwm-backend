@@ -1,3 +1,4 @@
+using Mapster;
 using Serilog;
 using Tienda_UCN_api.src.Domain.Models;
 using Tienda_UCN_api.Src.Application.DTO.ProductDTO;
@@ -12,6 +13,9 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
         private readonly IProductRepository _productRepository;
         private readonly IConfiguration _configuration;
         private readonly int _fewUnitsAvailable;
+        private readonly string _soldOutMessage;
+        private readonly string _fewUnitsMessage;
+        private readonly string _inStockMessage;
 
         private readonly string _defaultImageUrl;
 
@@ -24,6 +28,21 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
             _fewUnitsAvailable = int.Parse(_configuration["Products:FewUnitsAvailable"] ?? throw new InvalidOperationException("La configuración 'FewUnitsAvailable' no está definida."));
             _defaultImageUrl = _configuration["Products:DefaultImageUrl"] ?? throw new InvalidOperationException("La configuración 'DefaultImageUrl' no está definida.");
             _defaultPageSize = int.Parse(_configuration["Products:DefaultPageSize"] ?? throw new InvalidOperationException("La configuración 'DefaultPageSize' no está definida."));
+            _soldOutMessage = _configuration["Products:SoldOutMessage"] ?? throw new InvalidOperationException("La configuración 'SoldOutMessage' no está definida.");
+            _fewUnitsMessage = _configuration["Products:FewUnitsMessage"] ?? throw new InvalidOperationException("La configuración 'FewUnitsMessage' no está definida.");
+            _inStockMessage = _configuration["Products:InStockMessage"] ?? throw new InvalidOperationException("La configuración 'InStockMessage' no está definida.");
+        }
+
+        /// <summary>
+        /// Retorna un producto específico por su ID.
+        /// </summary>
+        /// <param name="id">El ID del producto a buscar.</param>
+        /// <returns>Una tarea que representa la operación asíncrona, con el producto encontrado o null si no se encuentra.</returns>
+        public async Task<ProductDetailDTO> GetByIdAsync(int id)
+        {
+            var product = await _productRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException($"Producto con ID {id} no encontrado.");
+            Log.Information("Producto encontrado: {@Product}", product);
+            return product.Adapt<ProductDetailDTO>();
         }
 
         /// <summary>
@@ -47,18 +66,7 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
             // Convertimos los productos filtrados a DTOs para la respuesta
             return new ListedProductsForAdminDTO
             {
-                Products = products.Select(product => new ProductForAdminDTO
-                {
-                    Title = product.Title,
-                    MainImageURL = product.Images.FirstOrDefault()?.ImageUrl ?? _defaultImageUrl,
-                    Price = product.Price.ToString("C"),
-                    Stock = product.Stock,
-                    StockIndicator = product.Stock > _fewUnitsAvailable ? "Con Stock" : "Pocas unidades", //este mensaje es netamente informativo, no es necesario dejarlo en appsettings.json
-                    CategoryName = product.Category.Name,
-                    BrandName = product.Brand.Name,
-                    StatusName = product.Status.ToString(),
-                    UpdatedAt = product.UpdatedAt
-                }).ToList(),
+                Products = products.Adapt<List<ProductForAdminDTO>>(),
                 TotalCount = totalCount,
                 TotalPages = totalPages,
                 CurrentPage = currentPage,
@@ -86,23 +94,24 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
             // Convertimos los productos filtrados a DTOs para la respuesta
             return new ListedProductsForCustomerDTO
             {
-                Products = products.Select(product => new ProductForCustomerDTO
-                {
-                    Title = product.Title,
-                    Description = product.Description,
-                    Images = product.Images.Select(img => img.ImageUrl).ToList().DefaultIfEmpty(_defaultImageUrl).ToList(),
-                    Price = product.Price.ToString("C"),
-                    Stock = product.Stock,
-                    StockIndicator = product.Stock > _fewUnitsAvailable ? "Con Stock" : "Pocas unidades",
-                    CategoryName = product.Category.Name,
-                    BrandName = product.Brand.Name,
-                    StatusName = product.Status.ToString()
-                }).ToList(),
+                Products = products.Adapt<List<ProductForCustomerDTO>>(),
                 TotalCount = totalCount,
                 TotalPages = totalPages,
                 CurrentPage = currentPage,
                 PageSize = pageSize
             };
+        }
+
+        /// <summary>
+        /// Obtiene el indicador de stock basado en la cantidad disponible.
+        /// </summary>
+        /// <param name="stock">Stock del producto</param>
+        /// <returns>Retorna el mensaje adecuado</returns>
+        private string GetStockIndicator(int stock)
+        {
+            if (stock == 0) { return _soldOutMessage; }
+            if (stock <= _fewUnitsAvailable) { return _fewUnitsMessage; }
+            return _inStockMessage;
         }
     }
 }
