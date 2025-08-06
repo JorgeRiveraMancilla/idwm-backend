@@ -28,5 +28,26 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Interfaces
         /// <param name="id">El ID del producto a buscar.</param>
         /// <returns>Una tarea que representa la operación asíncrona, con el producto encontrado o null si no se encuentra.</returns>
         Task<Product?> GetByIdAsync(int id);
+
+        /// <summary>
+        /// Crea un nuevo producto en el repositorio.
+        /// </summary>
+        /// <param name="product">El producto a crear.</param>
+        /// <returns>Una tarea que representa la operación asíncrona, con el id del producto creado.</returns>
+        Task<int> CreateAsync(Product product);
+
+        /// <summary>
+        /// Crea o obtiene una categoría por su nombre.
+        /// </summary>
+        /// <param name="categoryName">El nombre de la categoría.</param>
+        /// <returns>Una tarea que representa la operación asíncrona, con la categoría creada o encontrada.</returns>
+        Task<Category> CreateOrGetCategoryAsync(string categoryName);
+
+        /// <summary>
+        /// Crea o obtiene una marca por su nombre.
+        /// </summary>
+        /// <param name="brandName">El nombre de la marca.</param>
+        /// <returns>Una tarea que representa la operación asíncrona, con la marca creada o encontrada.</returns>
+        Task<Brand> CreateOrGetBrandAsync(string brandName);
     }
 }

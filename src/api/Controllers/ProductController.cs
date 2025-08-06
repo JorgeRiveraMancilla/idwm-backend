@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Tienda_UCN_api.src.api.Controllers;
 using Tienda_UCN_api.src.Application.DTO;
@@ -59,6 +60,18 @@ namespace Tienda_UCN_api.Src.API.Controllers
             if (result == null) { throw new KeyNotFoundException("Producto no encontrado."); }
             return Ok(new GenericResponse<ProductDetailDTO>("Producto obtenido exitosamente", result));
         }
-    }
 
+        /// <summary>
+        /// Crea un nuevo producto en el sistema.
+        /// </summary>
+        /// <param name="createProductDTO">Los datos del producto a crear.</param>
+        /// <returns>El ID del producto creado.</returns>
+        [HttpPost("")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateAsync([FromForm] CreateProductDTO createProductDTO)
+        {
+            var result = await _productService.CreateAsync(createProductDTO);
+            return Created($"/api/product/{result}", new GenericResponse<string>("Producto creado exitosamente", result));
+        }
+    }
 }

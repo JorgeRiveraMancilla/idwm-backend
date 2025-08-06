@@ -12,6 +12,7 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
     {
         private readonly IProductRepository _productRepository;
         private readonly IConfiguration _configuration;
+        private readonly IFileService _fileService;
         private readonly int _fewUnitsAvailable;
         private readonly string _soldOutMessage;
         private readonly string _fewUnitsMessage;
@@ -21,16 +22,45 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
 
         private readonly int _defaultPageSize;
 
-        public ProductService(IProductRepository productRepository, IConfiguration configuration)
+        public ProductService(IProductRepository productRepository, IConfiguration configuration, IFileService fileService)
         {
             _productRepository = productRepository;
             _configuration = configuration;
             _fewUnitsAvailable = int.Parse(_configuration["Products:FewUnitsAvailable"] ?? throw new InvalidOperationException("La configuración 'FewUnitsAvailable' no está definida."));
             _defaultImageUrl = _configuration["Products:DefaultImageUrl"] ?? throw new InvalidOperationException("La configuración 'DefaultImageUrl' no está definida.");
+            _fileService = fileService;
             _defaultPageSize = int.Parse(_configuration["Products:DefaultPageSize"] ?? throw new InvalidOperationException("La configuración 'DefaultPageSize' no está definida."));
             _soldOutMessage = _configuration["Products:SoldOutMessage"] ?? throw new InvalidOperationException("La configuración 'SoldOutMessage' no está definida.");
             _fewUnitsMessage = _configuration["Products:FewUnitsMessage"] ?? throw new InvalidOperationException("La configuración 'FewUnitsMessage' no está definida.");
             _inStockMessage = _configuration["Products:InStockMessage"] ?? throw new InvalidOperationException("La configuración 'InStockMessage' no está definida.");
+        }
+
+        /// <summary>
+        /// Crea un nuevo producto en el sistema.
+        /// </summary>
+        /// <param name="createProductDTO">Los datos del producto a crear.</param>
+        /// <returns>Una tarea que representa la operación asíncrona, con el ID del producto creado.</returns>
+        public async Task<string> CreateAsync(CreateProductDTO createProductDTO)
+        {
+            Product product = createProductDTO.Adapt<Product>();
+            Category category = await _productRepository.CreateOrGetCategoryAsync(createProductDTO.CategoryName) ?? throw new Exception("Error al crear o obtener la categoría del producto.");
+            Brand brand = await _productRepository.CreateOrGetBrandAsync(createProductDTO.BrandName) ?? throw new Exception("Error al crear o obtener la marca del producto.");
+            product.CategoryId = category.Id;
+            product.BrandId = brand.Id;
+            product.Images = new List<Image>();
+            int productId = await _productRepository.CreateAsync(product);
+            Log.Information("Producto creado: {@Product}", product);
+            if (createProductDTO.Images == null || !createProductDTO.Images.Any())
+            {
+                Log.Information("No se proporcionaron imágenes. Se asignará la imagen por defecto.");
+                throw new InvalidOperationException("Debe proporcionar al menos una imagen para el producto.");
+            }
+            foreach (var image in createProductDTO.Images)
+            {
+                Log.Information("Imagen asociada al producto: {@Image}", image);
+                await _fileService.UploadAsync(image, productId);
+            }
+            return product.Id.ToString();
         }
 
         /// <summary>

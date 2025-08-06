@@ -27,5 +27,13 @@ namespace Tienda_UCN_api.Src.Application.Services.Interfaces
         /// <param name="id">El ID del producto a buscar.</param>
         /// <returns>Una tarea que representa la operación asíncrona, con el producto encontrado o null si no se encuentra.</returns>
         Task<ProductDetailDTO> GetByIdAsync(int id);
+
+        /// <summary>
+        /// Crea un nuevo producto en el sistema.
+        /// </summary>
+        /// <param name="createProductDTO">Los datos del producto a crear.</param>
+        /// <returns>Una tarea que representa la operación asíncrona, con el id del producto creado.</returns>
+        Task<string> CreateAsync(CreateProductDTO createProductDTO);
     }
+
 }

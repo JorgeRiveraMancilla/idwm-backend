@@ -60,6 +60,13 @@ namespace Tienda_UCN_api.Src.Application.Mappers
                 .Map(dest => dest.CategoryName, src => src.Category.Name)
                 .Map(dest => dest.BrandName, src => src.Brand.Name)
                 .Map(dest => dest.StatusName, src => src.Status);
+
+            TypeAdapterConfig<CreateProductDTO, Product>.NewConfig()
+                .Map(dest => dest.Title, src => src.Title)
+                .Map(dest => dest.Description, src => src.Description)
+                .Map(dest => dest.Price, src => src.Price)
+                .Map(dest => dest.Stock, src => src.Stock)
+                .Map(dest => dest.Status, src => src.Status);
         }
 
         /// <summary>
