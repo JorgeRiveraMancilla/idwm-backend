@@ -166,5 +166,14 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
 
             return (products, totalCount);
         }
+
+        /// <summary>
+        /// Cambia el estado activo de un producto por su ID.
+        /// </summary>
+        /// <param name="id">El ID del producto cuyo estado se cambiará.</param>
+        public async Task ToggleActiveAsync(int id)
+        {
+            await _context.Products.Where(p => p.Id == id).ExecuteUpdateAsync(p => p.SetProperty(p => p.IsAvailable, p => !p.IsAvailable));
+        }
     }
 }

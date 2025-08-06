@@ -34,6 +34,12 @@ namespace Tienda_UCN_api.Src.Application.Services.Interfaces
         /// <param name="createProductDTO">Los datos del producto a crear.</param>
         /// <returns>Una tarea que representa la operación asíncrona, con el id del producto creado.</returns>
         Task<string> CreateAsync(CreateProductDTO createProductDTO);
+
+        /// <summary>
+        /// Cambia el estado activo de un producto por su ID.
+        /// </summary>
+        /// <param name="id">El ID del producto cuyo estado se cambiará.</param>
+        Task ToggleActiveAsync(int id);
     }
 
 }

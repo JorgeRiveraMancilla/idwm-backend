@@ -73,5 +73,18 @@ namespace Tienda_UCN_api.Src.API.Controllers
             var result = await _productService.CreateAsync(createProductDTO);
             return Created($"/api/product/{result}", new GenericResponse<string>("Producto creado exitosamente", result));
         }
+
+        /// <summary>
+        /// Cambia el estado activo de un producto por su ID.
+        /// </summary>
+        /// <param name="id">El ID del producto cuyo estado se cambiará.</param>
+        /// <returns>Una respuesta que indica el resultado de la operación.</returns>
+        [HttpPatch("{id}/toggle-active")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ToggleActiveAsync(int id)
+        {
+            await _productService.ToggleActiveAsync(id);
+            return Ok(new GenericResponse<string>("Estado del producto actualizado exitosamente", "El estado del producto ha sido cambiado."));
+        }
     }
 }

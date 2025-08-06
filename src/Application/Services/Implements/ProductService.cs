@@ -133,6 +133,15 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
         }
 
         /// <summary>
+        /// Cambia el estado activo de un producto por su ID.
+        /// </summary>
+        /// <param name="id">El ID del producto cuyo estado se cambiará.</param>
+        public async Task ToggleActiveAsync(int id)
+        {
+            await _productRepository.ToggleActiveAsync(id);
+        }
+
+        /// <summary>
         /// Obtiene el indicador de stock basado en la cantidad disponible.
         /// </summary>
         /// <param name="stock">Stock del producto</param>
