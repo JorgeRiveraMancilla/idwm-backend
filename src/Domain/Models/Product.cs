@@ -2,8 +2,8 @@ namespace Tienda_UCN_api.src.Domain.Models
 {
     public enum Status
     {
-        Nuevo,
-        Usado
+        New,
+        Used
     }
 
     public class Product

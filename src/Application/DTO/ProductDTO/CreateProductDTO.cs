@@ -13,7 +13,7 @@ namespace Tienda_UCN_api.Src.Application.DTO.ProductDTO
         [MinLength(10, ErrorMessage = "La descripción debe tener al menos 10 caracteres.")]
         public required string Description { get; set; }
         [Required(ErrorMessage = "El precio del producto es obligatorio.")]
-        [Range(0, int.MaxValue, ErrorMessage = "El precio debe ser un valor positivo.")]
+        [Range(0, int.MaxValue, ErrorMessage = "El precio debe ser un valor entero positivo.")]
         public required int Price { get; set; }
         [Required(ErrorMessage = "El descuento del producto es obligatorio.")]
         [Range(0, 100, ErrorMessage = "El descuento debe estar entre 0 y 100.")]
