@@ -1,5 +1,11 @@
 namespace Tienda_UCN_api.src.Domain.Models
 {
+    public enum Status
+    {
+        New,
+        Used
+    }
+
     public class Product
     {
         /// <summary>
@@ -35,7 +41,7 @@ namespace Tienda_UCN_api.src.Domain.Models
         /// <summary>
         /// Estado del producto (Nuevo o usado).
         /// </summary>
-        public required string Status { get; set; }
+        public required Status Status { get; set; }
 
         /// <summary>
         /// Indica si el producto está disponible para la venta.

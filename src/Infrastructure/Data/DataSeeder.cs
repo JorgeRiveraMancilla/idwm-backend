@@ -166,7 +166,7 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
                             .RuleFor(p => p.Stock, f => f.Random.Int(1, 100))
                             .RuleFor(p => p.CategoryId, f => f.PickRandom(categoryIds))
                             .RuleFor(p => p.BrandId, f => f.PickRandom(brandIds))
-                            .RuleFor(p => p.Status, f => "Nuevo");
+                            .RuleFor(p => p.Status, f => f.PickRandom<Status>());
 
                         var products = productFaker.Generate(50);
                         await context.Products.AddRangeAsync(products);

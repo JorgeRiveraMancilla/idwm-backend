@@ -11,9 +11,13 @@ namespace Tienda_UCN_api.Src.Application.Mappers
         /// <summary>
         /// Configura los mapeos globales.
         /// </summary>
-        public static void ConfigureMapster()
+        public static void ConfigureMapster(IServiceProvider serviceProvider)
         {
-            UserMapper.ConfigureAllMappings();
+            var productMapper = serviceProvider.GetService<ProductMapper>();
+            productMapper?.ConfigureAllMappings();
+
+            var userMapper = serviceProvider.GetService<UserMapper>();
+            userMapper?.ConfigureAllMappings();
 
             // Configuración global de Mapster para ignorar valores nulos
             TypeAdapterConfig.GlobalSettings.Default.IgnoreNullValues(true);

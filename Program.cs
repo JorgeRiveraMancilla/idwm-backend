@@ -22,8 +22,6 @@ using Tienda_UCN_api.Src.Infrastructure.Repositories.Implements;
 using Tienda_UCN_api.Src.Infrastructure.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
-//Configuración de Mapster
-MapperExtensions.ConfigureMapster();
 
 var connectionString = builder.Configuration.GetConnectionString("SqliteDatabase") ?? throw new InvalidOperationException("Connection string SqliteDatabase no configurado");
 
@@ -31,7 +29,9 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+//Mappers
+builder.Services.AddScoped<ProductMapper>();
+builder.Services.AddScoped<UserMapper>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
@@ -39,6 +39,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IVerificationCodeRepository, VerificationCodeRepository>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IUserJob, UserJob>();
 
 #region Email Service Configuration
@@ -61,7 +63,7 @@ builder.Services.AddAuthentication(options =>
     }
     ).AddJwtBearer(options =>
     {
-        string jwtSecret = builder.Configuration.GetSection("JWTSecret").Value ?? throw new InvalidOperationException("La clave secreta JWT no está configurada.");
+        string jwtSecret = builder.Configuration["JWTSecret"] ?? throw new InvalidOperationException("La clave secreta JWT no está configurada.");
         options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
         {
             ValidateIssuerSigningKey = true,
@@ -76,7 +78,7 @@ builder.Services.AddAuthentication(options =>
 
 #region Identity Configuration
 Log.Information("Configurando Identity");
-builder.Services.AddIdentity<User, Role>(options =>
+builder.Services.AddIdentityCore<User>(options =>
 {
     //Configuración de contraseña
     options.Password.RequireDigit = true;
@@ -89,6 +91,7 @@ builder.Services.AddIdentity<User, Role>(options =>
     //Configuración de UserName
     options.User.AllowedUserNameCharacters = builder.Configuration["IdentityConfiguration:AllowedUserNameCharacters"] ?? throw new InvalidOperationException("Los caracteres permitidos para UserName no están configurados.");
 })
+.AddRoles<Role>()
 .AddEntityFrameworkStores<DataContext>()
 .AddDefaultTokenProviders();
 #endregion
@@ -170,6 +173,7 @@ using (var scope = app.Services.CreateScope())
         }
     );
     Log.Information($"Job recurrente '{jobId}' configurado con cron: {cronExpression} en zona horaria: {timeZone.Id}");
+    MapperExtensions.ConfigureMapster(scope.ServiceProvider);
 }
 #endregion
 
