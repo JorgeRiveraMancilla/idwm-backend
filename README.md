@@ -51,7 +51,7 @@ Once the above is installed, clone the repository with the command:
 - Replace the `TimeZone` with your local time zone, the `CronJobDeleteUnconfirmedUsers` with your own cronjob and the `DaysOfDeleteUnconfirmedUsers` with your own interval on days to delete the unconfirmed users.
 - Replace the `DefaultImageUrl` with your own default image URL.
 - Keep the `HangfireDashboard` section if you want a default configuration of the dashboard.
-- Keep the `AllowedUserNameCharacters`, the `ExpirationTimeInMinutes`, `TransformationWidth`, `TransformationCrop`, `TransformationQuality`, `TransformationFetchFormat`, `DefaultPageSize`, `InStockMessage` ,`FewUnitsMessage`, `SoldOutMessage` and the `ImageMaxSizeInBytes` configuration of the appsettings.example.json file.
+- Keep the `AllowedUserNameCharacters`, the `ExpirationTimeInMinutes`, `TransformationWidth`, `TransformationCrop`, `TransformationQuality`, `TransformationFetchFormat`, `DefaultPageSize` and the `ImageMaxSizeInBytes` configuration of the appsettings.example.json file.
 
 5. Restore the project dependencies in the terminal:
 ```bash

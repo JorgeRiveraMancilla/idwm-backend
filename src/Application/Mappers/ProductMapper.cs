@@ -10,9 +10,6 @@ namespace Tienda_UCN_api.Src.Application.Mappers
         private readonly IConfiguration _configuration;
         private readonly string? _defaultImageURL;
         private readonly int _fewUnitsAvailable;
-        private readonly string? _soldOutMessage;
-        private readonly string? _fewUnitsMessage;
-        private readonly string? _inStockMessage;
 
 
         public ProductMapper(IConfiguration configuration)
@@ -20,9 +17,6 @@ namespace Tienda_UCN_api.Src.Application.Mappers
             _configuration = configuration;
             _defaultImageURL = _configuration.GetValue<string>("Products:DefaultImageUrl") ?? throw new InvalidOperationException("La URL de la imagen por defecto no puede ser nula.");
             _fewUnitsAvailable = _configuration.GetValue<int?>("Products:FewUnitsAvailable") ?? throw new InvalidOperationException("La configuración 'FewUnitsAvailable' no puede ser nula.");
-            _soldOutMessage = _configuration.GetValue<string>("Products:SoldOutMessage") ?? throw new InvalidOperationException("La configuración 'SoldOutMessage' no puede ser nula.");
-            _fewUnitsMessage = _configuration.GetValue<string>("Products:FewUnitsMessage") ?? throw new InvalidOperationException("La configuración 'FewUnitsMessage' no puede ser nula.");
-            _inStockMessage = _configuration.GetValue<string>("Products:InStockMessage") ?? throw new InvalidOperationException("La configuración 'InStockMessage' no puede ser nula.");
         }
 
         public void ConfigureAllMappings()
@@ -76,9 +70,9 @@ namespace Tienda_UCN_api.Src.Application.Mappers
         /// <returns>Retorna el mensaje adecuado</returns>
         private string GetStockIndicator(int stock)
         {
-            if (stock == 0) { return _soldOutMessage!; }
-            if (stock <= _fewUnitsAvailable) { return _fewUnitsMessage!; }
-            return _inStockMessage!;
+            if (stock == 0) { return "Producto sin stock"; }
+            if (stock <= _fewUnitsAvailable) { return "Pocas unidades disponibles"; }
+            return "Con Stock"!;
         }
     }
 }
