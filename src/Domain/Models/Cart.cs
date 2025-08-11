@@ -25,7 +25,7 @@ namespace Tienda_UCN_api.src.Domain.Models
         /// <summary>
         /// Identificador del usuario que posee el carrito de compras (autenticado).
         /// </summary>
-        public string? UserId { get; set; }
+        public int? UserId { get; set; }
 
         /// <summary>
         /// Lista de artículos en el carrito de compras.
