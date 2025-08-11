@@ -141,16 +141,5 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
             await _productRepository.ToggleActiveAsync(id);
         }
 
-        /// <summary>
-        /// Obtiene el indicador de stock basado en la cantidad disponible.
-        /// </summary>
-        /// <param name="stock">Stock del producto</param>
-        /// <returns>Retorna el mensaje adecuado</returns>
-        private string GetStockIndicator(int stock)
-        {
-            if (stock == 0) { return _soldOutMessage; }
-            if (stock <= _fewUnitsAvailable) { return _fewUnitsMessage; }
-            return _inStockMessage;
-        }
     }
 }

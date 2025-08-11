@@ -13,6 +13,7 @@ using Tienda_UCN_api.src.Infrastructure.Data;
 using Tienda_UCN_api.src.Infrastructure.Middlewares;
 using Tienda_UCN_api.src.Infrastructure.Repositories.Implements;
 using Tienda_UCN_api.src.Infrastructure.Repositories.Interfaces;
+using Tienda_UCN_api.Src.API.Middlewares;
 using Tienda_UCN_api.Src.Application.Jobs;
 using Tienda_UCN_api.Src.Application.Jobs.Interfaces;
 using Tienda_UCN_api.Src.Application.Mappers;
@@ -32,6 +33,8 @@ builder.Services.AddSwaggerGen();
 //Mappers
 builder.Services.AddScoped<ProductMapper>();
 builder.Services.AddScoped<UserMapper>();
+builder.Services.AddScoped<CartMapper>();
+
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
@@ -41,6 +44,8 @@ builder.Services.AddScoped<IFileRepository, FileRepository>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IUserJob, UserJob>();
 
 #region Email Service Configuration
@@ -186,6 +191,7 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = string.Empty;
 });
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseMiddleware<CartMiddleware>();
 app.MapOpenApi();
 app.UseCors("AllowAllOrigins");
 app.UseAuthentication();

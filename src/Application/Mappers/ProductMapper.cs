@@ -5,6 +5,9 @@ using Tienda_UCN_api.Src.Application.DTO.ProductDTO.CustomerDTO;
 
 namespace Tienda_UCN_api.Src.Application.Mappers
 {
+    /// <summary>
+    /// Clase para mapear objetos de tipo DTO a Product y viceversa.
+    /// </summary>
     public class ProductMapper
     {
         private readonly IConfiguration _configuration;
@@ -27,6 +30,7 @@ namespace Tienda_UCN_api.Src.Application.Mappers
         public void ConfigureProductMappings()
         {
             TypeAdapterConfig<Product, ProductDetailDTO>.NewConfig()
+                .Map(dest => dest.Id, src => src.Id)
                 .Map(dest => dest.Title, src => src.Title)
                 .Map(dest => dest.Description, src => src.Description)
                 .Map(dest => dest.ImagesURL, src => src.Images.Count() != 0 ? src.Images.Select(i => i.ImageUrl).ToList() : new List<string> { _defaultImageURL! })
