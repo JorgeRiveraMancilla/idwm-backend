@@ -14,8 +14,8 @@ namespace Tienda_UCN_api.Src.Application.Services.Interfaces
         /// <param name="productId">ID del producto.</param>
         /// <param name="quantity">Cantidad del producto.</param>
         /// <param name="userId">ID del usuario si es que está autenticado</param>
-        /// <returns>Tarea que representa la operación asincrónica.</returns>
-        Task AddItemAsync(string buyerId, string productId, int quantity, string? userId = null);
+        /// <returns>Tarea que representa la operación asincrónica que retorna un objeto del tipo CartDTO.</returns>
+        Task<CartDTO> AddItemAsync(string buyerId, int productId, int quantity, int? userId = null);
 
         /// <summary>
         /// Crea un nuevo carrito o devuelve uno existente.
@@ -23,7 +23,7 @@ namespace Tienda_UCN_api.Src.Application.Services.Interfaces
         /// <param name="buyerId">ID del comprador.</param>
         /// <param name="userId">ID del usuario si es que está autenticado</param>
         /// <returns>Tarea que representa la operación asincrónica retornando un objeto CartDTO.</returns>
-        Task<CartDTO> CreateOrGetAsync(string buyerId, string? userId = null);
+        Task<CartDTO> CreateOrGetAsync(string buyerId, int? userId = null);
 
         /// <summary>
         /// Elimina un artículo del carrito de compras.
@@ -32,7 +32,7 @@ namespace Tienda_UCN_api.Src.Application.Services.Interfaces
         /// <param name="productId">ID del producto.</param>
         /// <param name="userId">ID del usuario si es que está autenticado</param>
         /// <returns>Tarea que representa la operación asincrónica retornando un objeto CartDTO.</returns>
-        Task<CartDTO> RemoveItemAsync(string buyerId, string productId, string? userId = null);
+        Task<CartDTO> RemoveItemAsync(string buyerId, int productId, int? userId = null);
 
         /// <summary>
         /// Limpia el carrito de compras.
@@ -40,7 +40,24 @@ namespace Tienda_UCN_api.Src.Application.Services.Interfaces
         /// <param name="buyerId">ID del comprador.</param>
         /// <param name="userId">ID del usuario si es que está autenticado</param>
         /// <returns>Tarea que representa la operación asincrónica retornando un objeto CartDTO.</returns>
-        Task<CartDTO> ClearAsync(string buyerId, string? userId = null);
+        Task<CartDTO> ClearAsync(string buyerId, int? userId = null);
 
+        /// <summary>
+        /// Actualiza la cantidad de un artículo en el carrito de compras.
+        /// </summary>
+        /// <param name="buyerId">ID del comprador.</param>
+        /// <param name="productId">ID del producto.</param>
+        /// <param name="quantity">Nueva cantidad del producto.</param>
+        /// <param name="userId">ID del usuario si es que está autenticado</param>
+        /// <returns>Tarea que representa la operación asincrónica retornando un objeto CartDTO.</returns>
+        Task<CartDTO> UpdateItemQuantityAsync(string buyerId, int productId, int quantity, int? userId = null);
+
+        /// <summary>
+        /// Asocia el carrito de compras con un usuario.
+        /// </summary>
+        /// <param name="buyerId">ID del comprador.</param>
+        /// <param name="userId">ID del usuario.</param>
+        /// <returns>Tarea que representa la operación asincrónica.</returns>
+        Task AssociateWithUserAsync(string buyerId, int userId);
     }
 }

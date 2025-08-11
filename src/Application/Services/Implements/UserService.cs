@@ -47,8 +47,8 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
         /// </summary>
         /// <param name="loginDTO">DTO que contiene las credenciales del usuario.</param>
         /// <param name="httpContext">El contexto HTTP actual.</param>
-        /// <returns>Un string que representa el token JWT generado.</returns>
-        public async Task<string> LoginAsync(LoginDTO loginDTO, HttpContext httpContext)
+        /// <returns>Un string que representa el token JWT generado y la id del usuario.</returns>
+        public async Task<(string token, int userId)> LoginAsync(LoginDTO loginDTO, HttpContext httpContext)
         {
             var ipAddress = httpContext.Connection.RemoteIpAddress?.ToString() ?? "IP desconocida";
             var user = await _userRepository.GetByEmailAsync(loginDTO.Email);
@@ -76,7 +76,8 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
 
             // Generamos el token
             Log.Information($"Inicio de sesión exitoso para el usuario: {loginDTO.Email} desde la IP: {ipAddress}");
-            return _tokenService.GenerateToken(user, roleName, loginDTO.RememberMe);
+            var token = _tokenService.GenerateToken(user, roleName, loginDTO.RememberMe);
+            return (token, user.Id);
         }
 
         /// <summary>
