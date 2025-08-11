@@ -56,9 +56,20 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
         /// <param name="buyerId">ID del comprador.</param>
         /// <param name="userId">ID del usuario si es que está autenticado</param>
         /// <returns>Tarea que representa la operación asincrónica retornando un objeto Cart.</returns>
-        public Task<Cart> CreateOrGetAsync(string buyerId, string? userId = null)
+        public async Task<Cart> CreateOrGetAsync(string buyerId, string? userId = null)
         {
-            throw new NotImplementedException();
+            Cart? cart = await _context.Carts.Include(c => c.CartItems).FirstOrDefaultAsync(c => c.BuyerId == buyerId && c.UserId == userId);
+            if (cart == null)
+            {
+                cart = new Cart
+                {
+                    BuyerId = buyerId,
+                    UserId = userId
+                };
+                _context.Carts.Add(cart);
+                await _context.SaveChangesAsync();
+            }
+            return cart;
         }
 
         /// <summary>

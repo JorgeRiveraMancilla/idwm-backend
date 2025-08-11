@@ -49,9 +49,10 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
         /// <param name="buyerId">ID del comprador.</param>
         /// <param name="userId">ID del usuario si es que está autenticado</param>
         /// <returns>Tarea que representa la operación asincrónica retornando un objeto CartDTO.</returns>
-        public Task<CartDTO> CreateOrGetAsync(string buyerId, string? userId = null)
+        public async Task<CartDTO> CreateOrGetAsync(string buyerId, string? userId = null)
         {
-            throw new NotImplementedException();
+            Cart cart = await _cartRepository.CreateOrGetAsync(buyerId, userId);
+            return cart.Adapt<CartDTO>();
         }
 
         /// <summary>
