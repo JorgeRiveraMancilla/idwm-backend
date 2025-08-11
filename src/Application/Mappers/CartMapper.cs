@@ -19,8 +19,8 @@ namespace Tienda_UCN_api.Src.Application.Mappers
         }
         public void ConfigureAllMappings()
         {
-            ConfigureCartMappings();
             ConfigureCartItemMappings();
+            ConfigureCartMappings();
         }
 
         public void ConfigureCartMappings()
@@ -29,20 +29,21 @@ namespace Tienda_UCN_api.Src.Application.Mappers
                 .Map(dest => dest.BuyerId, src => src.BuyerId)
                 .Map(dest => dest.UserId, src => src.UserId)
                 .Map(dest => dest.SubTotalPrice, src => src.SubTotal)
+                .Map(dest => dest.Items, src => src.CartItems)
                 .Map(dest => dest.TotalPrice, src => src.Total);
         }
 
         public void ConfigureCartItemMappings()
         {
-            _ = TypeAdapterConfig<CartItem, CartItemDTO>.NewConfig()
+            TypeAdapterConfig<CartItem, CartItemDTO>.NewConfig()
                 .Map(dest => dest.ProductId, src => src.ProductId)
                 .Map(dest => dest.ProductTitle, src => src.Product.Title)
-                .Map(dest => dest.ProductImageUrl, src => src.Product.Images.FirstOrDefault() == null ? _defaultImageURL : src.Product.Images.First().ImageUrl)
+                .Map(dest => dest.ProductImageUrl, src => src.Product.Images != null && src.Product.Images.Any() ? src.Product.Images.First().ImageUrl : _defaultImageURL)
                 .Map(dest => dest.Price, src => src.Product.Price)
                 .Map(dest => dest.Discount, src => src.Product.Discount)
                 .Map(dest => dest.Quantity, src => src.Quantity)
                 .Map(dest => dest.SubTotalPrice, src => src.Product.Price * src.Quantity)
-                .Map(dest => dest.TotalPrice, src => src.Product.Price * src.Quantity * (1 - src.Product.Discount));
+                .Map(dest => dest.TotalPrice, src => src.Product.Price * src.Quantity * (1 - (decimal)src.Product.Discount / 100));
         }
     }
 }
