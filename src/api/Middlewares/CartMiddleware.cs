@@ -33,7 +33,7 @@ namespace Tienda_UCN_api.Src.API.Middlewares
                     HttpOnly = true,
                     Secure = true,
                     SameSite = SameSiteMode.Lax, //permite el envío de cookies en solicitudes de origen cruzado
-                    Expires = DateTimeOffset.UtcNow.AddDays(30), //extraemos del appsettings la expiración, si no se setea una se perderá el carrito
+                    Expires = DateTimeOffset.UtcNow.AddDays(_cookieExpirationDays), //extraemos del appsettings la expiración, si no se setea una se perderá el carrito
                     Path = "/", //las cookies serán accesibles desde cualquier ruta
                 };
                 context.Response.Cookies.Append("BuyerId", buyerId, cookieOptions);
