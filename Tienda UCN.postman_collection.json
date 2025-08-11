@@ -94,7 +94,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"user@example.com\",\r\n  \"verificationCode\": \"815641\"\r\n}",
+							"raw": "{\r\n  \"email\": \"example@gmail.com\",\r\n  \"verificationCode\": \"234826\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -369,6 +369,176 @@
 		},
 		{
 			"name": "Cart",
+			"item": [
+				{
+					"name": "Get Cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/cart",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Item to Cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "productId",
+									"value": "12",
+									"type": "text"
+								},
+								{
+									"key": "quantity",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/cart/items",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"cart",
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Item From Cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/cart/items/12",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"cart",
+								"items",
+								"12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Item Quantity",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/cart/items?productId=12&quantity=1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"cart",
+								"items"
+							],
+							"query": [
+								{
+									"key": "productId",
+									"value": "12"
+								},
+								{
+									"key": "quantity",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Clear Cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/cart/clear",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"cart",
+								"clear"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
 			"item": []
 		}
 	],
