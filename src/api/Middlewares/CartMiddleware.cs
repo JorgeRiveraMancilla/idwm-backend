@@ -36,10 +36,10 @@ namespace Tienda_UCN_api.Src.API.Middlewares
                     Expires = DateTimeOffset.UtcNow.AddDays(30), //extraemos del appsettings la expiración, si no se setea una se perderá el carrito
                     Path = "/", //las cookies serán accesibles desde cualquier ruta
                 };
-                context.Response.Cookies.Append("buyerId", buyerId, cookieOptions);
+                context.Response.Cookies.Append("BuyerId", buyerId, cookieOptions);
                 Log.Information("Se creó una nueva cookie de comprador: {BuyerId}", buyerId);
             }
-            context.Items["buyerId"] = buyerId; // almacenamos el buyerId en el contexto para ser usado en todo el pipeline
+            context.Items["BuyerId"] = buyerId; // almacenamos el buyerId en el contexto para ser usado en todo el pipeline
 
             await _next(context);
         }

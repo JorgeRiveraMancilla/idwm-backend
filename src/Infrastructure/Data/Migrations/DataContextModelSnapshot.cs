@@ -188,8 +188,8 @@ namespace Tienda_UCN_api.Src.Infrastructure.Data.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("TEXT");
+                    b.Property<int?>("UserId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 

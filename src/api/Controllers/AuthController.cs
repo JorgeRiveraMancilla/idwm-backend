@@ -1,19 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using Tienda_UCN_api.src.Application.DTO;
 using Tienda_UCN_api.src.Application.Services.Interfaces;
 using Tienda_UCN_api.Src.Application.DTO.AuthDTO;
+using Tienda_UCN_api.Src.Application.Services.Interfaces;
 
 namespace Tienda_UCN_api.src.api.Controllers
 {
     /// <summary>
     /// Controlador de autenticación.
     /// </summary>
-    public class AuthController(IUserService userService) : BaseController
+    public class AuthController(IUserService userService, ICartService cartService) : BaseController
     {
         /// <summary>
         /// Servicio de usuarios.
         /// </summary>
         private readonly IUserService _userService = userService;
+
+        private readonly ICartService _cartService = cartService;
 
         /// <summary>
         /// Inicia sesión con el usuario proporcionado.
@@ -23,7 +27,13 @@ namespace Tienda_UCN_api.src.api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
         {
-            var token = await _userService.LoginAsync(loginDTO, HttpContext);
+            var (token, userId) = await _userService.LoginAsync(loginDTO, HttpContext);
+            var buyerId = HttpContext.Items["BuyerId"]?.ToString();
+            if (!string.IsNullOrEmpty(buyerId))
+            {
+                await _cartService.AssociateWithUserAsync(buyerId, userId);
+                Log.Information("Carrito asociado al usuario. BuyerId: {BuyerId}, UserId: {UserId}", buyerId, userId);
+            }
             return Ok(new GenericResponse<string>("Inicio de sesión exitoso", token));
         }
 
