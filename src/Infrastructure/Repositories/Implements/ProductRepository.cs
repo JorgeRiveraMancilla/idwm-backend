@@ -108,13 +108,13 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
                 var searchTerm = searchParams.SearchTerm.Trim().ToLower();
 
                 query = query.Where(p =>
-                    p.Title.Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ||
-                    p.Description.Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ||
-                    p.Category.Name.Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ||
-                    p.Brand.Name.Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ||
-                    p.Status.ToString().Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ||
-                    p.Price.ToString().Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ||
-                    p.Stock.ToString().Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase)
+                    p.Title.ToLower().Contains(searchTerm) ||
+                    p.Description.ToLower().Contains(searchTerm) ||
+                    p.Category.Name.ToLower().Contains(searchTerm) ||
+                    p.Brand.Name.ToLower().Contains(searchTerm) ||
+                    p.Status.ToString().ToLower().Contains(searchTerm) ||
+                    p.Price.ToString().ToLower().Contains(searchTerm) ||
+                    p.Stock.ToString().ToLower().Contains(searchTerm)
                 );
             }
 
@@ -148,13 +148,13 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
                 var searchTerm = searchParams.SearchTerm.Trim().ToLower();
 
                 query = query.Where(p =>
-                    p.Title.Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ||
-                    p.Description.Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ||
-                    p.Category.Name.Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ||
-                    p.Brand.Name.Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ||
-                    p.Status.ToString().Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ||
-                    p.Price.ToString().Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ||
-                    p.Stock.ToString().Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase)
+                    p.Title.ToLower().Contains(searchTerm) ||
+                    p.Description.ToLower().Contains(searchTerm) ||
+                    p.Category.Name.ToLower().Contains(searchTerm) ||
+                    p.Brand.Name.ToLower().Contains(searchTerm) ||
+                    p.Status.ToString().ToLower().Contains(searchTerm) ||
+                    p.Price.ToString().ToLower().Contains(searchTerm) ||
+                    p.Stock.ToString().ToLower().Contains(searchTerm)
                 );
             }
 

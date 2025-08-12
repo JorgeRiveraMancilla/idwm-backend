@@ -13,12 +13,6 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
         private readonly IProductRepository _productRepository;
         private readonly IConfiguration _configuration;
         private readonly IFileService _fileService;
-        private readonly int _fewUnitsAvailable;
-        private readonly string _soldOutMessage;
-        private readonly string _fewUnitsMessage;
-        private readonly string _inStockMessage;
-
-        private readonly string _defaultImageUrl;
 
         private readonly int _defaultPageSize;
 
@@ -26,13 +20,8 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
         {
             _productRepository = productRepository;
             _configuration = configuration;
-            _fewUnitsAvailable = int.Parse(_configuration["Products:FewUnitsAvailable"] ?? throw new InvalidOperationException("La configuración 'FewUnitsAvailable' no está definida."));
-            _defaultImageUrl = _configuration["Products:DefaultImageUrl"] ?? throw new InvalidOperationException("La configuración 'DefaultImageUrl' no está definida.");
             _fileService = fileService;
             _defaultPageSize = int.Parse(_configuration["Products:DefaultPageSize"] ?? throw new InvalidOperationException("La configuración 'DefaultPageSize' no está definida."));
-            _soldOutMessage = _configuration["Products:SoldOutMessage"] ?? throw new InvalidOperationException("La configuración 'SoldOutMessage' no está definida.");
-            _fewUnitsMessage = _configuration["Products:FewUnitsMessage"] ?? throw new InvalidOperationException("La configuración 'FewUnitsMessage' no está definida.");
-            _inStockMessage = _configuration["Products:InStockMessage"] ?? throw new InvalidOperationException("La configuración 'InStockMessage' no está definida.");
         }
 
         /// <summary>
