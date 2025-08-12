@@ -2,6 +2,7 @@ namespace Tienda_UCN_api.Src.Application.DTO.ProductDTO.CustomerDTO
 {
     public class ProductDetailDTO
     {
+        public required int Id { get; set; }
         public required string Title { get; set; }
         public required string Description { get; set; }
         public List<string> ImagesURL { get; set; } = new List<string>();

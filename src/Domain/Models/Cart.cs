@@ -18,9 +18,14 @@ namespace Tienda_UCN_api.src.Domain.Models
         public int SubTotal { get; set; }
 
         /// <summary>
-        /// Usuario que realizó la compra.
+        /// Usuario que tiene el carrito (sin autenticación).
         /// </summary>
-        public User Buyer { get; set; } = null!;
+        public string BuyerId { get; set; } = null!;
+
+        /// <summary>
+        /// Identificador del usuario que posee el carrito de compras (autenticado).
+        /// </summary>
+        public int? UserId { get; set; }
 
         /// <summary>
         /// Lista de artículos en el carrito de compras.
