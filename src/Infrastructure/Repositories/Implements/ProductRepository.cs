@@ -168,12 +168,35 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
         }
 
         /// <summary>
+        /// Obtiene el stock real de un producto por su ID.
+        /// </summary>
+        /// <param name="productId">El ID del producto cuyo stock se obtendrá.</param>
+        /// <returns>Una tarea que representa la operación asíncrona, con el stock real del producto.</returns>
+        public async Task<int> GetRealStockAsync(int productId)
+        {
+            return await _context.Products.AsNoTracking().Where(p => p.Id == productId).Select(p => p.Stock).FirstOrDefaultAsync();
+        }
+
+        /// <summary>
         /// Cambia el estado activo de un producto por su ID.
         /// </summary>
         /// <param name="id">El ID del producto cuyo estado se cambiará.</param>
         public async Task ToggleActiveAsync(int id)
         {
             await _context.Products.Where(p => p.Id == id).ExecuteUpdateAsync(p => p.SetProperty(p => p.IsAvailable, p => !p.IsAvailable));
+        }
+
+        /// <summary>
+        /// Actualiza el stock de un producto por su ID.
+        /// </summary>
+        /// <param name="productId">El ID del producto cuyo stock se actualizará.</param>
+        /// <param name="stock">El nuevo stock del producto.</param>
+        /// <returns>Una tarea que representa la operación asíncrona.</returns>
+        public async Task UpdateStockAsync(int productId, int stock)
+        {
+            Product? product = await _context.Products.FindAsync(productId) ?? throw new KeyNotFoundException("Producto no encontrado");
+            product.Stock = stock;
+            await _context.SaveChangesAsync();
         }
     }
 }

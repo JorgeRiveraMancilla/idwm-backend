@@ -98,6 +98,21 @@ namespace Tienda_UCN_api.Src.API.Controllers
         }
 
         /// <summary>
+        /// Realiza el checkout del carrito de compras.
+        /// </summary>
+        /// <returns>El carrito de compras actualizado.</returns>
+        [HttpPost("checkout")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> CheckoutAsync()
+        {
+            var buyerId = GetBuyerId();
+            var userId = User.Identity?.IsAuthenticated == true ? User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value : null;
+            var parsedUserId = userId != null && int.TryParse(userId, out int id) ? id : (int?)null;
+            var result = await _cartService.CheckoutAsync(buyerId, parsedUserId);
+            return Ok(new GenericResponse<CartDTO>("Checkout realizado exitosamente", result));
+        }
+
+        /// <summary>
         /// Método helper para obtener buyerId del contexto
         /// </summary>
         private string GetBuyerId()
