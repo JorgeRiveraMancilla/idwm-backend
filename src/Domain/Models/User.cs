@@ -44,6 +44,11 @@ namespace Tienda_UCN_api.src.Domain.Models
         public ICollection<VerificationCode> VerificationCodes { get; set; } = new List<VerificationCode>();
 
         /// <summary>
+        /// Órdenes realizadas por el usuario.
+        /// </summary>
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
+
+        /// <summary>
         /// Fecha de registro del usuario.
         /// </summary>
         public DateTime RegisteredAt { get; set; } = DateTime.UtcNow;
