@@ -67,8 +67,9 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"var request = pm.request.body();\r",
-									"pm.collectionVariables.set(\"userEmail\", request.email);"
+									"var request = JSON.parse(pm.request.body.raw);\r",
+									"pm.collectionVariables.set(\"userEmail\", request.email);\r",
+									"pm.collectionVariables.set(\"userPassword\", request.password);"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -80,7 +81,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"user@gmail.com\",\r\n  \"password\": \"Hola1234!\",\r\n  \"confirmPassword\": \"Hola1234!\",\r\n  \"rut\": \"23456789-8\",\r\n  \"firstName\": \"hXgbcBSlVvWehr-Enah-\",\r\n  \"lastName\": \"XfHLORuHMPoBPuJrDjyq\",\r\n  \"birthDate\": \"2001-07-29T19:16:50.085Z\",\r\n  \"phoneNumber\": \"198774119\",\r\n  \"gender\": \"Masculino\"\r\n}",
+							"raw": "{\r\n  \"email\": \"ignacio.alfonso2002@gmail.com\",\r\n  \"password\": \"Hola1234!\",\r\n  \"confirmPassword\": \"Hola1234!\",\r\n  \"rut\": \"21179837-8\",\r\n  \"firstName\": \"hXgbcBSlVvWehr-Enah-\",\r\n  \"lastName\": \"XfHLORuHMPoBPuJrDjyq\",\r\n  \"birthDate\": \"2001-07-29T19:16:50.085Z\",\r\n  \"phoneNumber\": \"198774119\",\r\n  \"gender\": \"Masculino\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -686,6 +687,249 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Flujo de admin",
+			"item": [
+				{
+					"name": "Login (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();\r",
+									"pm.collectionVariables.set(\"adminToken\", response.data);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"admin@tiendaucn.cl\",\r\n  \"password\": \"Admin1234!\",\r\n  \"rememberMe\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/login",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get For Admin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/product/admin/products?PageNumber=1&PageSize=60",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"product",
+								"admin",
+								"products"
+							],
+							"query": [
+								{
+									"key": "PageNumber",
+									"value": "1"
+								},
+								{
+									"key": "PageSize",
+									"value": "60"
+								},
+								{
+									"key": "SearchTerm",
+									"value": "Hola",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();\r",
+									"pm.collectionVariables.set(\"productCreatedId\", response.data);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "Title",
+									"value": "Libro el señor de los anillos",
+									"type": "text"
+								},
+								{
+									"key": "Description",
+									"value": "El mítico libro de la mejor trilogía de la historia",
+									"type": "text"
+								},
+								{
+									"key": "Price",
+									"value": "159000",
+									"type": "text"
+								},
+								{
+									"key": "Stock",
+									"value": "100",
+									"type": "text"
+								},
+								{
+									"key": "Status",
+									"value": "New",
+									"type": "text"
+								},
+								{
+									"key": "CategoryName",
+									"value": "Libros",
+									"type": "text"
+								},
+								{
+									"key": "BrandName",
+									"value": "EDT",
+									"type": "text"
+								},
+								{
+									"key": "Images",
+									"type": "file",
+									"src": "postman-cloud:///1f079564-9d72-4430-a7ab-3f4392ac64b7"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/product",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Toggle Availability",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/product/{{productCreatedId}}/toggle-active",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"product",
+								"{{productCreatedId}}",
+								"toggle-active"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Detail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/product/admin/{{productCreatedId}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"product",
+								"admin",
+								"{{productCreatedId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
@@ -718,6 +962,22 @@
 		},
 		{
 			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "userEmail",
+			"value": ""
+		},
+		{
+			"key": "userPassword",
+			"value": ""
+		},
+		{
+			"key": "adminToken",
+			"value": ""
+		},
+		{
+			"key": "productCreatedId",
 			"value": ""
 		}
 	]
