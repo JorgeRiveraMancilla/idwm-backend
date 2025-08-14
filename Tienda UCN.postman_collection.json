@@ -40,7 +40,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"admin@tiendaucn.cl\",\r\n  \"password\": \"Hola1234!!\",\r\n  \"rememberMe\": true\r\n}",
+							"raw": "{\r\n  \"email\": \"admin@tiendaucn.cl\",\r\n  \"password\": \"Admin1234!\",\r\n  \"rememberMe\": true\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -62,6 +62,19 @@
 				},
 				{
 					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var request = pm.request.body();\r",
+									"pm.collectionVariables.set(\"userEmail\", request.email);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -197,7 +210,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJhZG1pbkB0aWVuZGF1Y24uY2wiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImV4cCI6MTc1NDUwMDg5NX0.3k2SdIXETOVkz_tw5k_9TVwCHLsyjzzUfQnQ02bzXgI",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -422,7 +435,7 @@
 								},
 								{
 									"key": "quantity",
-									"value": "35",
+									"value": "12",
 									"type": "text"
 								}
 							]
