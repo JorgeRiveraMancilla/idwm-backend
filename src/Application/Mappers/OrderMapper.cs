@@ -41,7 +41,8 @@ namespace Tienda_UCN_api.Src.Application.Mappers
                 .Map(dest => dest.SubTotal, src => src.SubTotal)
                 .Map(dest => dest.OrderItems, src => src.CartItems)
                 .Ignore(dest => dest.Id)
-                .Ignore(dest => dest.Code);
+                .Ignore(dest => dest.Code)
+                .Ignore(dest => dest.CreatedAt);
         }
 
         public void ConfigureOrderItemsMappings()
@@ -51,7 +52,7 @@ namespace Tienda_UCN_api.Src.Application.Mappers
                 .Map(dest => dest.Quantity, src => src.Quantity)
                 .Map(dest => dest.ProductDescription, src => src.DescriptionAtMoment)
                 .Map(dest => dest.MainImageURL, src => src.ImageAtMoment)
-                .Map(dest => dest.PriceAtMoment, src => src.PriceAtMoment);
+                .Map(dest => dest.PriceAtMoment, src => src.PriceAtMoment.ToString("C"));
 
             TypeAdapterConfig<CartItem, OrderItem>.NewConfig()
                 .Map(dest => dest.TitleAtMoment, src => src.Product.Title)
