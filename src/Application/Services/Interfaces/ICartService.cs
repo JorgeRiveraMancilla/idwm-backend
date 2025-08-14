@@ -59,5 +59,13 @@ namespace Tienda_UCN_api.Src.Application.Services.Interfaces
         /// <param name="userId">ID del usuario.</param>
         /// <returns>Tarea que representa la operación asincrónica.</returns>
         Task AssociateWithUserAsync(string buyerId, int userId);
+
+        /// <summary>
+        /// Procesa el pago ajustando las cantidades de los productos en el carrito.
+        /// </summary>
+        /// <param name="buyerId">ID del comprador.</param>
+        /// <param name="userId">ID del usuario.</param>
+        /// <returns>Tarea que representa la operación asincrónica retornando un objeto CartDTO.</returns>
+        Task<CartDTO> CheckoutAsync(string buyerId, int? userId);
     }
 }

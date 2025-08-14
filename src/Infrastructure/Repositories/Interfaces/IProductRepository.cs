@@ -55,5 +55,20 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Interfaces
         /// </summary>
         /// <param name="id">El ID del producto cuyo estado se cambiará.</param>
         Task ToggleActiveAsync(int id);
+
+        /// <summary>
+        /// Obtiene el stock real de un producto por su ID.
+        /// </summary>
+        /// <param name="productId">El ID del producto cuyo stock se obtendrá.</param>
+        /// <returns>Una tarea que representa la operación asíncrona, con el stock real del producto.</returns>
+        Task<int> GetRealStockAsync(int productId);
+
+        /// <summary>
+        /// Actualiza el stock de un producto por su ID.
+        /// </summary>
+        /// <param name="productId">El ID del producto cuyo stock se actualizará.</param>
+        /// <param name="stock">El nuevo stock del producto.</param>
+        /// <returns>Una tarea que representa la operación asíncrona.</returns>
+        Task UpdateStockAsync(int productId, int stock);
     }
 }

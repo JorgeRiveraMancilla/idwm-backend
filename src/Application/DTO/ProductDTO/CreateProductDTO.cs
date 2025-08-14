@@ -22,7 +22,7 @@ namespace Tienda_UCN_api.Src.Application.DTO.ProductDTO
         [Range(0, int.MaxValue, ErrorMessage = "El stock debe ser un valor positivo.")]
         public required int Stock { get; set; }
         [Required(ErrorMessage = "El estado del producto es obligatorio.")]
-        [RegularExpression("^(Nuevo|Usado)$", ErrorMessage = "El estado debe ser 'Nuevo' o 'Usado'.")]
+        [RegularExpression("^(New|Used)$", ErrorMessage = "El estado debe ser 'Nuevo' o 'Usado'.")]
         public required string Status { get; set; }
         [Required(ErrorMessage = "El nombre de la categoría es obligatorio.")]
         [StringLength(50, ErrorMessage = "El nombre de la categoría no puede exceder los 50 caracteres.")]

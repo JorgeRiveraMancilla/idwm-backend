@@ -275,5 +275,73 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
 
             Log.Information("Totales recalculados. SubTotal: {SubTotal}, Total: {Total}", cart.SubTotal, cart.Total);
         }
+
+        /// <summary>
+        /// Procesa el pago ajustando las cantidades de los productos en el carrito.
+        /// </summary>
+        /// <param name="buyerId">ID del comprador.</param>
+        /// <param name="userId">ID del usuario.</param>
+        /// <returns>Tarea que representa la operación asincrónica retornando un objeto CartDTO.</returns>
+        public async Task<CartDTO> CheckoutAsync(string buyerId, int? userId)
+        {
+            Cart? cart = await _cartRepository.FindAsync(buyerId, userId);
+            if (cart == null)
+            {
+                Log.Information("El carrito no existe para el comprador especificado {BuyerId}.", buyerId);
+                throw new KeyNotFoundException("El carrito no existe para el comprador especificado.");
+            }
+            if (cart.CartItems.Count == 0)
+            {
+                Log.Information("El carrito está vacío para el comprador especificado {BuyerId}.", buyerId);
+                throw new InvalidOperationException("El carrito está vacío.");
+            }
+            var itemsToRemove = new List<CartItem>();
+            var itemsToUpdate = new List<(CartItem item, int newQuantity)>();
+            bool hasChanges = false;
+
+            foreach (var item in cart.CartItems.ToList())
+            {
+                int productStock = await _productRepository.GetRealStockAsync(item.ProductId);
+
+                if (productStock == 0)
+                {
+                    Log.Information("El producto con ID {ProductId} está agotado.", item.ProductId);
+                    itemsToRemove.Add(item);
+                    hasChanges = true;
+                }
+                else if (item.Quantity > productStock)
+                {
+                    Log.Information("Ajustando cantidad del producto {ProductId} con cantidad actualizada {NewQuantity}", item.ProductId, productStock);
+                    itemsToUpdate.Add((item, productStock));
+                    hasChanges = true;
+                }
+            }
+
+            if (hasChanges)
+            {
+                foreach (var itemToRemove in itemsToRemove)
+                {
+                    cart.CartItems.Remove(itemToRemove);
+                    await _cartRepository.RemoveItemAsync(itemToRemove);
+                }
+
+                foreach (var (item, newQuantity) in itemsToUpdate)
+                {
+                    item.Quantity = newQuantity;
+                }
+
+                RecalculateCartTotals(cart);
+
+                await _cartRepository.UpdateAsync(cart);
+
+                Log.Information("Carrito actualizado tras checkout. ItemsEliminados: {RemovedCount}, ItemsActualizados: {UpdatedCount}", itemsToRemove.Count, itemsToUpdate.Count);
+            }
+            else
+            {
+                Log.Information("No se requirieron ajustes en el carrito durante checkout. CartId: {CartId}", cart.Id);
+            }
+
+            return cart.Adapt<CartDTO>();
+        }
     }
 }

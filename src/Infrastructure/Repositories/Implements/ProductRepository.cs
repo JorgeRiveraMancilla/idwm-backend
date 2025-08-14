@@ -108,13 +108,13 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
                 var searchTerm = searchParams.SearchTerm.Trim().ToLower();
 
                 query = query.Where(p =>
-                    p.Title.Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ||
-                    p.Description.Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ||
-                    p.Category.Name.Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ||
-                    p.Brand.Name.Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ||
-                    p.Status.ToString().Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ||
-                    p.Price.ToString().Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ||
-                    p.Stock.ToString().Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase)
+                    p.Title.ToLower().Contains(searchTerm) ||
+                    p.Description.ToLower().Contains(searchTerm) ||
+                    p.Category.Name.ToLower().Contains(searchTerm) ||
+                    p.Brand.Name.ToLower().Contains(searchTerm) ||
+                    p.Status.ToString().ToLower().Contains(searchTerm) ||
+                    p.Price.ToString().ToLower().Contains(searchTerm) ||
+                    p.Stock.ToString().ToLower().Contains(searchTerm)
                 );
             }
 
@@ -148,13 +148,13 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
                 var searchTerm = searchParams.SearchTerm.Trim().ToLower();
 
                 query = query.Where(p =>
-                    p.Title.Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ||
-                    p.Description.Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ||
-                    p.Category.Name.Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ||
-                    p.Brand.Name.Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ||
-                    p.Status.ToString().Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ||
-                    p.Price.ToString().Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase) ||
-                    p.Stock.ToString().Contains(searchTerm, StringComparison.InvariantCultureIgnoreCase)
+                    p.Title.ToLower().Contains(searchTerm) ||
+                    p.Description.ToLower().Contains(searchTerm) ||
+                    p.Category.Name.ToLower().Contains(searchTerm) ||
+                    p.Brand.Name.ToLower().Contains(searchTerm) ||
+                    p.Status.ToString().ToLower().Contains(searchTerm) ||
+                    p.Price.ToString().ToLower().Contains(searchTerm) ||
+                    p.Stock.ToString().ToLower().Contains(searchTerm)
                 );
             }
 
@@ -168,12 +168,35 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
         }
 
         /// <summary>
+        /// Obtiene el stock real de un producto por su ID.
+        /// </summary>
+        /// <param name="productId">El ID del producto cuyo stock se obtendrá.</param>
+        /// <returns>Una tarea que representa la operación asíncrona, con el stock real del producto.</returns>
+        public async Task<int> GetRealStockAsync(int productId)
+        {
+            return await _context.Products.AsNoTracking().Where(p => p.Id == productId).Select(p => p.Stock).FirstOrDefaultAsync();
+        }
+
+        /// <summary>
         /// Cambia el estado activo de un producto por su ID.
         /// </summary>
         /// <param name="id">El ID del producto cuyo estado se cambiará.</param>
         public async Task ToggleActiveAsync(int id)
         {
             await _context.Products.Where(p => p.Id == id).ExecuteUpdateAsync(p => p.SetProperty(p => p.IsAvailable, p => !p.IsAvailable));
+        }
+
+        /// <summary>
+        /// Actualiza el stock de un producto por su ID.
+        /// </summary>
+        /// <param name="productId">El ID del producto cuyo stock se actualizará.</param>
+        /// <param name="stock">El nuevo stock del producto.</param>
+        /// <returns>Una tarea que representa la operación asíncrona.</returns>
+        public async Task UpdateStockAsync(int productId, int stock)
+        {
+            Product? product = await _context.Products.FindAsync(productId) ?? throw new KeyNotFoundException("Producto no encontrado");
+            product.Stock = stock;
+            await _context.SaveChangesAsync();
         }
     }
 }

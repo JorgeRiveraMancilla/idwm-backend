@@ -40,7 +40,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"admin@tiendaucn.cl\",\r\n  \"password\": \"Admin1234!\",\r\n  \"rememberMe\": true\r\n}",
+							"raw": "{\r\n  \"email\": \"admin@tiendaucn.cl\",\r\n  \"password\": \"Hola1234!!\",\r\n  \"rememberMe\": true\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -67,7 +67,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"user@example.com\",\r\n  \"password\": \"5fM:?3_Tc`bsMt5XXC<P\",\r\n  \"confirmPassword\": \"string\",\r\n  \"rut\": \"8710365-k\",\r\n  \"firstName\": \"hXgbcBSlVvWehr-Enah-\",\r\n  \"lastName\": \"XfHLORuHMPoBPuJrDjyq\",\r\n  \"birthDate\": \"2025-07-29T19:16:50.085Z\",\r\n  \"phoneNumber\": \"198774119\",\r\n  \"gender\": \"Masculino\"\r\n}",
+							"raw": "{\r\n  \"email\": \"user@gmail.com\",\r\n  \"password\": \"Hola1234!\",\r\n  \"confirmPassword\": \"Hola1234!\",\r\n  \"rut\": \"23456789-8\",\r\n  \"firstName\": \"hXgbcBSlVvWehr-Enah-\",\r\n  \"lastName\": \"XfHLORuHMPoBPuJrDjyq\",\r\n  \"birthDate\": \"2001-07-29T19:16:50.085Z\",\r\n  \"phoneNumber\": \"198774119\",\r\n  \"gender\": \"Masculino\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -94,7 +94,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"example@example.com\",\r\n  \"verificationCode\": \"198471\"\r\n}",
+							"raw": "{\r\n  \"email\": \"example@gmail.com\",\r\n  \"verificationCode\": \"361410\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -154,7 +154,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJhZG1pbkB0aWVuZGF1Y24uY2wiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImV4cCI6MTc1NDUwMDg5NX0.3k2SdIXETOVkz_tw5k_9TVwCHLsyjzzUfQnQ02bzXgI",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -162,7 +162,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/product/admin/products?PageNumber=1&PageSize=10",
+							"raw": "{{URL}}/product/admin/products?PageNumber=1&PageSize=5&SearchTerm=Hola",
 							"host": [
 								"{{URL}}"
 							],
@@ -178,7 +178,11 @@
 								},
 								{
 									"key": "PageSize",
-									"value": "10"
+									"value": "5"
+								},
+								{
+									"key": "SearchTerm",
+									"value": "Hola"
 								}
 							]
 						}
@@ -201,7 +205,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/product/customer/products?PageNumber=1&PageSize=10",
+							"raw": "{{URL}}/product/customer/products?PageNumber=1&PageSize=10&SearchTerm=Hola",
 							"host": [
 								"{{URL}}"
 							],
@@ -218,6 +222,10 @@
 								{
 									"key": "PageSize",
 									"value": "10"
+								},
+								{
+									"key": "SearchTerm",
+									"value": "Hola"
 								}
 							]
 						}
@@ -232,7 +240,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJhZG1pbkB0aWVuZGF1Y24uY2wiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImV4cCI6MTc1NDUwMDg5NX0.3k2SdIXETOVkz_tw5k_9TVwCHLsyjzzUfQnQ02bzXgI",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -240,13 +248,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/product/1",
+							"raw": "{{URL}}/product/51",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"product",
-								"1"
+								"51"
 							]
 						}
 					},
@@ -260,7 +268,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJhZG1pbkB0aWVuZGF1Y24uY2wiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImV4cCI6MTc1NDUwMDg5NX0.3k2SdIXETOVkz_tw5k_9TVwCHLsyjzzUfQnQ02bzXgI",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -292,12 +300,12 @@
 								},
 								{
 									"key": "Status",
-									"value": "Nuevo",
+									"value": "New",
 									"type": "text"
 								},
 								{
 									"key": "CategoryName",
-									"value": "Minotauro",
+									"value": "Libros",
 									"type": "text"
 								},
 								{
@@ -310,7 +318,8 @@
 									"type": "file",
 									"src": [
 										"/C:/Users/TheNachoXx/Downloads/descarga (2).jpg",
-										"/C:/Users/TheNachoXx/Downloads/descarga (1).jpg"
+										"/C:/Users/TheNachoXx/Downloads/descarga (1).jpg",
+										"/C:/Users/TheNachoXx/Downloads/descarga.jpg"
 									]
 								}
 							]
@@ -335,30 +344,21 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJhZG1pbkB0aWVuZGF1Y24uY2wiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImV4cCI6MTc1NDUwMDg5NX0.3k2SdIXETOVkz_tw5k_9TVwCHLsyjzzUfQnQ02bzXgI",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
 						},
 						"method": "PATCH",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"id\": 1\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "{{URL}}/product/1/toggle-active",
+							"raw": "{{URL}}/product/51/toggle-active",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"product",
-								"1",
+								"51",
 								"toggle-active"
 							]
 						}
@@ -417,12 +417,12 @@
 							"formdata": [
 								{
 									"key": "productId",
-									"value": "12",
+									"value": "42",
 									"type": "text"
 								},
 								{
 									"key": "quantity",
-									"value": "1",
+									"value": "35",
 									"type": "text"
 								}
 							]
@@ -539,12 +539,140 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Checkout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/cart/checkout",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"cart",
+								"checkout"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
 		{
 			"name": "Order",
-			"item": []
+			"item": [
+				{
+					"name": "Create Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/order/create",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"order",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order Details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/order/detail/ORD-250813213419-930",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"order",
+								"detail",
+								"ORD-250813213419-930"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Order list",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/order/user-orders?PageSize=2&PageNumber=1&SearchTerm=215",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"order",
+								"user-orders"
+							],
+							"query": [
+								{
+									"key": "PageSize",
+									"value": "2"
+								},
+								{
+									"key": "PageNumber",
+									"value": "1"
+								},
+								{
+									"key": "SearchTerm",
+									"value": "215"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [

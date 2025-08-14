@@ -34,6 +34,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ProductMapper>();
 builder.Services.AddScoped<UserMapper>();
 builder.Services.AddScoped<CartMapper>();
+builder.Services.AddScoped<OrderMapper>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -46,6 +47,8 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IUserJob, UserJob>();
 
 #region Email Service Configuration

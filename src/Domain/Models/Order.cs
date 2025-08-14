@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Tienda_UCN_api.src.Domain.Models
 {
     public class Order
@@ -21,6 +23,16 @@ namespace Tienda_UCN_api.src.Domain.Models
         /// Total del pedido sin descuentos.
         /// </summary>
         public required int SubTotal { get; set; }
+
+        /// <summary>
+        /// Identificador del usuario que realizó el pedido.
+        /// </summary>
+        public required int UserId { get; set; }
+
+        /// <summary>
+        /// Usuario que realizó el pedido.
+        /// </summary>
+        public User User { get; set; } = null!;
 
         /// <summary>
         /// Lista de artículos del pedido.
