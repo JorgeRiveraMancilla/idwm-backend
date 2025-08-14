@@ -43,7 +43,7 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
             if (product.Stock < quantity)
             {
                 Log.Information("El producto con ID {ProductId} no tiene suficiente stock.", productId);
-                throw new KeyNotFoundException("No hay suficiente stock del producto.");
+                throw new ArgumentException("No hay suficiente stock del producto.");
             }
 
             if (cart == null)

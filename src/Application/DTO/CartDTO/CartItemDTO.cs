@@ -10,7 +10,7 @@ namespace Tienda_UCN_api.Src.Application.DTO.CartDTO
 
         public required int Discount { get; set; }
 
-        public int SubTotalPrice => Price * Quantity;
-        public int TotalPrice => (int)(Price * Quantity * (1 - Discount / 100m));
+        public required string SubTotalPrice { get; set; }
+        public required string TotalPrice { get; set; }
     }
 }

@@ -25,11 +25,12 @@ namespace Tienda_UCN_api.Src.API.Controllers
         /// </summary>
         /// <returns>El carrito de compras del comprador actual.</returns>
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetCart()
         {
             var buyerId = GetBuyerId();
             var userId = User.Identity?.IsAuthenticated == true ? User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value : null;
-            var parsedUserId = userId != null && int.TryParse(userId, out int id) ? id : (int?)null;
+            int? parsedUserId = userId != null && int.TryParse(userId, out int id) ? id : null;
             var cart = await _cartService.CreateOrGetAsync(buyerId, parsedUserId);
             return Ok(new GenericResponse<CartDTO>("Carrito obtenido exitosamente", cart));
         }
