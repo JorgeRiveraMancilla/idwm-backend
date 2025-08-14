@@ -743,7 +743,7 @@
 					"response": []
 				},
 				{
-					"name": "Get For Admin",
+					"name": "Get Products For Admin",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -758,7 +758,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/product/admin/products?PageNumber=1&PageSize=60",
+							"raw": "{{URL}}/product/admin/products?PageNumber=1&PageSize=10",
 							"host": [
 								"{{URL}}"
 							],
@@ -774,7 +774,7 @@
 								},
 								{
 									"key": "PageSize",
-									"value": "60"
+									"value": "10"
 								},
 								{
 									"key": "SearchTerm",
@@ -787,7 +787,7 @@
 					"response": []
 				},
 				{
-					"name": "Create",
+					"name": "Create Product",
 					"event": [
 						{
 							"listen": "test",
@@ -872,7 +872,7 @@
 					"response": []
 				},
 				{
-					"name": "Toggle Availability",
+					"name": "Toggle Product Availability",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -901,7 +901,7 @@
 					"response": []
 				},
 				{
-					"name": "Get Detail",
+					"name": "Get Product Detail",
 					"request": {
 						"auth": {
 							"type": "bearer",
