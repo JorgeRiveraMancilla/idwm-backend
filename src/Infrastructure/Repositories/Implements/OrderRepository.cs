@@ -62,6 +62,7 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
         public async Task<(IEnumerable<Order> orders, int totalCount)> GetByUserIdAsync(SearchParamsDTO searchParams, int userId)
         {
             var query = _context.Orders.AsNoTracking().Include(or => or.OrderItems).Where(or => or.UserId == userId);
+            var totalCount = await query.CountAsync();
             string searchTerm = searchParams.SearchTerm?.Trim().ToLower() ?? string.Empty;
             if (!string.IsNullOrWhiteSpace(searchParams.SearchTerm))
             {
@@ -71,7 +72,7 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
             }
             query = query.Skip((searchParams.PageNumber - 1) * searchParams.PageSize ?? _defaultPageSize)
                          .Take(searchParams.PageSize ?? _defaultPageSize);
-            return (await query.ToListAsync(), await query.CountAsync());
+            return (await query.ToListAsync(), totalCount);
         }
     }
 }

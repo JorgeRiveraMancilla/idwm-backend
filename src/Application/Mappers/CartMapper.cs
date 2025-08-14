@@ -28,9 +28,9 @@ namespace Tienda_UCN_api.Src.Application.Mappers
             TypeAdapterConfig<Cart, CartDTO>.NewConfig()
                 .Map(dest => dest.BuyerId, src => src.BuyerId)
                 .Map(dest => dest.UserId, src => src.UserId)
-                .Map(dest => dest.SubTotalPrice, src => src.SubTotal)
+                .Map(dest => dest.SubTotalPrice, src => src.SubTotal.ToString("C"))
                 .Map(dest => dest.Items, src => src.CartItems)
-                .Map(dest => dest.TotalPrice, src => src.Total);
+                .Map(dest => dest.TotalPrice, src => src.Total.ToString("C"));
         }
 
         public void ConfigureCartItemMappings()
@@ -42,8 +42,8 @@ namespace Tienda_UCN_api.Src.Application.Mappers
                 .Map(dest => dest.Price, src => src.Product.Price)
                 .Map(dest => dest.Discount, src => src.Product.Discount)
                 .Map(dest => dest.Quantity, src => src.Quantity)
-                .Map(dest => dest.SubTotalPrice, src => src.Product.Price * src.Quantity)
-                .Map(dest => dest.TotalPrice, src => src.Product.Price * src.Quantity * (1 - (decimal)src.Product.Discount / 100));
+                .Map(dest => dest.SubTotalPrice, src => (src.Product.Price * src.Quantity).ToString("C"))
+                .Map(dest => dest.TotalPrice, src => (src.Product.Price * src.Quantity * (1 - (decimal)src.Product.Discount / 100)).ToString("C"));
         }
     }
 }

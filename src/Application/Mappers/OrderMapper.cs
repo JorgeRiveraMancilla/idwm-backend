@@ -12,11 +12,13 @@ namespace Tienda_UCN_api.Src.Application.Mappers
     {
         private readonly IConfiguration _configuration;
         private readonly string _defaultImageURL;
+        private readonly TimeZoneInfo _timeZone;
 
         public OrderMapper(IConfiguration configuration)
         {
             _configuration = configuration;
             _defaultImageURL = _configuration["Products:DefaultImageUrl"] ?? throw new InvalidOperationException("La configuración de DefaultImageUrl es necesaria.");
+            _timeZone = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneInfo.Local.Id);
         }
 
         public void ConfigureAllMappings()
@@ -29,7 +31,7 @@ namespace Tienda_UCN_api.Src.Application.Mappers
         {
             TypeAdapterConfig<Order, OrderDetailDTO>.NewConfig()
                 .Map(dest => dest.Items, src => src.OrderItems)
-                .Map(dest => dest.PurchasedAt, src => src.CreatedAt)
+                .Map(dest => dest.PurchasedAt, src => TimeZoneInfo.ConvertTimeFromUtc(src.CreatedAt, _timeZone))
                 .Map(dest => dest.Code, src => src.Code)
                 .Map(dest => dest.Total, src => src.Total.ToString("C"))
                 .Map(dest => dest.SubTotal, src => src.SubTotal.ToString("C"));
@@ -39,7 +41,8 @@ namespace Tienda_UCN_api.Src.Application.Mappers
                 .Map(dest => dest.SubTotal, src => src.SubTotal)
                 .Map(dest => dest.OrderItems, src => src.CartItems)
                 .Ignore(dest => dest.Id)
-                .Ignore(dest => dest.Code);
+                .Ignore(dest => dest.Code)
+                .Ignore(dest => dest.CreatedAt);
         }
 
         public void ConfigureOrderItemsMappings()
@@ -49,7 +52,7 @@ namespace Tienda_UCN_api.Src.Application.Mappers
                 .Map(dest => dest.Quantity, src => src.Quantity)
                 .Map(dest => dest.ProductDescription, src => src.DescriptionAtMoment)
                 .Map(dest => dest.MainImageURL, src => src.ImageAtMoment)
-                .Map(dest => dest.PriceAtMoment, src => src.PriceAtMoment);
+                .Map(dest => dest.PriceAtMoment, src => src.PriceAtMoment.ToString("C"));
 
             TypeAdapterConfig<CartItem, OrderItem>.NewConfig()
                 .Map(dest => dest.TitleAtMoment, src => src.Product.Title)

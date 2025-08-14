@@ -19,9 +19,9 @@ namespace Tienda_UCN_api.Src.API.Middlewares
             _cookieExpirationDays = _configuration.GetValue<int?>("CookieExpirationDays") ?? throw new InvalidOperationException("La expiración en días de la cookie no está configurada.");
         }
 
-        public async Task InvokeAsync(HttpContext context, ICartService cartService)
+        public async Task InvokeAsync(HttpContext context)
         {
-            var buyerId = context.Request.Cookies["buyerId"];
+            var buyerId = context.Request.Cookies["BuyerId"];
 
             if (string.IsNullOrEmpty(buyerId))
             {

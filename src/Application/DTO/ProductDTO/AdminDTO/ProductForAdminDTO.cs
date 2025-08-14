@@ -12,6 +12,7 @@ namespace Tienda_UCN_api.Src.Application.DTO.ProductDTO
         public required string CategoryName { get; set; }
         public required string BrandName { get; set; }
         public required string StatusName { get; set; }
+        public required bool IsAvailable { get; set; }
         public required DateTime UpdatedAt { get; set; }
     }
 }
