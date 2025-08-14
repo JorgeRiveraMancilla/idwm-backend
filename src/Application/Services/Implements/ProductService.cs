@@ -65,6 +65,18 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
         }
 
         /// <summary>
+        /// Retorna un producto específico por su ID desde el punto de vista de un admin.
+        /// </summary>
+        /// <param name="id">El ID del producto a buscar.</param>
+        /// <returns>Una tarea que representa la operación asíncrona, con el producto encontrado o null si no se encuentra.</returns>
+        public async Task<ProductDetailDTO> GetByIdForAdminAsync(int id)
+        {
+            var product = await _productRepository.GetByIdForAdminAsync(id) ?? throw new KeyNotFoundException($"Producto con ID {id} no encontrado.");
+            Log.Information("Producto encontrado: {@Product}", product);
+            return product.Adapt<ProductDetailDTO>();
+        }
+
+        /// <summary>
         /// Retorna todos los productos para el administrador según los parámetros de búsqueda.
         /// </summary>
         /// <param name="searchParams">Parámetros de búsqueda para filtrar los productos.</param>

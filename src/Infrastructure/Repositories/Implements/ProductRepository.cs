@@ -88,6 +88,22 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
                                         .FirstOrDefaultAsync();
         }
 
+        /// <summary>
+        /// Retorna un producto específico por su ID desde el punto de vista de un admin.
+        /// </summary>
+        /// <param name="id">El ID del producto a buscar.</param>
+        /// <returns>Una tarea que representa la operación asíncrona, con el producto encontrado o null si no se encuentra.</returns>
+        public async Task<Product?> GetByIdForAdminAsync(int id)
+        {
+            return await _context.Products.
+                                        AsNoTracking().
+                                        Where(p => p.Id == id).
+                                        Include(p => p.Category).
+                                        Include(p => p.Brand).
+                                        Include(p => p.Images)
+                                        .FirstOrDefaultAsync();
+        }
+
         // <summary>
         /// Retorna una lista de productos para el administrador con los parámetros de búsqueda especificados.
         /// </summary>

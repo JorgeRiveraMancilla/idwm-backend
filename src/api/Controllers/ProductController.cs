@@ -62,11 +62,25 @@ namespace Tienda_UCN_api.Src.API.Controllers
         }
 
         /// <summary>
+        /// Obtiene un producto específico para el admin.
+        /// </summary>
+        /// <param name="id">ID del producto a obtener.</param>
+        /// <returns>El producto solicitado.</returns>
+        [HttpGet("admin/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetByIdForAdminAsync(int id)
+        {
+            var result = await _productService.GetByIdForAdminAsync(id);
+            if (result == null) { throw new KeyNotFoundException("Producto no encontrado."); }
+            return Ok(new GenericResponse<ProductDetailDTO>("Producto obtenido exitosamente", result));
+        }
+
+        /// <summary>
         /// Crea un nuevo producto en el sistema.
         /// </summary>
         /// <param name="createProductDTO">Los datos del producto a crear.</param>
         /// <returns>El ID del producto creado.</returns>
-        [HttpPost("")]
+        [HttpPost()]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateAsync([FromForm] CreateProductDTO createProductDTO)
         {

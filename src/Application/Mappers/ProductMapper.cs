@@ -40,7 +40,8 @@ namespace Tienda_UCN_api.Src.Application.Mappers
                 .Map(dest => dest.StockIndicator, src => GetStockIndicator(src.Stock))
                 .Map(dest => dest.CategoryName, src => src.Category.Name)
                 .Map(dest => dest.BrandName, src => src.Brand.Name)
-                .Map(dest => dest.StatusName, src => src.Status);
+                .Map(dest => dest.StatusName, src => src.Status)
+                .Map(dest => dest.IsAvailable, src => src.IsAvailable);
 
             TypeAdapterConfig<Product, ProductForCustomerDTO>.NewConfig()
                 .Map(dest => dest.Title, src => src.Title)

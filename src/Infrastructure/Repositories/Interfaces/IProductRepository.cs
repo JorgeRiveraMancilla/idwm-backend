@@ -70,5 +70,12 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Interfaces
         /// <param name="stock">El nuevo stock del producto.</param>
         /// <returns>Una tarea que representa la operación asíncrona.</returns>
         Task UpdateStockAsync(int productId, int stock);
+
+        /// <summary>
+        /// Retorna un producto específico por su ID desde el punto de vista de un admin.
+        /// </summary>
+        /// <param name="id">El ID del producto a buscar.</param>
+        /// <returns>Una tarea que representa la operación asíncrona, con el producto encontrado o null si no se encuentra.</returns>
+        Task<Product?> GetByIdForAdminAsync(int id);
     }
 }
