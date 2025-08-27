@@ -66,8 +66,12 @@ Once the above is installed, clone the repository with the command:
 # Usage
 You can test the API using the Postman collection file included in this repository: Tienda UCN.postman_collection.json.
 
+# Documentation 
+You can learn about how was made the API in the following link: [Repository documentation](https://deepwiki.com/NachoXx25/Tienda-UCN-API)
+
 # Frontend Repository
 You can visit the actual frontend repository of the ecommerce system here [Frontend Repository](https://github.com/2kSebaNG/tienda-ucn-frontend.git)
 
 ## Author Github
 - [@Ignacio Valenzuela](https://github.com/NachoXx25)
+
