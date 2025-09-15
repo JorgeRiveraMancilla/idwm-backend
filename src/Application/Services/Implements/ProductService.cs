@@ -101,7 +101,7 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
                 TotalCount = totalCount,
                 TotalPages = totalPages,
                 CurrentPage = currentPage,
-                PageSize = pageSize
+                PageSize = products.Count()
             };
 
         }
@@ -129,7 +129,7 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
                 TotalCount = totalCount,
                 TotalPages = totalPages,
                 CurrentPage = currentPage,
-                PageSize = pageSize
+                PageSize = products.Count()
             };
         }
 

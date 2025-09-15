@@ -117,7 +117,6 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
                 .Include(p => p.Images.OrderBy(i => i.CreatedAt).Take(1)) // Cargamos la URL de la imagen principal a la hora de crear el producto
                 .AsNoTracking();
 
-            int totalCount = await query.CountAsync();
 
             if (!string.IsNullOrWhiteSpace(searchParams.SearchTerm))
             {
@@ -139,7 +138,7 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
                 .Skip((searchParams.PageNumber - 1) * searchParams.PageSize ?? _defaultPageSize)
                 .Take(searchParams.PageSize ?? _defaultPageSize)
                 .ToArrayAsync();
-
+            int totalCount = await query.CountAsync();
             return (products, totalCount);
         }
 
@@ -157,7 +156,6 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
                 .Include(p => p.Images.OrderBy(i => i.CreatedAt).Take(1))
                 .AsNoTracking();
 
-            int totalCount = await query.CountAsync();
 
             if (!string.IsNullOrWhiteSpace(searchParams.SearchTerm))
             {
@@ -173,7 +171,7 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
                     p.Stock.ToString().ToLower().Contains(searchTerm)
                 );
             }
-
+            int totalCount = await query.CountAsync();
             var products = await query
                 .OrderByDescending(p => p.CreatedAt)
                 .Skip((searchParams.PageNumber - 1) * searchParams.PageSize ?? _defaultPageSize)
