@@ -121,6 +121,7 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
             {
                 throw new ArgumentOutOfRangeException("El número de página está fuera de rango.");
             }
+            Log.Information("Total de productos encontrados: {TotalCount}, Total de páginas: {TotalPages}, Página actual: {CurrentPage}, Tamaño de página: {PageSize}", totalCount, totalPages, currentPage, pageSize);
 
             // Convertimos los productos filtrados a DTOs para la respuesta
             return new ListedProductsForCustomerDTO

@@ -4,6 +4,7 @@ namespace Tienda_UCN_api.Src.Application.DTO.ProductDTO
 {
     public class ProductForAdminDTO
     {
+        public required int Id { get; set; }
         public required string Title { get; set; }
         public string? MainImageURL { get; set; }
         public required string Price { get; set; }

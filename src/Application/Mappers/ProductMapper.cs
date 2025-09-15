@@ -44,6 +44,7 @@ namespace Tienda_UCN_api.Src.Application.Mappers
                 .Map(dest => dest.IsAvailable, src => src.IsAvailable);
 
             TypeAdapterConfig<Product, ProductForCustomerDTO>.NewConfig()
+                .Map(dest => dest.Id, src => src.Id)
                 .Map(dest => dest.Title, src => src.Title)
                 .Map(dest => dest.Description, src => src.Description)
                 .Map(dest => dest.MainImageURL, src => src.Images.FirstOrDefault() != null ? src.Images.First().ImageUrl : _defaultImageURL)
@@ -51,6 +52,7 @@ namespace Tienda_UCN_api.Src.Application.Mappers
                 .Map(dest => dest.Discount, src => src.Discount);
 
             TypeAdapterConfig<Product, ProductForAdminDTO>.NewConfig()
+                .Map(dest => dest.Id, src => src.Id)
                 .Map(dest => dest.Title, src => src.Title)
                 .Map(dest => dest.MainImageURL, src => src.Images.FirstOrDefault() != null ? src.Images.First().ImageUrl : _defaultImageURL)
                 .Map(dest => dest.Price, src => src.Price.ToString("C"))
