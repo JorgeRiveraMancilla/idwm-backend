@@ -122,7 +122,8 @@ try
         options.AddPolicy("AllowAllOrigins",
             policy => policy.WithOrigins(allowedOrigins)
             .WithMethods(allowedMethods)
-            .WithHeaders(allowedHeaders));
+            .WithHeaders(allowedHeaders)
+            .AllowCredentials());
     });
 }
 catch (Exception ex)
