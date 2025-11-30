@@ -131,8 +131,6 @@ services:
         sync: false
       - key: USER__ADMIN_USER__LAST_NAME
         sync: false
-      - key: USER__ADMIN_USER__GENDER
-        sync: false
       - key: USER__ADMIN_USER__RUT
         sync: false
       - key: USER__ADMIN_USER__BIRTH_DATE
