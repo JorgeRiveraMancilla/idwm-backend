@@ -43,7 +43,8 @@ static string ParseDatabaseUrl(string? databaseUrl)
     // Convertir formato postgres:// a connection string
     var uri = new Uri(databaseUrl);
     var userInfo = uri.UserInfo.Split(':');
-    return $"Host={uri.Host};Port={uri.Port};Database={uri.LocalPath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+    var port = uri.Port == -1 ? 5432 : uri.Port; // Usar puerto por defecto de PostgreSQL si no está especificado
+    return $"Host={uri.Host};Port={port};Database={uri.LocalPath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
 }
 
 var builder = WebApplication.CreateBuilder(args);
@@ -152,7 +153,8 @@ builder
 
 # region Logging Configuration
 var logLevel = builder.Configuration["SERILOG__MINIMUM_LEVEL"] ?? "Information";
-var logOutputTemplate = builder.Configuration["SERILOG__OUTPUT_TEMPLATE"]
+var logOutputTemplate =
+    builder.Configuration["SERILOG__OUTPUT_TEMPLATE"]
     ?? "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}";
 
 Log.Logger = new LoggerConfiguration()
