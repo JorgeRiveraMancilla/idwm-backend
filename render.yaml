@@ -9,9 +9,7 @@ services:
   - type: web
     name: tienda-ucn-api
     plan: free
-    runtime: dotnet
-    buildCommand: dotnet restore && dotnet publish -c Release -o ./publish
-    startCommand: cd publish && dotnet Tienda-UCN-api.dll
+    runtime: docker
     healthCheckPath: /swagger
     envVars:
       # Database - Render proporciona DATABASE_URL automáticamente
