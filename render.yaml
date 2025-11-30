@@ -36,7 +36,7 @@ services:
 
       # CORS - Formato de array con índices para .NET Configuration
       - key: CORS__ALLOWED_ORIGINS__0
-        value: https://your-frontend-domain.com
+        value: https://idwm-frontend.vercel.app
       - key: CORS__ALLOWED_METHODS__0
         value: GET
       - key: CORS__ALLOWED_METHODS__1
