@@ -297,6 +297,7 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = string.Empty;
 });
 app.UseCors("AllowAllOrigins");
+app.UseMiddleware<CorsLoggingMiddleware>();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<CartMiddleware>();
 app.MapOpenApi();
