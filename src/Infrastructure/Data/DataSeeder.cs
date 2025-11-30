@@ -95,7 +95,7 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
                         EmailConfirmed = true,
                         Gender = Gender.Masculino,
                         Rut = configuration["USER:ADMIN_USER:RUT"] ?? throw new InvalidOperationException("El RUT del usuario administrador no está configurado."),
-                        BirthDate = DateTime.Parse(configuration["USER:ADMIN_USER:BIRTH_DATE"] ?? throw new InvalidOperationException("La fecha de nacimiento del usuario administrador no está configurada.")),
+                        BirthDate = DateTime.SpecifyKind(DateTime.Parse(configuration["USER:ADMIN_USER:BIRTH_DATE"] ?? throw new InvalidOperationException("La fecha de nacimiento del usuario administrador no está configurada.")), DateTimeKind.Utc),
                         PhoneNumber = configuration["USER:ADMIN_USER:PHONE_NUMBER"] ?? throw new InvalidOperationException("El número de teléfono del usuario administrador no está configurado.")
                     };
                     adminUser.UserName = adminUser.Email;
@@ -126,7 +126,7 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
                         .RuleFor(u => u.EmailConfirmed, f => true)
                         .RuleFor(u => u.Gender, f => f.PickRandom<Gender>())
                         .RuleFor(u => u.Rut, f => RandomRut())
-                        .RuleFor(u => u.BirthDate, f => f.Date.Past(30, DateTime.Now.AddYears(-18)))
+                        .RuleFor(u => u.BirthDate, f => DateTime.SpecifyKind(f.Date.Past(30, DateTime.UtcNow.AddYears(-18)), DateTimeKind.Utc))
                         .RuleFor(u => u.PhoneNumber, f => RandomPhoneNumber())
                         .RuleFor(u => u.UserName, (f, u) => u.Email);
                     var users = userFaker.Generate(99);

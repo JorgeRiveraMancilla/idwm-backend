@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Resend;
 using Serilog;
+using Serilog.Events;
 using Tienda_UCN_api.Src.API.Middlewares;
 using Tienda_UCN_api.Src.Application.Jobs;
 using Tienda_UCN_api.Src.Application.Jobs.Interfaces;
@@ -150,10 +151,22 @@ builder
 #endregion
 
 # region Logging Configuration
-builder.Host.UseSerilog(
-    (context, services, configuration) =>
-        configuration.ReadFrom.Configuration(context.Configuration).ReadFrom.Services(services)
-);
+var logLevel = builder.Configuration["SERILOG__MINIMUM_LEVEL"] ?? "Information";
+var logOutputTemplate = builder.Configuration["SERILOG__OUTPUT_TEMPLATE"]
+    ?? "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}";
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Is(Enum.Parse<LogEventLevel>(logLevel, ignoreCase: true))
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .MinimumLevel.Override("System", LogEventLevel.Warning)
+    .MinimumLevel.Override("Hangfire", LogEventLevel.Information)
+    .Enrich.FromLogContext()
+    .Enrich.WithMachineName()
+    .Enrich.WithThreadId()
+    .WriteTo.Console(outputTemplate: logOutputTemplate)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 #endregion
 
 #region CORS Configuration
@@ -215,7 +228,10 @@ var timeZone = TimeZoneInfo.FindSystemTimeZoneById(
 );
 builder.Services.AddHangfire(configuration =>
 {
-    configuration.UsePostgreSqlStorage(connectionString);
+    configuration.UsePostgreSqlStorage(options =>
+    {
+        options.UseNpgsqlConnection(connectionString);
+    });
     configuration.SetDataCompatibilityLevel(CompatibilityLevel.Version_170);
     configuration.UseSimpleAssemblyNameTypeSerializer();
     configuration.UseRecommendedSerializerSettings();

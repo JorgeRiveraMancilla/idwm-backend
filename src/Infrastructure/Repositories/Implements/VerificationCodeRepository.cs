@@ -91,7 +91,7 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
                 .ExecuteUpdateAsync(setters => setters
                     .SetProperty(vc => vc.Code, verificationCode.Code)
                     .SetProperty(vc => vc.AttemptCount, verificationCode.AttemptCount)
-                    .SetProperty(vc => vc.ExpiryDate, verificationCode.ExpiryDate));
+                    .SetProperty(vc => vc.ExpiryDate, DateTime.SpecifyKind(verificationCode.ExpiryDate, DateTimeKind.Utc)));
             return await _context.VerificationCodes.AsNoTracking().FirstOrDefaultAsync(vc => vc.Id == verificationCode.Id);
         }
     }

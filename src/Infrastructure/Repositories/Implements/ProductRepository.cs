@@ -208,9 +208,14 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
         /// <returns>Una tarea que representa la operación asíncrona.</returns>
         public async Task UpdateStockAsync(int productId, int stock)
         {
-            Product? product = await _context.Products.FindAsync(productId) ?? throw new KeyNotFoundException("Producto no encontrado");
-            product.Stock = stock;
-            await _context.SaveChangesAsync();
+            var rowsAffected = await _context.Products
+                .Where(p => p.Id == productId)
+                .ExecuteUpdateAsync(setters => setters.SetProperty(p => p.Stock, stock));
+
+            if (rowsAffected == 0)
+            {
+                throw new KeyNotFoundException("Producto no encontrado");
+            }
         }
     }
 }

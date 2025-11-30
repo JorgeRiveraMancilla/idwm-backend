@@ -32,7 +32,7 @@ namespace Tienda_UCN_api.Src.Application.Mappers
                 .Map(dest => dest.FirstName, src => src.FirstName)
                 .Map(dest => dest.LastName, src => src.LastName)
                 .Map(dest => dest.Rut, src => src.Rut)
-                .Map(dest => dest.BirthDate, src => src.BirthDate)
+                .Map(dest => dest.BirthDate, src => DateTime.SpecifyKind(src.BirthDate, DateTimeKind.Utc))
                 .Map(dest => dest.PhoneNumber, src => src.PhoneNumber)
                 .Map(dest => dest.EmailConfirmed, src => false);
         }
