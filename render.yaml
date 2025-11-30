@@ -10,7 +10,7 @@ services:
     name: tienda-ucn-api
     plan: free
     runtime: docker
-    healthCheckPath: /swagger
+    healthCheckPath: /api/health
     envVars:
       # Database - Render proporciona DATABASE_URL automáticamente, pero el código espera DATABASE_CONNECTION_STRING
       - key: DATABASE_CONNECTION_STRING
@@ -20,7 +20,7 @@ services:
 
       # JWT
       - key: JWT_SECRET
-        sync: false  # Debe configurarse manualmente en Render dashboard
+        sync: false # Debe configurarse manualmente en Render dashboard
 
       # Resend
       - key: RESEND_API_KEY
@@ -139,4 +139,3 @@ services:
         sync: false
       - key: USER__RANDOM_USER_PASSWORD
         sync: false
-
