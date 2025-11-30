@@ -1,12 +1,10 @@
-services:
-  # PostgreSQL Database
-  - type: pg
-    name: tienda-ucn-database
-    plan: free
+databases:
+  - name: tienda-ucn-database
     databaseName: tienda_ucn
     user: tienda_ucn_user
-    postgresMajorVersion: 16
+    plan: free
 
+services:
   # Web Service
   - type: web
     name: tienda-ucn-api
