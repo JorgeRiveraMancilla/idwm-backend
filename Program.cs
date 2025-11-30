@@ -202,6 +202,7 @@ try
                     .AllowCredentials()
         );
     });
+    Log.Information("CORS configurado con orígenes: {Origins}", string.Join(", ", allowedOrigins));
 }
 catch (Exception ex)
 {
@@ -295,10 +296,10 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tienda UCN API V1");
     c.RoutePrefix = string.Empty;
 });
+app.UseCors("AllowAllOrigins");
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<CartMiddleware>();
 app.MapOpenApi();
-app.UseCors("AllowAllOrigins");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

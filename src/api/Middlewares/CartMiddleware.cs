@@ -16,7 +16,11 @@ namespace Tienda_UCN_api.Src.API.Middlewares
         {
             _next = next;
             _configuration = configuration;
-            _cookieExpirationDays = _configuration.GetValue<int?>("COOKIE_EXPIRATION_DAYS") ?? throw new InvalidOperationException("La expiración en días de la cookie no está configurada.");
+            _cookieExpirationDays =
+                _configuration.GetValue<int?>("COOKIE_EXPIRATION_DAYS")
+                ?? throw new InvalidOperationException(
+                    "La expiración en días de la cookie no está configurada."
+                );
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -32,7 +36,7 @@ namespace Tienda_UCN_api.Src.API.Middlewares
                 {
                     HttpOnly = true,
                     Secure = true,
-                    SameSite = SameSiteMode.Lax, //permite el envío de cookies en solicitudes de origen cruzado
+                    SameSite = SameSiteMode.None, //requerido para peticiones cross-origin con credentials
                     Expires = DateTimeOffset.UtcNow.AddDays(_cookieExpirationDays), //extraemos del appsettings la expiración, si no se setea una se perderá el carrito
                     Path = "/", //las cookies serán accesibles desde cualquier ruta
                 };
