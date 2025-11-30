@@ -17,7 +17,7 @@ namespace Tienda_UCN_api.Src.Application.Mappers
         public OrderMapper(IConfiguration configuration)
         {
             _configuration = configuration;
-            _defaultImageURL = _configuration["Products:DefaultImageUrl"] ?? throw new InvalidOperationException("La configuración de DefaultImageUrl es necesaria.");
+            _defaultImageURL = _configuration["PRODUCTS:DEFAULT_IMAGE_URL"] ?? throw new InvalidOperationException("La configuración de DefaultImageUrl es necesaria.");
             _timeZone = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneInfo.Local.Id);
         }
 
