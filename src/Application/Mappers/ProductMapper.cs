@@ -18,8 +18,8 @@ namespace Tienda_UCN_api.Src.Application.Mappers
         public ProductMapper(IConfiguration configuration)
         {
             _configuration = configuration;
-            _defaultImageURL = _configuration.GetValue<string>("Products:DefaultImageUrl") ?? throw new InvalidOperationException("La URL de la imagen por defecto no puede ser nula.");
-            _fewUnitsAvailable = _configuration.GetValue<int?>("Products:FewUnitsAvailable") ?? throw new InvalidOperationException("La configuración 'FewUnitsAvailable' no puede ser nula.");
+            _defaultImageURL = _configuration.GetValue<string>("PRODUCTS:DEFAULT_IMAGE_URL") ?? throw new InvalidOperationException("La URL de la imagen por defecto no puede ser nula.");
+            _fewUnitsAvailable = _configuration.GetValue<int?>("PRODUCTS:FEW_UNITS_AVAILABLE") ?? throw new InvalidOperationException("La configuración 'FEW_UNITS_AVAILABLE' no puede ser nula.");
         }
 
         public void ConfigureAllMappings()

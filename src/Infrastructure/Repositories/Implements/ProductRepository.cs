@@ -21,7 +21,7 @@ namespace Tienda_UCN_api.Src.Infrastructure.Repositories.Implements
         {
             _context = context;
             _configuration = configuration;
-            _defaultPageSize = _configuration.GetValue<int?>("Products:DefaultPageSize") ?? throw new ArgumentNullException("El tamaño de página por defecto no puede ser nulo.");
+            _defaultPageSize = _configuration.GetValue<int?>("PRODUCTS:DEFAULT_PAGE_SIZE") ?? throw new ArgumentNullException("El tamaño de página por defecto no puede ser nulo.");
         }
 
         /// <summary>

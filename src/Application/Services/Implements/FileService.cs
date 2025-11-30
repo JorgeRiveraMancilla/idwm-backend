@@ -29,18 +29,18 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
         {
             _configuration = configuration;
             _fileRepository = fileRepository;
-            _cloudName = _configuration["Cloudinary:CloudName"] ?? throw new InvalidOperationException("La configuración de CloudName es obligatoria");
-            _cloudApiKey = _configuration["Cloudinary:ApiKey"] ?? throw new InvalidOperationException("La configuración de ApiKey es obligatoria");
-            _cloudApiSecret = _configuration["Cloudinary:ApiSecret"] ?? throw new InvalidOperationException("La configuración de ApiSecret es obligatoria");
+            _cloudName = _configuration["CLOUDINARY:CLOUD_NAME"] ?? throw new InvalidOperationException("La configuración de CloudName es obligatoria");
+            _cloudApiKey = _configuration["CLOUDINARY:API_KEY"] ?? throw new InvalidOperationException("La configuración de ApiKey es obligatoria");
+            _cloudApiSecret = _configuration["CLOUDINARY:API_SECRET"] ?? throw new InvalidOperationException("La configuración de ApiSecret es obligatoria");
             Account account = new Account(_cloudName, _cloudApiKey, _cloudApiSecret);
             _cloudinary = new Cloudinary(account);
             _cloudinary.Api.Secure = true; // Aseguramos  que las URLs sean seguras con HTTPS
-            _allowedExtensions = _configuration.GetSection("Products:ImageAllowedExtensions").Get<string[]>() ?? throw new InvalidOperationException("La configuración de las extensiones de las imágenes es obligatoria");
-            _transformationQuality = _configuration["Products:TransformationQuality"] ?? throw new InvalidOperationException("La configuración de la calidad de la transformación es obligatoria");
-            _transformationCrop = _configuration["Products:TransformationCrop"] ?? throw new InvalidOperationException("La configuración del recorte de la transformación es obligatoria");
-            _transformationFetchFormat = _configuration["Products:TransformationFetchFormat"] ?? throw new InvalidOperationException("La configuración del formato de la transformación es obligatoria");
-            if (!int.TryParse(_configuration["Products:ImageMaxSizeInBytes"], out _maxFileSizeInBytes)) { throw new InvalidOperationException("La configuración del tamaño de la imagen es obligatoria"); }
-            if (!int.TryParse(_configuration["Products:TransformationWidth"], out _transformationWidth)) { throw new InvalidOperationException("La configuración del ancho de la transformación es obligatoria"); }
+            _allowedExtensions = _configuration.GetSection("PRODUCTS:IMAGE_ALLOWED_EXTENSIONS").Get<string[]>() ?? throw new InvalidOperationException("La configuración de las extensiones de las imágenes es obligatoria");
+            _transformationQuality = _configuration["PRODUCTS:TRANSFORMATION_QUALITY"] ?? throw new InvalidOperationException("La configuración de la calidad de la transformación es obligatoria");
+            _transformationCrop = _configuration["PRODUCTS:TRANSFORMATION_CROP"] ?? throw new InvalidOperationException("La configuración del recorte de la transformación es obligatoria");
+            _transformationFetchFormat = _configuration["PRODUCTS:TRANSFORMATION_FETCH_FORMAT"] ?? throw new InvalidOperationException("La configuración del formato de la transformación es obligatoria");
+            if (!int.TryParse(_configuration["PRODUCTS:IMAGE_MAX_SIZE_IN_BYTES"], out _maxFileSizeInBytes)) { throw new InvalidOperationException("La configuración del tamaño de la imagen es obligatoria"); }
+            if (!int.TryParse(_configuration["PRODUCTS:TRANSFORMATION_WIDTH"], out _transformationWidth)) { throw new InvalidOperationException("La configuración del ancho de la transformación es obligatoria"); }
         }
 
         /// <summary>

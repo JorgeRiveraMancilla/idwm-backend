@@ -19,7 +19,7 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
         public TokenService(IConfiguration configuration)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration), "La configuración no puede ser nula");
-            _jwtSecret = _configuration["JWTSecret"] ?? throw new InvalidOperationException("La clave secreta JWT no está configurada.");
+            _jwtSecret = _configuration["JWT_SECRET"] ?? throw new InvalidOperationException("La clave secreta JWT no está configurada.");
         }
 
         /// <summary>

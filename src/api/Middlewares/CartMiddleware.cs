@@ -16,7 +16,7 @@ namespace Tienda_UCN_api.Src.API.Middlewares
         {
             _next = next;
             _configuration = configuration;
-            _cookieExpirationDays = _configuration.GetValue<int?>("CookieExpirationDays") ?? throw new InvalidOperationException("La expiración en días de la cookie no está configurada.");
+            _cookieExpirationDays = _configuration.GetValue<int?>("COOKIE_EXPIRATION_DAYS") ?? throw new InvalidOperationException("La expiración en días de la cookie no está configurada.");
         }
 
         public async Task InvokeAsync(HttpContext context)

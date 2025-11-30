@@ -89,17 +89,17 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
                     // Creación de usuario administrador
                     User adminUser = new User
                     {
-                        FirstName = configuration["User:AdminUser:FirstName"] ?? throw new InvalidOperationException("El nombre del usuario administrador no está configurado."),
-                        LastName = configuration["User:AdminUser:LastName"] ?? throw new InvalidOperationException("El apellido del usuario administrador no está configurado."),
-                        Email = configuration["User:AdminUser:Email"] ?? throw new InvalidOperationException("El email del usuario administrador no está configurado."),
+                        FirstName = configuration["USER:ADMIN_USER:FIRST_NAME"] ?? throw new InvalidOperationException("El nombre del usuario administrador no está configurado."),
+                        LastName = configuration["USER:ADMIN_USER:LAST_NAME"] ?? throw new InvalidOperationException("El apellido del usuario administrador no está configurado."),
+                        Email = configuration["USER:ADMIN_USER:EMAIL"] ?? throw new InvalidOperationException("El email del usuario administrador no está configurado."),
                         EmailConfirmed = true,
                         Gender = Gender.Masculino,
-                        Rut = configuration["User:AdminUser:Rut"] ?? throw new InvalidOperationException("El RUT del usuario administrador no está configurado."),
-                        BirthDate = DateTime.Parse(configuration["User:AdminUser:BirthDate"] ?? throw new InvalidOperationException("La fecha de nacimiento del usuario administrador no está configurada.")),
-                        PhoneNumber = configuration["User:AdminUser:PhoneNumber"] ?? throw new InvalidOperationException("El número de teléfono del usuario administrador no está configurado.")
+                        Rut = configuration["USER:ADMIN_USER:RUT"] ?? throw new InvalidOperationException("El RUT del usuario administrador no está configurado."),
+                        BirthDate = DateTime.Parse(configuration["USER:ADMIN_USER:BIRTH_DATE"] ?? throw new InvalidOperationException("La fecha de nacimiento del usuario administrador no está configurada.")),
+                        PhoneNumber = configuration["USER:ADMIN_USER:PHONE_NUMBER"] ?? throw new InvalidOperationException("El número de teléfono del usuario administrador no está configurado.")
                     };
                     adminUser.UserName = adminUser.Email;
-                    var adminPassword = configuration["User:AdminUser:Password"] ?? throw new InvalidOperationException("La contraseña del usuario administrador no está configurada.");
+                    var adminPassword = configuration["USER:ADMIN_USER:PASSWORD"] ?? throw new InvalidOperationException("La contraseña del usuario administrador no está configurada.");
                     var adminResult = await userManager.CreateAsync(adminUser, adminPassword);
                     if (adminResult.Succeeded)
                     {
@@ -117,7 +117,7 @@ namespace Tienda_UCN_api.src.Infrastructure.Data
                         throw new InvalidOperationException("No se pudo crear el usuario administrador.");
                     }
                     // Creación de usuarios aleatorios
-                    var randomPassword = configuration["User:RandomUserPassword"] ?? throw new InvalidOperationException("La contraseña de los usuarios aleatorios no está configurada.");
+                    var randomPassword = configuration["USER:RANDOM_USER_PASSWORD"] ?? throw new InvalidOperationException("La contraseña de los usuarios aleatorios no está configurada.");
 
                     var userFaker = new Faker<User>()
                         .RuleFor(u => u.FirstName, f => f.Name.FirstName())

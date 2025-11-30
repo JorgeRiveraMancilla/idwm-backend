@@ -15,7 +15,7 @@ namespace Tienda_UCN_api.Src.Application.Mappers
         public CartMapper(IConfiguration configuration)
         {
             _configuration = configuration;
-            _defaultImageURL = _configuration.GetValue<string>("Products:DefaultImageUrl") ?? throw new InvalidOperationException("La URL de la imagen por defecto no puede ser nula.");
+            _defaultImageURL = _configuration.GetValue<string>("PRODUCTS:DEFAULT_IMAGE_URL") ?? throw new InvalidOperationException("La URL de la imagen por defecto no puede ser nula.");
         }
         public void ConfigureAllMappings()
         {

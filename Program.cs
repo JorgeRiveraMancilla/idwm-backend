@@ -25,7 +25,7 @@ using Tienda_UCN_api.Src.Infrastructure.Repositories.Interfaces;
 // Cargar variables de entorno desde .env (solo en desarrollo local)
 Env.Load();
 
-// Función helper para convertir DATABASE_URL de Render a connection string
+// Función helper para convertir DATABASE_CONNECTION_STRING de Render (formato postgres://) a connection string
 static string ParseDatabaseUrl(string? databaseUrl)
 {
     if (string.IsNullOrEmpty(databaseUrl))
@@ -48,14 +48,13 @@ static string ParseDatabaseUrl(string? databaseUrl)
 var builder = WebApplication.CreateBuilder(args);
 
 // Leer connection string desde variable de entorno o configuración
-// Render proporciona DATABASE_URL automáticamente, pero también acepta POSTGRESQL_CONNECTION_STRING
-var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-var connectionString = !string.IsNullOrEmpty(databaseUrl)
-    ? ParseDatabaseUrl(databaseUrl)
-    : Environment.GetEnvironmentVariable("POSTGRESQL_CONNECTION_STRING")
-        ?? builder.Configuration.GetConnectionString("PostgreSQLDatabase")
+// Acepta formato postgres:// o formato connection string estándar
+var databaseConnectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
+var connectionString = !string.IsNullOrEmpty(databaseConnectionString)
+    ? ParseDatabaseUrl(databaseConnectionString)
+    : builder.Configuration.GetConnectionString("PostgreSQLDatabase")
         ?? throw new InvalidOperationException(
-            "Connection string PostgreSQL no configurado. Configure DATABASE_URL o POSTGRESQL_CONNECTION_STRING"
+            "Connection string PostgreSQL no configurado. Configure DATABASE_CONNECTION_STRING"
         );
 
 builder.Services.AddOpenApi();
@@ -91,7 +90,7 @@ builder.Services.AddHttpClient<ResendClient>();
 builder.Services.Configure<ResendClientOptions>(o =>
 {
     o.ApiToken =
-        builder.Configuration["ResendAPIKey"]
+        builder.Configuration["RESEND_API_KEY"]
         ?? throw new InvalidOperationException("El token de API de Resend no está configurado.");
 });
 builder.Services.AddTransient<IResend, ResendClient>();
@@ -108,7 +107,7 @@ builder
     .AddJwtBearer(options =>
     {
         string jwtSecret =
-            builder.Configuration["JWTSecret"]
+            builder.Configuration["JWT_SECRET"]
             ?? throw new InvalidOperationException("La clave secreta JWT no está configurada.");
         options.TokenValidationParameters =
             new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
@@ -140,7 +139,7 @@ builder
 
         //Configuración de UserName
         options.User.AllowedUserNameCharacters =
-            builder.Configuration["IdentityConfiguration:AllowedUserNameCharacters"]
+            builder.Configuration["IDENTITY_CONFIGURATION:ALLOWED_USER_NAME_CHARACTERS"]
             ?? throw new InvalidOperationException(
                 "Los caracteres permitidos para UserName no están configurados."
             );
@@ -162,17 +161,17 @@ Log.Information("Configurando CORS");
 try
 {
     var allowedOrigins =
-        builder.Configuration.GetSection("CORS:AllowedOrigins").Get<string[]>()
+        builder.Configuration.GetSection("CORS:ALLOWED_ORIGINS").Get<string[]>()
         ?? throw new InvalidOperationException(
             "Los orígenes permitidos CORS no están configurados."
         );
     var allowedMethods =
-        builder.Configuration.GetSection("CORS:AllowedMethods").Get<string[]>()
+        builder.Configuration.GetSection("CORS:ALLOWED_METHODS").Get<string[]>()
         ?? throw new InvalidOperationException(
             "Los métodos permitidos CORS no están configurados."
         );
     var allowedHeaders =
-        builder.Configuration.GetSection("CORS:AllowedHeaders").Get<string[]>()
+        builder.Configuration.GetSection("CORS:ALLOWED_HEADERS").Get<string[]>()
         ?? throw new InvalidOperationException(
             "Los encabezados permitidos CORS no están configurados."
         );
@@ -204,12 +203,12 @@ builder.Services.AddDbContext<DataContext>(options => options.UseNpgsql(connecti
 #region Hangfire Configuration
 Log.Information("Configurando los trabajos en segundo plano de Hangfire");
 var cronExpression =
-    builder.Configuration["Jobs:CronJobDeleteUnconfirmedUsers"]
+    builder.Configuration["JOBS:CRON_JOB_DELETE_UNCONFIRMED_USERS"]
     ?? throw new InvalidOperationException(
         "La expresión cron para eliminar usuarios no confirmados no está configurada."
     );
 var timeZone = TimeZoneInfo.FindSystemTimeZoneById(
-    builder.Configuration["Jobs:TimeZone"]
+    builder.Configuration["JOBS:TIME_ZONE"]
         ?? throw new InvalidOperationException(
             "La zona horaria para los trabajos no está configurada."
         )
@@ -227,26 +226,26 @@ builder.Services.AddHangfireServer();
 var app = builder.Build();
 
 app.UseHangfireDashboard(
-    builder.Configuration["HangfireDashboard:DashboardPath"]
+    builder.Configuration["HANGFIRE_DASHBOARD:DASHBOARD_PATH"]
         ?? throw new InvalidOperationException("La ruta de hangfire no ha sido declarada"),
     new DashboardOptions
     {
         StatsPollingInterval =
-            builder.Configuration.GetValue<int?>("HangfireDashboard:StatsPollingInterval")
+            builder.Configuration.GetValue<int?>("HANGFIRE_DASHBOARD:STATS_POLLING_INTERVAL")
             ?? throw new InvalidOperationException(
                 "El intervalo de actualización de estadísticas del panel de control de Hangfire no está configurado."
             ),
         DashboardTitle =
-            builder.Configuration["HangfireDashboard:DashboardTitle"]
+            builder.Configuration["HANGFIRE_DASHBOARD:DASHBOARD_TITLE"]
             ?? throw new InvalidOperationException(
                 "El título del panel de control de Hangfire no está configurado."
             ),
         DisplayStorageConnectionString =
             builder.Configuration.GetValue<bool?>(
-                "HangfireDashboard:DisplayStorageConnectionString"
+                "HANGFIRE_DASHBOARD:DISPLAY_STORAGE_CONNECTION_STRING"
             )
             ?? throw new InvalidOperationException(
-                "La configuración 'HangfireDashboard:DisplayStorageConnectionString' no está definida."
+                "La configuración 'HANGFIRE_DASHBOARD:DISPLAY_STORAGE_CONNECTION_STRING' no está definida."
             ),
     }
 );

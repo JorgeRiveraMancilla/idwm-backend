@@ -23,7 +23,7 @@ namespace Tienda_UCN_api.src.Infrastructure.Repositories.Implements
             _context = context;
             _userManager = userManager;
             _verificationCodeRepository = verificationCodeRepository;
-            _daysOfDeleteUnconfirmedUsers = configuration.GetValue<int?>("Jobs:DaysOfDeleteUnconfirmedUsers") ?? throw new InvalidOperationException("La configuración 'Jobs:DaysOfDeleteUnconfirmedUsers' no está definida.");
+            _daysOfDeleteUnconfirmedUsers = configuration.GetValue<int?>("JOBS:DAYS_OF_DELETE_UNCONFIRMED_USERS") ?? throw new InvalidOperationException("La configuración 'JOBS:DAYS_OF_DELETE_UNCONFIRMED_USERS' no está definida.");
         }
 
         /// <summary>

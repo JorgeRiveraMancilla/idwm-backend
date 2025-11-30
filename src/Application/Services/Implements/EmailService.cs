@@ -31,8 +31,8 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
             var message = new EmailMessage
             {
                 To = email,
-                Subject = _configuration["EmailConfiguration:VerificationSubject"] ?? throw new ArgumentNullException("El asunto del correo de verificación no puede ser nulo."),
-                From = _configuration["EmailConfiguration:From"] ?? throw new ArgumentNullException("La configuración de 'From' no puede ser nula."),
+                Subject = _configuration["EMAIL_CONFIGURATION:VERIFICATION_SUBJECT"] ?? throw new ArgumentNullException("El asunto del correo de verificación no puede ser nulo."),
+                From = _configuration["EMAIL_CONFIGURATION:FROM"] ?? throw new ArgumentNullException("La configuración de 'From' no puede ser nula."),
                 HtmlBody = htmlBody
             };
             await _resend.EmailSendAsync(message);
@@ -49,8 +49,8 @@ namespace Tienda_UCN_api.Src.Application.Services.Implements
             var message = new EmailMessage
             {
                 To = email,
-                Subject = _configuration["EmailConfiguration:WelcomeSubject"] ?? throw new ArgumentNullException("El asunto del correo de bienvenida no puede ser nulo."),
-                From = _configuration["EmailConfiguration:From"] ?? throw new ArgumentNullException("La configuración de 'From' no puede ser nula."),
+                Subject = _configuration["EMAIL_CONFIGURATION:WELCOME_SUBJECT"] ?? throw new ArgumentNullException("El asunto del correo de bienvenida no puede ser nulo."),
+                From = _configuration["EMAIL_CONFIGURATION:FROM"] ?? throw new ArgumentNullException("La configuración de 'From' no puede ser nula."),
                 HtmlBody = htmlBody
             };
 

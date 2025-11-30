@@ -30,7 +30,7 @@ namespace Tienda_UCN_api.src.Application.Services.Implements
             _emailService = emailService;
             _verificationCodeRepository = verificationCodeRepository;
             _configuration = configuration;
-            _verificationCodeExpirationTimeInMinutes = _configuration.GetValue<int>("VerificationCode:ExpirationTimeInMinutes");
+            _verificationCodeExpirationTimeInMinutes = _configuration.GetValue<int>("VERIFICATION_CODE:EXPIRATION_TIME_IN_MINUTES");
         }
 
         /// <summary>
