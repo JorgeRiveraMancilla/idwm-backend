@@ -12,8 +12,8 @@ services:
     runtime: docker
     healthCheckPath: /swagger
     envVars:
-      # Database - Render proporciona DATABASE_URL automáticamente
-      - key: DATABASE_URL
+      # Database - Render proporciona DATABASE_URL automáticamente, pero el código espera DATABASE_CONNECTION_STRING
+      - key: DATABASE_CONNECTION_STRING
         fromDatabase:
           name: tienda-ucn-database
           property: connectionString
@@ -34,13 +34,29 @@ services:
       - key: CLOUDINARY__API_SECRET
         sync: false
 
-      # CORS
-      - key: CORS__ALLOWED_ORIGINS
+      # CORS - Formato de array con índices para .NET Configuration
+      - key: CORS__ALLOWED_ORIGINS__0
         value: https://your-frontend-domain.com
-      - key: CORS__ALLOWED_METHODS
-        value: GET,POST,PUT,DELETE,PATCH,OPTIONS
-      - key: CORS__ALLOWED_HEADERS
+      - key: CORS__ALLOWED_METHODS__0
+        value: GET
+      - key: CORS__ALLOWED_METHODS__1
+        value: POST
+      - key: CORS__ALLOWED_METHODS__2
+        value: PUT
+      - key: CORS__ALLOWED_METHODS__3
+        value: DELETE
+      - key: CORS__ALLOWED_METHODS__4
+        value: PATCH
+      - key: CORS__ALLOWED_METHODS__5
+        value: OPTIONS
+      - key: CORS__ALLOWED_HEADERS__0
         value: "*"
+
+      # Serilog (opcional, tienen valores por defecto)
+      - key: SERILOG__MINIMUM_LEVEL
+        value: Information
+      - key: SERILOG__OUTPUT_TEMPLATE
+        value: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"
 
       # Identity
       - key: IDENTITY_CONFIGURATION__ALLOWED_USER_NAME_CHARACTERS
