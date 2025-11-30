@@ -1,35 +1,68 @@
+using DotNetEnv;
 using Hangfire;
-using Hangfire.Storage.SQLite;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Resend;
 using Serilog;
-using Tienda_UCN_api.src.Application.Services.Implements;
-using Tienda_UCN_api.src.Application.Services.Interfaces;
-using Tienda_UCN_api.src.Domain.Models;
-using Tienda_UCN_api.src.Infrastructure.Data;
-using Tienda_UCN_api.src.Infrastructure.Middlewares;
-using Tienda_UCN_api.src.Infrastructure.Repositories.Implements;
-using Tienda_UCN_api.src.Infrastructure.Repositories.Interfaces;
 using Tienda_UCN_api.Src.API.Middlewares;
 using Tienda_UCN_api.Src.Application.Jobs;
 using Tienda_UCN_api.Src.Application.Jobs.Interfaces;
 using Tienda_UCN_api.Src.Application.Mappers;
+using Tienda_UCN_api.src.Application.Services.Implements;
 using Tienda_UCN_api.Src.Application.Services.Implements;
+using Tienda_UCN_api.src.Application.Services.Interfaces;
 using Tienda_UCN_api.Src.Application.Services.Interfaces;
+using Tienda_UCN_api.src.Domain.Models;
+using Tienda_UCN_api.src.Infrastructure.Data;
+using Tienda_UCN_api.src.Infrastructure.Middlewares;
+using Tienda_UCN_api.src.Infrastructure.Repositories.Implements;
 using Tienda_UCN_api.Src.Infrastructure.Repositories.Implements;
+using Tienda_UCN_api.src.Infrastructure.Repositories.Interfaces;
 using Tienda_UCN_api.Src.Infrastructure.Repositories.Interfaces;
+
+// Cargar variables de entorno desde .env (solo en desarrollo local)
+Env.Load();
+
+// Función helper para convertir DATABASE_URL de Render a connection string
+static string ParseDatabaseUrl(string? databaseUrl)
+{
+    if (string.IsNullOrEmpty(databaseUrl))
+    {
+        return string.Empty;
+    }
+
+    // Si ya está en formato connection string, retornarlo
+    if (databaseUrl.Contains("Host=") || databaseUrl.Contains("Server="))
+    {
+        return databaseUrl;
+    }
+
+    // Convertir formato postgres:// a connection string
+    var uri = new Uri(databaseUrl);
+    var userInfo = uri.UserInfo.Split(':');
+    return $"Host={uri.Host};Port={uri.Port};Database={uri.LocalPath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+}
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("SqliteDatabase") ?? throw new InvalidOperationException("Connection string SqliteDatabase no configurado");
+// Leer connection string desde variable de entorno o configuración
+// Render proporciona DATABASE_URL automáticamente, pero también acepta POSTGRESQL_CONNECTION_STRING
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+var connectionString = !string.IsNullOrEmpty(databaseUrl)
+    ? ParseDatabaseUrl(databaseUrl)
+    : Environment.GetEnvironmentVariable("POSTGRESQL_CONNECTION_STRING")
+        ?? builder.Configuration.GetConnectionString("PostgreSQLDatabase")
+        ?? throw new InvalidOperationException(
+            "Connection string PostgreSQL no configurado. Configure DATABASE_URL o POSTGRESQL_CONNECTION_STRING"
+        );
 
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 //Mappers
 builder.Services.AddScoped<ProductMapper>();
 builder.Services.AddScoped<UserMapper>();
@@ -57,73 +90,103 @@ builder.Services.AddOptions();
 builder.Services.AddHttpClient<ResendClient>();
 builder.Services.Configure<ResendClientOptions>(o =>
 {
-    o.ApiToken = builder.Configuration["ResendAPIKey"] ?? throw new InvalidOperationException("El token de API de Resend no está configurado.");
+    o.ApiToken =
+        builder.Configuration["ResendAPIKey"]
+        ?? throw new InvalidOperationException("El token de API de Resend no está configurado.");
 });
 builder.Services.AddTransient<IResend, ResendClient>();
 #endregion
 
 #region Authentication Configuration
 Log.Information("Configurando autenticación JWT");
-builder.Services.AddAuthentication(options =>
+builder
+    .Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    }
-    ).AddJwtBearer(options =>
+    })
+    .AddJwtBearer(options =>
     {
-        string jwtSecret = builder.Configuration["JWTSecret"] ?? throw new InvalidOperationException("La clave secreta JWT no está configurada.");
-        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtSecret)),
-            ValidateLifetime = true,
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ClockSkew = TimeSpan.Zero //Sin tolerencia a tokens expirados
-        };
+        string jwtSecret =
+            builder.Configuration["JWTSecret"]
+            ?? throw new InvalidOperationException("La clave secreta JWT no está configurada.");
+        options.TokenValidationParameters =
+            new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
+                    System.Text.Encoding.UTF8.GetBytes(jwtSecret)
+                ),
+                ValidateLifetime = true,
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ClockSkew = TimeSpan.Zero, //Sin tolerencia a tokens expirados
+            };
     });
 #endregion
 
 #region Identity Configuration
 Log.Information("Configurando Identity");
-builder.Services.AddIdentityCore<User>(options =>
-{
-    //Configuración de contraseña
-    options.Password.RequireDigit = true;
-    options.Password.RequiredLength = 8;
-    options.Password.RequireNonAlphanumeric = false;
+builder
+    .Services.AddIdentityCore<User>(options =>
+    {
+        //Configuración de contraseña
+        options.Password.RequireDigit = true;
+        options.Password.RequiredLength = 8;
+        options.Password.RequireNonAlphanumeric = false;
 
-    //Configuración de Email
-    options.User.RequireUniqueEmail = true;
+        //Configuración de Email
+        options.User.RequireUniqueEmail = true;
 
-    //Configuración de UserName
-    options.User.AllowedUserNameCharacters = builder.Configuration["IdentityConfiguration:AllowedUserNameCharacters"] ?? throw new InvalidOperationException("Los caracteres permitidos para UserName no están configurados.");
-})
-.AddRoles<Role>()
-.AddEntityFrameworkStores<DataContext>()
-.AddDefaultTokenProviders();
+        //Configuración de UserName
+        options.User.AllowedUserNameCharacters =
+            builder.Configuration["IdentityConfiguration:AllowedUserNameCharacters"]
+            ?? throw new InvalidOperationException(
+                "Los caracteres permitidos para UserName no están configurados."
+            );
+    })
+    .AddRoles<Role>()
+    .AddEntityFrameworkStores<DataContext>()
+    .AddDefaultTokenProviders();
 #endregion
 
 # region Logging Configuration
-builder.Host.UseSerilog((context, services, configuration) => configuration
-    .ReadFrom.Configuration(context.Configuration)
-    .ReadFrom.Services(services));
+builder.Host.UseSerilog(
+    (context, services, configuration) =>
+        configuration.ReadFrom.Configuration(context.Configuration).ReadFrom.Services(services)
+);
 #endregion
 
 #region CORS Configuration
 Log.Information("Configurando CORS");
 try
 {
-    var allowedOrigins = builder.Configuration.GetSection("CORS:AllowedOrigins").Get<string[]>() ?? throw new InvalidOperationException("Los orígenes permitidos CORS no están configurados.");
-    var allowedMethods = builder.Configuration.GetSection("CORS:AllowedMethods").Get<string[]>() ?? throw new InvalidOperationException("Los métodos permitidos CORS no están configurados.");
-    var allowedHeaders = builder.Configuration.GetSection("CORS:AllowedHeaders").Get<string[]>() ?? throw new InvalidOperationException("Los encabezados permitidos CORS no están configurados.");
+    var allowedOrigins =
+        builder.Configuration.GetSection("CORS:AllowedOrigins").Get<string[]>()
+        ?? throw new InvalidOperationException(
+            "Los orígenes permitidos CORS no están configurados."
+        );
+    var allowedMethods =
+        builder.Configuration.GetSection("CORS:AllowedMethods").Get<string[]>()
+        ?? throw new InvalidOperationException(
+            "Los métodos permitidos CORS no están configurados."
+        );
+    var allowedHeaders =
+        builder.Configuration.GetSection("CORS:AllowedHeaders").Get<string[]>()
+        ?? throw new InvalidOperationException(
+            "Los encabezados permitidos CORS no están configurados."
+        );
     builder.Services.AddCors(options =>
     {
-        options.AddPolicy("AllowAllOrigins",
-            policy => policy.WithOrigins(allowedOrigins)
-            .WithMethods(allowedMethods)
-            .WithHeaders(allowedHeaders)
-            .AllowCredentials());
+        options.AddPolicy(
+            "AllowAllOrigins",
+            policy =>
+                policy
+                    .WithOrigins(allowedOrigins)
+                    .WithMethods(allowedMethods)
+                    .WithHeaders(allowedHeaders)
+                    .AllowCredentials()
+        );
     });
 }
 catch (Exception ex)
@@ -134,37 +197,59 @@ catch (Exception ex)
 #endregion
 
 #region Database Configuration
-Log.Information("Configurando base de datos SQLite");
-builder.Services.AddDbContext<DataContext>(options =>
-    options.UseSqlite(connectionString));
+Log.Information("Configurando base de datos PostgreSQL");
+builder.Services.AddDbContext<DataContext>(options => options.UseNpgsql(connectionString));
 #endregion
 
 #region Hangfire Configuration
 Log.Information("Configurando los trabajos en segundo plano de Hangfire");
-var cronExpression = builder.Configuration["Jobs:CronJobDeleteUnconfirmedUsers"] ?? throw new InvalidOperationException("La expresión cron para eliminar usuarios no confirmados no está configurada.");
-var timeZone = TimeZoneInfo.FindSystemTimeZoneById(builder.Configuration["Jobs:TimeZone"] ?? throw new InvalidOperationException("La zona horaria para los trabajos no está configurada."));
+var cronExpression =
+    builder.Configuration["Jobs:CronJobDeleteUnconfirmedUsers"]
+    ?? throw new InvalidOperationException(
+        "La expresión cron para eliminar usuarios no confirmados no está configurada."
+    );
+var timeZone = TimeZoneInfo.FindSystemTimeZoneById(
+    builder.Configuration["Jobs:TimeZone"]
+        ?? throw new InvalidOperationException(
+            "La zona horaria para los trabajos no está configurada."
+        )
+);
 builder.Services.AddHangfire(configuration =>
 {
-    var connectionStringBuilder = new SqliteConnectionStringBuilder(connectionString);
-    var databasePath = connectionStringBuilder.DataSource;
-
-    configuration.UseSQLiteStorage(databasePath);
+    configuration.UsePostgreSqlStorage(connectionString);
     configuration.SetDataCompatibilityLevel(CompatibilityLevel.Version_170);
     configuration.UseSimpleAssemblyNameTypeSerializer();
     configuration.UseRecommendedSerializerSettings();
 });
 builder.Services.AddHangfireServer();
 
-
 #endregion
 var app = builder.Build();
 
-app.UseHangfireDashboard(builder.Configuration["HangfireDashboard:DashboardPath"] ?? throw new InvalidOperationException("La ruta de hangfire no ha sido declarada"), new DashboardOptions
-{
-    StatsPollingInterval = builder.Configuration.GetValue<int?>("HangfireDashboard:StatsPollingInterval") ?? throw new InvalidOperationException("El intervalo de actualización de estadísticas del panel de control de Hangfire no está configurado."),
-    DashboardTitle = builder.Configuration["HangfireDashboard:DashboardTitle"] ?? throw new InvalidOperationException("El título del panel de control de Hangfire no está configurado."),
-    DisplayStorageConnectionString = builder.Configuration.GetValue<bool?>("HangfireDashboard:DisplayStorageConnectionString") ?? throw new InvalidOperationException("La configuración 'HangfireDashboard:DisplayStorageConnectionString' no está definida."),
-});
+app.UseHangfireDashboard(
+    builder.Configuration["HangfireDashboard:DashboardPath"]
+        ?? throw new InvalidOperationException("La ruta de hangfire no ha sido declarada"),
+    new DashboardOptions
+    {
+        StatsPollingInterval =
+            builder.Configuration.GetValue<int?>("HangfireDashboard:StatsPollingInterval")
+            ?? throw new InvalidOperationException(
+                "El intervalo de actualización de estadísticas del panel de control de Hangfire no está configurado."
+            ),
+        DashboardTitle =
+            builder.Configuration["HangfireDashboard:DashboardTitle"]
+            ?? throw new InvalidOperationException(
+                "El título del panel de control de Hangfire no está configurado."
+            ),
+        DisplayStorageConnectionString =
+            builder.Configuration.GetValue<bool?>(
+                "HangfireDashboard:DisplayStorageConnectionString"
+            )
+            ?? throw new InvalidOperationException(
+                "La configuración 'HangfireDashboard:DisplayStorageConnectionString' no está definida."
+            ),
+    }
+);
 
 #region Database Migration and jobs Configuration
 Log.Information("Aplicando migraciones a la base de datos");
@@ -176,12 +261,11 @@ using (var scope = app.Services.CreateScope())
         jobId,
         job => job.DeleteUnconfirmedAsync(),
         cronExpression,
-        new RecurringJobOptions
-        {
-            TimeZone = timeZone
-        }
+        new RecurringJobOptions { TimeZone = timeZone }
     );
-    Log.Information($"Job recurrente '{jobId}' configurado con cron: {cronExpression} en zona horaria: {timeZone.Id}");
+    Log.Information(
+        $"Job recurrente '{jobId}' configurado con cron: {cronExpression} en zona horaria: {timeZone.Id}"
+    );
     MapperExtensions.ConfigureMapster(scope.ServiceProvider);
 }
 #endregion
